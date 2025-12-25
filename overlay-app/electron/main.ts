@@ -1,15 +1,17 @@
 import { app, BrowserWindow, ipcMain, screen } from 'electron';
 import * as path from 'path';
 import * as fs from 'fs';
+import * as chokidar from 'chokidar';
 
 let mainWindow: BrowserWindow | null = null;
-let fileWatcher: fs.FSWatcher | null = null;
+let fileWatcher: chokidar.FSWatcher | null = null;
 let isClickThrough = true;
+let debounceTimer: NodeJS.Timeout | null = null;
 
 // Path to the game state JSON file
 const getGameStatePath = (): string => {
   const appData = process.env.APPDATA || '';
-  return path.join(appData, 'Balatro', 'Mods', 'BalatroOverlay', 'overlay_state.json');
+  return path.join(appData, 'Balatro', 'overlay_state.json');
 };
 
 function createWindow(): void {
@@ -56,36 +58,57 @@ function createWindow(): void {
 
 function startFileWatcher(): void {
   const gameStatePath = getGameStatePath();
-  const dir = path.dirname(gameStatePath);
 
-  // Ensure directory exists
-  if (!fs.existsSync(dir)) {
-    console.log('Game state directory does not exist yet:', dir);
-    // Retry periodically
-    setTimeout(startFileWatcher, 5000);
-    return;
-  }
+  console.log('Starting file watcher for:', gameStatePath);
 
-  try {
-    fileWatcher = fs.watch(dir, (eventType, filename) => {
-      if (filename === 'overlay_state.json') {
-        readAndSendGameState();
-      }
-    });
+  // Use chokidar for reliable cross-platform file watching
+  fileWatcher = chokidar.watch(gameStatePath, {
+    persistent: true,
+    ignoreInitial: false,  // Trigger on initial file if it exists
+    awaitWriteFinish: {
+      stabilityThreshold: 50,  // Wait for file to be stable
+      pollInterval: 20
+    },
+    usePolling: false  // Use native events when possible
+  });
 
-    // Initial read
-    readAndSendGameState();
-  } catch (error) {
-    console.error('Failed to start file watcher:', error);
-    setTimeout(startFileWatcher, 5000);
-  }
+  fileWatcher.on('add', () => {
+    console.log('Game state file detected');
+    debouncedReadAndSend();
+  });
+
+  fileWatcher.on('change', () => {
+    debouncedReadAndSend();
+  });
+
+  fileWatcher.on('error', (error) => {
+    console.error('File watcher error:', error);
+  });
+
+  fileWatcher.on('ready', () => {
+    console.log('File watcher ready');
+  });
 }
 
 function stopFileWatcher(): void {
+  if (debounceTimer) {
+    clearTimeout(debounceTimer);
+    debounceTimer = null;
+  }
   if (fileWatcher) {
     fileWatcher.close();
     fileWatcher = null;
   }
+}
+
+// Debounce reads to prevent flooding (game writes every 100ms)
+function debouncedReadAndSend(): void {
+  if (debounceTimer) {
+    clearTimeout(debounceTimer);
+  }
+  debounceTimer = setTimeout(() => {
+    readAndSendGameState();
+  }, 50);  // 50ms debounce - responsive but not excessive
 }
 
 function readAndSendGameState(): void {
@@ -100,7 +123,8 @@ function readAndSendGameState(): void {
     const gameState = JSON.parse(data);
     mainWindow?.webContents.send('game-state:update', gameState);
   } catch (error) {
-    console.error('Failed to read game state:', error);
+    // Silently ignore read errors (file may be mid-write)
+    // Chokidar's awaitWriteFinish should minimize these
   }
 }
 
