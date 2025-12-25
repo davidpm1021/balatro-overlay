@@ -1,0 +1,48 @@
+<div class="overlay-container h-screen w-full bg-balatro-bg flex flex-col">
+  <!-- Header bar -->
+  <header class="flex items-center justify-between p-2 bg-balatro-panel border-b border-white/10">
+    <div class="flex items-center gap-2">
+      <span class="text-balatro-accent font-bold text-sm">BALATRO OVERLAY</span>
+      @if (isConnected()) {
+        <span class="w-2 h-2 rounded-full bg-balatro-green"></span>
+      } @else {
+        <span class="w-2 h-2 rounded-full bg-balatro-red"></span>
+      }
+    </div>
+    <div class="flex items-center gap-1">
+      <button
+        (click)="toggleClickThrough()"
+        class="p-1 hover:bg-white/10 rounded text-xs"
+        title="Toggle click-through">
+        🖱️
+      </button>
+      <button
+        (click)="minimize()"
+        class="p-1 hover:bg-white/10 rounded text-xs"
+        title="Minimize">
+        ➖
+      </button>
+    </div>
+  </header>
+
+  <!-- Main content area -->
+  <main class="flex-1 overflow-y-auto p-2">
+    @if (!isConnected()) {
+      <div class="text-center text-white/50 mt-8">
+        <p class="text-lg">Waiting for Balatro...</p>
+        <p class="text-sm mt-2">Start the game with the BalatroOverlay mod installed</p>
+      </div>
+    } @else {
+      <div class="text-sm text-white/70">
+        <p>Phase: {{ phase() }}</p>
+        <!-- Feature components will be added here -->
+        <router-outlet></router-outlet>
+      </div>
+    }
+  </main>
+
+  <!-- Status bar -->
+  <footer class="p-1 bg-balatro-panel border-t border-white/10 text-xs text-white/50 text-center">
+    v0.1.0 | Phase: {{ phase() }}
+  </footer>
+</div>

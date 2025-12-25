@@ -1,0 +1,31 @@
+# Lovely mod loader configuration for BalatroOverlay
+# https://github.com/ethangreen-dev/lovely-injector
+
+[manifest]
+version = "1.0.0"
+dump_lua = false
+priority = 0
+
+# Patch to inject our mod into the game
+[[patches]]
+[patches.pattern]
+target = "main.lua"
+pattern = "function love.update(dt)"
+position = "after"
+match_indent = true
+payload = '''
+    if BalatroOverlay then
+        BalatroOverlay.update(dt)
+    end
+'''
+
+[[patches]]
+[patches.pattern]
+target = "main.lua"
+pattern = "function love.load()"
+position = "after"
+match_indent = true
+payload = '''
+    BalatroOverlay = require("BalatroOverlay/BalatroOverlay")
+    BalatroOverlay.init()
+'''

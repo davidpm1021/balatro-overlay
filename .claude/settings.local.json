@@ -1,0 +1,14 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(node --version:*)",
+      "Bash(npm --version)",
+      "Bash(npx:*)",
+      "Bash(npm install:*)",
+      "Bash(git add:*)",
+      "Bash(git commit -m \"$(cat <<''EOF''\nInitial project scaffolding for Balatro Overlay Tracker\n\n- Set up Angular 17 + Electron 28 project structure\n- Create Electron main/preload with transparent overlay window\n- Add file watcher for game state JSON communication\n- Define shared TypeScript interfaces for game state, jokers, strategies\n- Create Lua bridge mod scaffold with Lovely loader config\n- Configure Tailwind CSS with Balatro-inspired theme\n- Add package.json scripts for dev workflow\n\n🤖 Generated with [Claude Code](https://claude.ai/code)\n\nCo-Authored-By: Claude <noreply@anthropic.com>\nEOF\n)\")"
+    ],
+    "deny": [],
+    "ask": []
+  }
+}

@@ -1,0 +1,100 @@
+{
+  "timestamp": 1703462400000,
+  "version": "0.1.0",
+  "deck": {
+    "remaining": [
+      { "id": "c1", "suit": "hearts", "rank": "A", "enhancement": "none", "edition": "none", "seal": "none", "chipValue": 11 },
+      { "id": "c2", "suit": "hearts", "rank": "K", "enhancement": "none", "edition": "none", "seal": "none", "chipValue": 10 },
+      { "id": "c3", "suit": "hearts", "rank": "Q", "enhancement": "none", "edition": "none", "seal": "none", "chipValue": 10 },
+      { "id": "c4", "suit": "hearts", "rank": "J", "enhancement": "none", "edition": "none", "seal": "none", "chipValue": 10 },
+      { "id": "c5", "suit": "hearts", "rank": "10", "enhancement": "none", "edition": "none", "seal": "none", "chipValue": 10 }
+    ],
+    "hand": [
+      { "id": "c6", "suit": "spades", "rank": "A", "enhancement": "none", "edition": "foil", "seal": "none", "chipValue": 11 },
+      { "id": "c7", "suit": "spades", "rank": "K", "enhancement": "none", "edition": "none", "seal": "none", "chipValue": 10 },
+      { "id": "c8", "suit": "diamonds", "rank": "7", "enhancement": "mult", "edition": "none", "seal": "none", "chipValue": 7 },
+      { "id": "c9", "suit": "clubs", "rank": "3", "enhancement": "none", "edition": "none", "seal": "none", "chipValue": 3 },
+      { "id": "c10", "suit": "hearts", "rank": "2", "enhancement": "none", "edition": "none", "seal": "gold", "chipValue": 2 }
+    ],
+    "discarded": [],
+    "played": [],
+    "totalCards": 52,
+    "cardsRemaining": 42
+  },
+  "jokers": [
+    {
+      "id": "j_lusty_joker",
+      "name": "Lusty Joker",
+      "description": "+3 Mult if played hand contains a Heart card",
+      "rarity": "common",
+      "edition": "none",
+      "slotIndex": 0,
+      "isScaling": false,
+      "effectValues": { "mult": 3 },
+      "sellValue": 2
+    },
+    {
+      "id": "j_fibonacci",
+      "name": "Fibonacci",
+      "description": "Each played 2, 3, 5, 8, or Ace gives +8 Mult",
+      "rarity": "uncommon",
+      "edition": "holographic",
+      "slotIndex": 1,
+      "isScaling": false,
+      "effectValues": { "mult": 8 },
+      "sellValue": 4
+    }
+  ],
+  "progress": {
+    "ante": 2,
+    "round": 1,
+    "phase": "playing",
+    "handsRemaining": 3,
+    "discardsRemaining": 2,
+    "money": 12,
+    "runSeed": "ABC123"
+  },
+  "blind": {
+    "type": "big",
+    "name": "Big Blind",
+    "chipGoal": 450,
+    "chipsScored": 0,
+    "isBoss": false
+  },
+  "handLevels": [
+    { "handType": "high_card", "level": 1, "baseChips": 5, "baseMult": 1 },
+    { "handType": "pair", "level": 2, "baseChips": 15, "baseMult": 2 },
+    { "handType": "two_pair", "level": 1, "baseChips": 20, "baseMult": 2 },
+    { "handType": "three_of_a_kind", "level": 1, "baseChips": 30, "baseMult": 3 },
+    { "handType": "straight", "level": 1, "baseChips": 30, "baseMult": 4 },
+    { "handType": "flush", "level": 3, "baseChips": 45, "baseMult": 4 },
+    { "handType": "full_house", "level": 1, "baseChips": 40, "baseMult": 4 },
+    { "handType": "four_of_a_kind", "level": 1, "baseChips": 60, "baseMult": 7 },
+    { "handType": "straight_flush", "level": 1, "baseChips": 100, "baseMult": 8 }
+  ],
+  "consumables": {
+    "tarots": [
+      { "id": "c_strength", "name": "Strength" }
+    ],
+    "planets": [],
+    "spectrals": []
+  },
+  "vouchers": {
+    "owned": ["v_overstock_norm"]
+  },
+  "handHistory": [
+    {
+      "cards": [
+        { "id": "c11", "suit": "hearts", "rank": "K", "enhancement": "none", "edition": "none", "seal": "none", "chipValue": 10 },
+        { "id": "c12", "suit": "hearts", "rank": "Q", "enhancement": "none", "edition": "none", "seal": "none", "chipValue": 10 },
+        { "id": "c13", "suit": "hearts", "rank": "J", "enhancement": "none", "edition": "none", "seal": "none", "chipValue": 10 },
+        { "id": "c14", "suit": "hearts", "rank": "10", "enhancement": "none", "edition": "none", "seal": "none", "chipValue": 10 },
+        { "id": "c15", "suit": "hearts", "rank": "9", "enhancement": "none", "edition": "none", "seal": "none", "chipValue": 9 }
+      ],
+      "handType": "flush",
+      "baseScore": 196,
+      "finalScore": 784,
+      "timestamp": 1703462300000
+    }
+  ]
+}
