@@ -6,7 +6,27 @@ version = "1.0.0"
 dump_lua = false
 priority = 0
 
-# Patch to inject our mod into the game
+# =============================================================================
+# INITIALIZATION HOOKS
+# =============================================================================
+
+# Load the mod when the game starts
+[[patches]]
+[patches.pattern]
+target = "main.lua"
+pattern = "function love.load()"
+position = "after"
+match_indent = true
+payload = '''
+    BalatroOverlay = require("BalatroOverlay/BalatroOverlay")
+    BalatroOverlay.init()
+'''
+
+# =============================================================================
+# UPDATE LOOP
+# =============================================================================
+
+# Call update every frame for state export
 [[patches]]
 [patches.pattern]
 target = "main.lua"
@@ -19,13 +39,133 @@ payload = '''
     end
 '''
 
+# =============================================================================
+# GAME EVENT HOOKS
+# =============================================================================
+
+# Hook into new run start to clear history
 [[patches]]
 [patches.pattern]
-target = "main.lua"
-pattern = "function love.load()"
+target = "functions/state_events.lua"
+pattern = "function Game:start_run(args)"
 position = "after"
 match_indent = true
 payload = '''
-    BalatroOverlay = require("BalatroOverlay/BalatroOverlay")
-    BalatroOverlay.init()
+    if BalatroOverlay then
+        BalatroOverlay.onNewRun()
+    end
+'''
+
+# Hook into hand scoring to record played hands
+# This captures the hand after it has been evaluated
+[[patches]]
+[patches.pattern]
+target = "functions/state_events.lua"
+pattern = "G.E_MANAGER:add_event(Event({"
+position = "before"
+match_indent = false
+payload = '''
+    -- BalatroOverlay: Record played hand
+    if BalatroOverlay and G.play and G.play.cards and #G.play.cards > 0 then
+        local hand_type = G.GAME.last_hand_played or "High Card"
+        local base_chips = G.GAME.hands[hand_type] and G.GAME.hands[hand_type].chips or 0
+        local final_score = hand_chips * mult
+        BalatroOverlay.onHandScored(G.play.cards, hand_type, base_chips, final_score)
+    end
+'''
+
+# Alternative hook location for hand scoring (after score calculation)
+[[patches]]
+[patches.pattern]
+target = "functions/common_events.lua"
+pattern = "update_hand_text({sound = 'chips"
+position = "after"
+match_indent = true
+payload = '''
+    -- BalatroOverlay: Capture hand score
+    if BalatroOverlay and G.GAME.last_hand_played then
+        local cards = G.play and G.play.cards or {}
+        local hand_type = G.GAME.last_hand_played
+        local chips = hand_chips or 0
+        local mult_val = mult or 1
+        pcall(function()
+            BalatroOverlay.onHandScored(cards, hand_type, chips, chips * mult_val)
+        end)
+    end
+'''
+
+# =============================================================================
+# DRAW/DISCARD HOOKS (for immediate state updates)
+# =============================================================================
+
+# Hook into card draw
+[[patches]]
+[patches.pattern]
+target = "functions/common_events.lua"
+pattern = "G.E_MANAGER:add_event(Event({trigger = 'after', delay = 0.1, func = function()"
+position = "after"
+match_indent = true
+payload = '''
+    -- BalatroOverlay: Force state update on draw
+    if BalatroOverlay then
+        BalatroOverlay.exportState()
+    end
+'''
+
+# Hook into discard action
+[[patches]]
+[patches.pattern]
+target = "functions/button_callbacks.lua"
+pattern = "function G.FUNCS.discard_cards_from_highlighted"
+position = "after"
+match_indent = true
+payload = '''
+    -- BalatroOverlay: Force state update on discard
+    if BalatroOverlay then
+        pcall(function() BalatroOverlay.exportState() end)
+    end
+'''
+
+# Hook into play hand action
+[[patches]]
+[patches.pattern]
+target = "functions/button_callbacks.lua"
+pattern = "function G.FUNCS.play_cards_from_highlighted"
+position = "after"
+match_indent = true
+payload = '''
+    -- BalatroOverlay: Force state update on play
+    if BalatroOverlay then
+        pcall(function() BalatroOverlay.exportState() end)
+    end
+'''
+
+# =============================================================================
+# SHOP HOOKS
+# =============================================================================
+
+# Hook into shop enter for shop state capture
+[[patches]]
+[patches.pattern]
+target = "functions/state_events.lua"
+pattern = "function Game:shop()"
+position = "after"
+match_indent = true
+payload = '''
+    if BalatroOverlay then
+        pcall(function() BalatroOverlay.exportState() end)
+    end
+'''
+
+# Hook into reroll for shop state update
+[[patches]]
+[patches.pattern]
+target = "functions/button_callbacks.lua"
+pattern = "function G.FUNCS.reroll_shop"
+position = "after"
+match_indent = true
+payload = '''
+    if BalatroOverlay then
+        pcall(function() BalatroOverlay.exportState() end)
+    end
 '''
