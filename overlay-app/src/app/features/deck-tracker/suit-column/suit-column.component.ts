@@ -1,6 +1,7 @@
 import { Component, ChangeDetectionStrategy, input, computed } from '@angular/core';
 import { Suit, Rank } from '../../../../../../shared/models';
 import { CardCellComponent } from '../card-cell/card-cell.component';
+import { CardLocation } from '../deck-tracker.component';
 
 const RANK_ORDER: Rank[] = ['A', 'K', 'Q', 'J', '10', '9', '8', '7', '6', '5', '4', '3', '2'];
 
@@ -24,7 +25,8 @@ const SUIT_SYMBOLS: Record<Suit, string> = {
         <app-card-cell
           [rank]="rank"
           [suit]="suit()"
-          [isDrawn]="isRankDrawn(rank)" />
+          [location]="getCardLocation(rank)"
+          [showLocationHighlight]="showDiscard()" />
       }
     </div>
   `,
@@ -37,7 +39,8 @@ const SUIT_SYMBOLS: Record<Suit, string> = {
 })
 export class SuitColumnComponent {
   readonly suit = input.required<Suit>();
-  readonly drawnRanks = input<Set<Rank>>(new Set());
+  readonly cardLocations = input<Map<Rank, CardLocation>>(new Map());
+  readonly showDiscard = input<boolean>(false);
 
   readonly ranks = RANK_ORDER;
 
@@ -53,7 +56,7 @@ export class SuitColumnComponent {
     return suitColors[this.suit()];
   });
 
-  isRankDrawn(rank: Rank): boolean {
-    return this.drawnRanks().has(rank);
+  getCardLocation(rank: Rank): CardLocation {
+    return this.cardLocations().get(rank) ?? 'deck';
   }
 }
