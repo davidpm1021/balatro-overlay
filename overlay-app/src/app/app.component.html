@@ -33,9 +33,9 @@
         <p class="text-sm mt-2">Start the game with the BalatroOverlay mod installed</p>
       </div>
     } @else {
-      <div class="text-sm text-white/70">
-        <p>Phase: {{ phase() }}</p>
-        <!-- Feature components will be added here -->
+      <div class="space-y-3">
+        <app-deck-tracker />
+        <!-- Additional feature components will be added here -->
         <router-outlet></router-outlet>
       </div>
     }
