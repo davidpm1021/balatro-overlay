@@ -18,7 +18,7 @@ pattern = "function love.load()"
 position = "after"
 match_indent = true
 payload = '''
-    BalatroOverlay = require("BalatroOverlay/BalatroOverlay")
+    BalatroOverlay = require("BalatroOverlay")
     BalatroOverlay.init()
 '''
 
