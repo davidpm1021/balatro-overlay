@@ -22,7 +22,7 @@ Bridge Mod (Lua) → overlay_state.json → Electron Main → IPC → Angular Re
    - `lovely/` - Lovely loader config
    - Exports game state to JSON every 100ms
 
-2. **overlay-app/** - Electron 28+ / Angular 17+ application
+2. **overlay-app/** - Electron 28+ / Angular 19+ application
 
    - `electron/` - Main process (window management, file watcher, IPC)
    - `src/app/` - Angular renderer with feature modules
@@ -50,7 +50,7 @@ cp -r bridge-mod/BalatroOverlay "%AppData%/Balatro/Mods/"
 ## Tech Stack
 
 - **Bridge Mod**: Lua, Lovely Injector, Steamodded
-- **Overlay App**: Electron 28+, Angular 17+, TypeScript 5.x strict mode, Tailwind CSS, Dexie.js
+- **Overlay App**: Electron 28+, Angular 19+, TypeScript 5.8+, Tailwind CSS, Dexie.js
 - **Strategy Data**: JSON knowledge bases for joker synergies
 
 ## Key Features by Workstream

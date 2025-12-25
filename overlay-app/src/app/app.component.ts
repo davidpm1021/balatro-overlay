@@ -5,7 +5,6 @@ import { GameStateService } from './core/services';
 
 @Component({
   selector: 'app-root',
-  standalone: true,
   imports: [CommonModule, RouterOutlet],
   changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './app.component.html',
