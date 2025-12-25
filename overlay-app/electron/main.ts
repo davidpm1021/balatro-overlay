@@ -4,12 +4,11 @@ import * as fs from 'fs';
 
 let mainWindow: BrowserWindow | null = null;
 let fileWatcher: fs.FSWatcher | null = null;
-let isClickThrough = true;
 
 // Path to the game state JSON file
 const getGameStatePath = (): string => {
   const appData = process.env.APPDATA || '';
-  return path.join(appData, 'Balatro', 'Mods', 'BalatroOverlay', 'overlay_state.json');
+  return path.join(appData, 'Balatro', 'overlay_state.json');
 };
 
 function createWindow(): void {
@@ -24,8 +23,9 @@ function createWindow(): void {
     frame: false,
     transparent: true,
     alwaysOnTop: true,
-    skipTaskbar: false,
+    skipTaskbar: true,
     resizable: true,
+    focusable: false, // Click-through by default
     webPreferences: {
       preload: path.join(__dirname, 'preload.js'),
       contextIsolation: true,
@@ -98,33 +98,32 @@ function readAndSendGameState(): void {
   try {
     const data = fs.readFileSync(gameStatePath, 'utf-8');
     const gameState = JSON.parse(data);
-    mainWindow?.webContents.send('game-state:update', gameState);
+    mainWindow?.webContents.send('game-state-update', gameState);
   } catch (error) {
     console.error('Failed to read game state:', error);
   }
 }
 
-// IPC Handlers
-ipcMain.on('overlay:toggle-clickthrough', () => {
+// IPC Handlers - match channel names in CLAUDE.md
+ipcMain.on('set-click-through', (_event, enabled: boolean) => {
   if (!mainWindow) return;
-
-  isClickThrough = !isClickThrough;
-  mainWindow.setIgnoreMouseEvents(isClickThrough, { forward: true });
+  mainWindow.setIgnoreMouseEvents(enabled, { forward: true });
+  mainWindow.setFocusable(!enabled);
 });
 
-ipcMain.on('overlay:set-opacity', (_event, opacity: number) => {
+ipcMain.on('set-opacity', (_event, opacity: number) => {
   if (!mainWindow) return;
   mainWindow.setOpacity(Math.max(0.1, Math.min(1, opacity)));
 });
 
-ipcMain.on('overlay:minimize', () => {
+ipcMain.on('minimize-overlay', () => {
   if (!mainWindow) return;
   // Collapse to minimal bar (adjust height)
   const bounds = mainWindow.getBounds();
   mainWindow.setBounds({ ...bounds, height: 50 });
 });
 
-ipcMain.on('overlay:restore', () => {
+ipcMain.on('restore-overlay', () => {
   if (!mainWindow) return;
   const primaryDisplay = screen.getPrimaryDisplay();
   const { height } = primaryDisplay.workAreaSize;

@@ -1,4 +1,4 @@
-import { Component, inject } from '@angular/core';
+import { Component, ChangeDetectionStrategy, inject, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterOutlet } from '@angular/router';
 import { GameStateService } from './core/services';
@@ -7,20 +7,27 @@ import { GameStateService } from './core/services';
   selector: 'app-root',
   standalone: true,
   imports: [CommonModule, RouterOutlet],
+  changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './app.component.html',
   styleUrl: './app.component.scss'
 })
 export class AppComponent {
   private gameState = inject(GameStateService);
 
-  readonly isConnected = this.gameState.isConnected;
-  readonly phase = this.gameState.phase;
+  // Local UI state
+  clickThroughEnabled = signal(true);
+
+  // Expose service signals
+  isConnected = this.gameState.isConnected;
+  phase = this.gameState.phase;
 
   toggleClickThrough(): void {
-    this.gameState.toggleClickThrough();
+    const newState = !this.clickThroughEnabled();
+    this.clickThroughEnabled.set(newState);
+    this.gameState.setClickThrough(newState);
   }
 
   minimize(): void {
-    this.gameState.minimize();
+    this.gameState.minimizeOverlay();
   }
 }

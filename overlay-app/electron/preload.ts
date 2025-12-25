@@ -1,40 +1,26 @@
+// preload.ts - Use contextBridge, never expose raw Node APIs
 import { contextBridge, ipcRenderer } from 'electron';
 
-// Type definitions for the exposed API
-export interface ElectronAPI {
-  // Receive game state updates from main process
-  onGameStateUpdate: (callback: (gameState: unknown) => void) => void;
-
-  // Overlay controls
-  toggleClickThrough: () => void;
-  setOpacity: (opacity: number) => void;
-  minimize: () => void;
-  restore: () => void;
-}
-
-// Expose protected methods to renderer process
 contextBridge.exposeInMainWorld('electronAPI', {
-  // Game state updates
-  onGameStateUpdate: (callback: (gameState: unknown) => void) => {
-    ipcRenderer.on('game-state:update', (_event, gameState) => {
-      callback(gameState);
-    });
+  // Game state updates from main process
+  onGameStateUpdate: (callback: (state: unknown) => void) => {
+    ipcRenderer.on('game-state-update', (_, state) => callback(state));
   },
 
   // Overlay controls
-  toggleClickThrough: () => {
-    ipcRenderer.send('overlay:toggle-clickthrough');
+  setClickThrough: (enabled: boolean) => {
+    ipcRenderer.send('set-click-through', enabled);
   },
 
   setOpacity: (opacity: number) => {
-    ipcRenderer.send('overlay:set-opacity', opacity);
+    ipcRenderer.send('set-opacity', opacity);
   },
 
-  minimize: () => {
-    ipcRenderer.send('overlay:minimize');
+  minimizeOverlay: () => {
+    ipcRenderer.send('minimize-overlay');
   },
 
-  restore: () => {
-    ipcRenderer.send('overlay:restore');
+  restoreOverlay: () => {
+    ipcRenderer.send('restore-overlay');
   },
-} as ElectronAPI);
+});

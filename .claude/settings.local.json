@@ -6,7 +6,11 @@
       "Bash(npx:*)",
       "Bash(npm install:*)",
       "Bash(git add:*)",
-      "Bash(git commit -m \"$(cat <<''EOF''\nInitial project scaffolding for Balatro Overlay Tracker\n\n- Set up Angular 17 + Electron 28 project structure\n- Create Electron main/preload with transparent overlay window\n- Add file watcher for game state JSON communication\n- Define shared TypeScript interfaces for game state, jokers, strategies\n- Create Lua bridge mod scaffold with Lovely loader config\n- Configure Tailwind CSS with Balatro-inspired theme\n- Add package.json scripts for dev workflow\n\n🤖 Generated with [Claude Code](https://claude.ai/code)\n\nCo-Authored-By: Claude <noreply@anthropic.com>\nEOF\n)\")"
+      "Bash(git commit -m \"$(cat <<''EOF''\nInitial project scaffolding for Balatro Overlay Tracker\n\n- Set up Angular 17 + Electron 28 project structure\n- Create Electron main/preload with transparent overlay window\n- Add file watcher for game state JSON communication\n- Define shared TypeScript interfaces for game state, jokers, strategies\n- Create Lua bridge mod scaffold with Lovely loader config\n- Configure Tailwind CSS with Balatro-inspired theme\n- Add package.json scripts for dev workflow\n\n🤖 Generated with [Claude Code](https://claude.ai/code)\n\nCo-Authored-By: Claude <noreply@anthropic.com>\nEOF\n)\")",
+      "Bash(git branch:*)",
+      "Bash(npm run build:electron:*)",
+      "Bash(npm run build:*)",
+      "Bash(git commit -m \"$(cat <<''EOF''\nrefactor: Update scaffolding to match CLAUDE.md conventions\n\n- Update GameStateService to use signals properly with computed derivations\n- Update AppComponent with OnPush, signals, and proper inject() usage\n- Update Electron main.ts with correct IPC channels per CLAUDE.md\n- Update preload.ts with matching channel names\n- Add dev:angular script to package.json\n- Replace BalatroOverlay.lua with main.lua following Steamodded patterns\n- Add defensive nil handling and throttled exports in Lua mod\n- Fix game state JSON path to %AppData%/Balatro/overlay_state.json\n\n🤖 Generated with [Claude Code](https://claude.ai/code)\n\nCo-Authored-By: Claude <noreply@anthropic.com>\nEOF\n)\")"
     ],
     "deny": [],
     "ask": []
