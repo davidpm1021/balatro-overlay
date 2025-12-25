@@ -3,8 +3,8 @@
  * This is the main interface exported by the Lua bridge mod
  */
 
-import { Card, DeckState, Suit, Rank } from './card.model';
-import { JokerState } from './joker.model';
+import { Card, DeckState, Suit, Rank, Edition } from './card.model';
+import { JokerState, JokerRarity } from './joker.model';
 
 export type GamePhase =
   | 'menu'
@@ -73,6 +73,46 @@ export interface ShopState {
   rerollsUsed: number;
 }
 
+export type BoosterPackType =
+  | 'standard'
+  | 'arcana'
+  | 'celestial'
+  | 'spectral'
+  | 'buffoon';
+
+export interface BoosterCardBase {
+  type: string;
+  id: string;
+  name: string;
+  edition?: Edition;
+}
+
+export interface BoosterPlayingCard extends BoosterCardBase {
+  type: 'card';
+  suit: Suit;
+  rank: Rank;
+  enhancement: string;
+  seal: string;
+  chipValue: number;
+}
+
+export interface BoosterJokerCard extends BoosterCardBase {
+  type: 'joker';
+  rarity: JokerRarity;
+}
+
+export interface BoosterConsumableCard extends BoosterCardBase {
+  type: 'tarot' | 'planet' | 'spectral';
+}
+
+export type BoosterCard = BoosterPlayingCard | BoosterJokerCard | BoosterConsumableCard;
+
+export interface BoosterState {
+  packType: BoosterPackType;
+  cards: BoosterCard[];
+  selectLimit: number;  // How many cards can be selected
+}
+
 export interface ConsumableState {
   tarots: { id: string; name: string }[];
   planets: { id: string; name: string }[];
@@ -105,6 +145,9 @@ export interface OverlayGameState {
 
   // Shop (only populated during shop phase)
   shop?: ShopState;
+
+  // Booster pack (only populated when opening packs)
+  booster?: BoosterState;
 
   // Hand history for strategy detection
   handHistory: PlayedHand[];

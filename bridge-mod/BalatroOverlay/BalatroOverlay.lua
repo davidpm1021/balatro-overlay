@@ -9,7 +9,7 @@ local BalatroOverlay = {}
 local CONFIG = {
     UPDATE_INTERVAL = 0.1,  -- 100ms update frequency (max 10/sec)
     OUTPUT_PATH = nil,      -- Set dynamically based on OS
-    VERSION = "0.1.0",
+    VERSION = "0.2.0",
     DEBUG = false
 }
 
@@ -339,6 +339,69 @@ end
 -- DECK STATE
 --------------------------------------------------------------------------------
 
+--- Capture selected (highlighted) card IDs from hand
+--- @return table Array of card IDs that are highlighted
+local function captureSelectedCards()
+    local selected = {}
+
+    if not G or not G.hand or not G.hand.highlighted then
+        return selected
+    end
+
+    for _, card in ipairs(G.hand.highlighted) do
+        if card and card.sort_id then
+            table.insert(selected, safeStr(card.sort_id, tostring(card)))
+        end
+    end
+
+    return selected
+end
+
+--- Calculate deck composition (counts by suit and rank)
+--- @param cards table Array of Card objects
+--- @return table Composition summary
+local function calculateDeckComposition(cards)
+    local composition = {
+        bySuit = { hearts = 0, diamonds = 0, clubs = 0, spades = 0 },
+        byRank = {},
+        enhancements = { none = 0 },
+        editions = { none = 0 },
+        seals = { none = 0 }
+    }
+
+    -- Initialize rank counts
+    local ranks = {"2", "3", "4", "5", "6", "7", "8", "9", "10", "J", "Q", "K", "A"}
+    for _, rank in ipairs(ranks) do
+        composition.byRank[rank] = 0
+    end
+
+    for _, card in ipairs(cards) do
+        -- Count by suit
+        if card.suit and composition.bySuit[card.suit] then
+            composition.bySuit[card.suit] = composition.bySuit[card.suit] + 1
+        end
+
+        -- Count by rank
+        if card.rank and composition.byRank[card.rank] then
+            composition.byRank[card.rank] = composition.byRank[card.rank] + 1
+        end
+
+        -- Count enhancements
+        local enh = card.enhancement or "none"
+        composition.enhancements[enh] = (composition.enhancements[enh] or 0) + 1
+
+        -- Count editions
+        local ed = card.edition or "none"
+        composition.editions[ed] = (composition.editions[ed] or 0) + 1
+
+        -- Count seals
+        local seal = card.seal or "none"
+        composition.seals[seal] = (composition.seals[seal] or 0) + 1
+    end
+
+    return composition
+end
+
 --- Capture complete deck state
 --- @return table DeckState
 local function captureDeckState()
@@ -347,8 +410,10 @@ local function captureDeckState()
         hand = {},
         discarded = {},
         played = {},
+        selected = {},     -- IDs of highlighted cards in hand
         totalCards = 52,
-        cardsRemaining = 0
+        cardsRemaining = 0,
+        composition = nil  -- Composition of remaining + hand (drawable)
     }
 
     if not G then return deckState end
@@ -374,10 +439,23 @@ local function captureDeckState()
         deckState.played = captureCardArea(G.play)
     end
 
+    -- Highlighted cards
+    deckState.selected = captureSelectedCards()
+
     -- Calculate total cards (all areas + removed cards)
     local totalInPlay = #deckState.remaining + #deckState.hand +
                         #deckState.discarded + #deckState.played
     deckState.totalCards = math.max(totalInPlay, safeNum(safeGet(G, "GAME", "starting_deck_size"), 52))
+
+    -- Calculate composition of remaining deck + hand (cards that could be drawn/played)
+    local drawableCards = {}
+    for _, card in ipairs(deckState.remaining) do
+        table.insert(drawableCards, card)
+    end
+    for _, card in ipairs(deckState.hand) do
+        table.insert(drawableCards, card)
+    end
+    deckState.composition = calculateDeckComposition(drawableCards)
 
     return deckState
 end
@@ -730,7 +808,118 @@ local function captureShop()
         end
     end
 
+    -- Shop consumables (tarots, planets that appear in some shop configurations)
+    -- Note: These may appear via Clearance Sale, certain vouchers, or mods
+    local consumableAreas = {
+        { area = G.shop_tarots, type = "tarot" },
+        { area = G.shop_planets, type = "planet" }
+    }
+
+    for _, areaInfo in ipairs(consumableAreas) do
+        local area = areaInfo.area
+        if area and area.cards then
+            for _, card in ipairs(area.cards) do
+                if card and card.config and card.config.center then
+                    local center = card.config.center
+                    table.insert(shop.items, {
+                        id = safeStr(center.key, "unknown"),
+                        name = safeStr(card.label, "Unknown"),
+                        type = areaInfo.type,
+                        cost = safeNum(card.cost, 0),
+                        sold = false
+                    })
+                end
+            end
+        end
+    end
+
     return shop
+end
+
+--------------------------------------------------------------------------------
+-- BOOSTER PACK STATE
+--------------------------------------------------------------------------------
+
+--- Capture booster pack contents (when opening a pack)
+--- @return table|nil BoosterState or nil if not in booster phase
+local function captureBooster()
+    local phase = mapGamePhase()
+    if phase ~= "booster" then
+        return nil
+    end
+
+    local booster = {
+        packType = "standard",  -- standard, arcana, celestial, spectral, buffoon
+        cards = {},
+        selectLimit = 1         -- How many cards can be selected
+    }
+
+    if not G then return booster end
+
+    -- Determine pack type from game state
+    local state = G.STATE
+    local states = G.STATES or {}
+
+    if state == states.TAROT_PACK then
+        booster.packType = "arcana"
+    elseif state == states.PLANET_PACK then
+        booster.packType = "celestial"
+    elseif state == states.SPECTRAL_PACK then
+        booster.packType = "spectral"
+    elseif state == states.BUFFOON_PACK then
+        booster.packType = "buffoon"
+    elseif state == states.STANDARD_PACK then
+        booster.packType = "standard"
+    end
+
+    -- Get select limit from pack config
+    if G.pack_cards then
+        booster.selectLimit = safeNum(safeGet(G, "pack_cards", "config", "choose"), 1)
+    end
+
+    -- Capture cards available in the pack
+    if G.pack_cards and G.pack_cards.cards then
+        for _, card in ipairs(G.pack_cards.cards) do
+            if card then
+                local cardData = nil
+
+                -- Check if it's a playing card (standard pack)
+                if card.base and card.base.suit then
+                    cardData = captureCard(card)
+                    if cardData then
+                        cardData.type = "card"
+                    end
+                -- Check if it's a joker (buffoon pack)
+                elseif card.config and card.config.center and
+                       safeStr(safeGet(card, "config", "center", "set"), "") == "Joker" then
+                    local center = card.config.center
+                    cardData = {
+                        type = "joker",
+                        id = safeStr(center.key, "unknown"),
+                        name = safeStr(card.label, safeStr(center.name, "Unknown")),
+                        rarity = mapJokerRarity(card),
+                        edition = mapEdition(card)
+                    }
+                -- Consumable (tarot, planet, spectral)
+                elseif card.config and card.config.center then
+                    local center = card.config.center
+                    local cardSet = safeStr(center.set, "")
+                    cardData = {
+                        type = cardSet:lower(),
+                        id = safeStr(center.key, "unknown"),
+                        name = safeStr(card.label, safeStr(center.name, "Unknown")),
+                        edition = mapEdition(card)
+                    }
+                end
+
+                if cardData then
+                    table.insert(booster.cards, cardData)
+                end
+            end
+        end
+    end
+
+    return booster
 end
 
 --------------------------------------------------------------------------------
@@ -808,6 +997,9 @@ function BalatroOverlay.captureGameState()
 
         -- Shop (only when in shop phase)
         shop = captureShop(),
+
+        -- Booster pack (only when opening packs)
+        booster = captureBooster(),
 
         -- Hand history
         handHistory = getHandHistory()

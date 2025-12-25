@@ -33,13 +33,27 @@ export interface Card {
   chipValue: number;
 }
 
+export interface DeckComposition {
+  bySuit: Record<Suit, number>;
+  byRank: Record<Rank, number>;
+  enhancements: Record<Enhancement | 'none', number>;
+  editions: Record<Edition | 'none', number>;
+  seals: Record<Seal | 'none', number>;
+}
+
 export interface DeckState {
   remaining: Card[];
   hand: Card[];
   discarded: Card[];
   played: Card[];  // Cards currently in play area
 
+  // IDs of currently selected (highlighted) cards in hand
+  selected: string[];
+
   // Counts for quick access
   totalCards: number;
   cardsRemaining: number;
+
+  // Composition summary for probability calculations
+  composition: DeckComposition;
 }

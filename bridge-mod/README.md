@@ -59,14 +59,22 @@ The exported JSON matches the TypeScript interfaces in `shared/models/game-state
 ```json
 {
   "timestamp": 1703001234,
-  "version": "0.1.0",
+  "version": "0.2.0",
   "deck": {
     "remaining": [...],
     "hand": [...],
     "discarded": [...],
     "played": [...],
+    "selected": ["card_id_1", "card_id_2"],
     "totalCards": 52,
-    "cardsRemaining": 40
+    "cardsRemaining": 40,
+    "composition": {
+      "bySuit": { "hearts": 10, "diamonds": 12, "clubs": 9, "spades": 9 },
+      "byRank": { "2": 3, "3": 4, ... },
+      "enhancements": { "none": 38, "bonus": 2 },
+      "editions": { "none": 40 },
+      "seals": { "none": 40 }
+    }
   },
   "jokers": [...],
   "progress": {
@@ -89,9 +97,17 @@ The exported JSON matches the TypeScript interfaces in `shared/models/game-state
   "consumables": {...},
   "vouchers": {...},
   "shop": null,
+  "booster": null,
   "handHistory": [...]
 }
 ```
+
+### New in v0.2.0
+
+- **Selected cards**: `deck.selected` contains IDs of highlighted cards in hand
+- **Deck composition**: `deck.composition` provides counts by suit, rank, enhancement, edition, and seal for probability calculations
+- **Booster pack state**: When opening a pack, `booster` contains pack type, available cards, and selection limit
+- **Extended shop items**: Shop now captures tarots and planets when available
 
 ## Debug Mode
 
