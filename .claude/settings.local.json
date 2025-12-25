@@ -11,7 +11,10 @@
       "Bash(git push:*)",
       "Bash(gh repo create:*)",
       "Bash(git remote add:*)",
-      "Bash(git checkout:*)"
+      "Bash(git checkout:*)",
+      "Bash(git rm:*)",
+      "WebFetch(domain:github.com)",
+      "WebFetch(domain:raw.githubusercontent.com)"
     ],
     "deny": [],
     "ask": []

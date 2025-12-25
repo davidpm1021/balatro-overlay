@@ -2,15 +2,27 @@
 # https://github.com/ethangreen-dev/lovely-injector
 
 [manifest]
-version = "1.1.0"
+version = "1.2.0"
 dump_lua = false
 priority = 0
+
+# =============================================================================
+# MODULE REGISTRATION
+# =============================================================================
+
+# Register the BalatroOverlay module before main.lua loads
+# This makes it available via require("BalatroOverlay")
+[[patches]]
+[patches.module]
+source = "BalatroOverlay.lua"
+before = "main.lua"
+name = "BalatroOverlay"
 
 # =============================================================================
 # INITIALIZATION HOOKS
 # =============================================================================
 
-# Load the mod when the game starts
+# Initialize the mod after love.load
 [[patches]]
 [patches.pattern]
 target = "main.lua"
@@ -56,61 +68,9 @@ payload = '''
     end
 '''
 
-# Hook into hand scoring to record played hands
-# This captures the hand after it has been evaluated
-[[patches]]
-[patches.pattern]
-target = "functions/state_events.lua"
-pattern = "G.E_MANAGER:add_event(Event({"
-position = "before"
-match_indent = false
-payload = '''
-    -- BalatroOverlay: Record played hand
-    if BalatroOverlay and G.play and G.play.cards and #G.play.cards > 0 then
-        local hand_type = G.GAME.last_hand_played or "High Card"
-        local base_chips = G.GAME.hands[hand_type] and G.GAME.hands[hand_type].chips or 0
-        local final_score = hand_chips * mult
-        BalatroOverlay.onHandScored(G.play.cards, hand_type, base_chips, final_score)
-    end
-'''
-
-# Alternative hook location for hand scoring (after score calculation)
-[[patches]]
-[patches.pattern]
-target = "functions/common_events.lua"
-pattern = "update_hand_text({sound = 'chips"
-position = "after"
-match_indent = true
-payload = '''
-    -- BalatroOverlay: Capture hand score
-    if BalatroOverlay and G.GAME.last_hand_played then
-        local cards = G.play and G.play.cards or {}
-        local hand_type = G.GAME.last_hand_played
-        local chips = hand_chips or 0
-        local mult_val = mult or 1
-        pcall(function()
-            BalatroOverlay.onHandScored(cards, hand_type, chips, chips * mult_val)
-        end)
-    end
-'''
-
 # =============================================================================
-# DRAW/DISCARD HOOKS (for immediate state updates)
+# DRAW/DISCARD/PLAY HOOKS (for immediate state updates)
 # =============================================================================
-
-# Hook into card draw
-[[patches]]
-[patches.pattern]
-target = "functions/common_events.lua"
-pattern = "G.E_MANAGER:add_event(Event({trigger = 'after', delay = 0.1, func = function()"
-position = "after"
-match_indent = true
-payload = '''
-    -- BalatroOverlay: Force state update on draw
-    if BalatroOverlay then
-        BalatroOverlay.exportState()
-    end
-'''
 
 # Hook into discard action
 [[patches]]
