@@ -24,6 +24,8 @@ describe('HandCalculatorService', () => {
       edition: 'none',
       seal: 'none',
       chipValue: getChipValue(rank),
+      debuffed: false,
+      faceDown: false,
       ...overrides,
     };
   }
