@@ -27,7 +27,7 @@ const JOKER_AFFINITIES: Record<string, JokerAffinity> = {
   'j_crafty': { strategies: { flush: 60 } },
   'j_tribe': { strategies: { flush: 90 } },
   'j_the_tribe': { strategies: { flush: 90 } },
-  'j_smeared': { strategies: { flush: 95 } }, // Merges suits - dramatically improves flush viability
+  'j_smeared': { strategies: { flush: 95 } }, // S-tier flush enabler - merges suits
   'j_rough_gem': { strategies: { flush: 60 }, suits: ['diamonds'] },
   'j_bloodstone': { strategies: { flush: 60, xmult_scaling: 40 }, suits: ['hearts'] },
   'j_arrowhead': { strategies: { flush: 60 }, suits: ['spades'] },
@@ -43,12 +43,12 @@ const JOKER_AFFINITIES: Record<string, JokerAffinity> = {
   'j_sly': { strategies: { pairs: 60 } },
   'j_wily': { strategies: { pairs: 65 } },
   'j_clever': { strategies: { pairs: 60 } },
-  'j_duo': { strategies: { pairs: 90, xmult_scaling: 60 } },
+  'j_duo': { strategies: { pairs: 90, xmult_scaling: 60 } }, // x2 for pair
   'j_the_duo': { strategies: { pairs: 90, xmult_scaling: 60 } },
-  'j_trio': { strategies: { pairs: 70, xmult_scaling: 85 } }, // Three of a kind xMult - wants trips, not pairs
-  'j_the_trio': { strategies: { pairs: 70, xmult_scaling: 85 } },
-  'j_family': { strategies: { pairs: 80, xmult_scaling: 90 } }, // Four of a kind xMult
-  'j_the_family': { strategies: { pairs: 80, xmult_scaling: 90 } },
+  'j_trio': { strategies: { pairs: 95, xmult_scaling: 85 } }, // x3 for three of a kind
+  'j_the_trio': { strategies: { pairs: 95, xmult_scaling: 85 } },
+  'j_family': { strategies: { pairs: 100, xmult_scaling: 90 } }, // x4 for four of a kind
+  'j_the_family': { strategies: { pairs: 100, xmult_scaling: 90 } },
   'j_trousers': { strategies: { pairs: 70 } },
   'j_spare_trousers': { strategies: { pairs: 70 } },
   'j_card_sharp': { strategies: { pairs: 40 } },
@@ -73,14 +73,15 @@ const JOKER_AFFINITIES: Record<string, JokerAffinity> = {
   'j_supernova': { strategies: { mult_stacking: 55 } },
 
   // xMult scaling jokers
-  'j_cavendish': { strategies: { xmult_scaling: 90 } },
+  'j_cavendish': { strategies: { xmult_scaling: 100 } }, // S-tier - unconditional x3
   'j_loyalty_card': { strategies: { xmult_scaling: 75 } },
   'j_photograph': { strategies: { xmult_scaling: 60, face_cards: 40 } },
   'j_steel_joker': { strategies: { xmult_scaling: 80 } },
   'j_constellation': { strategies: { xmult_scaling: 70 } },
   'j_madness': { strategies: { xmult_scaling: 65 } },
   'j_vampire': { strategies: { xmult_scaling: 70 } },
-  'j_hologram': { strategies: { xmult_scaling: 75 } },
+  'j_hologram': { strategies: { xmult_scaling: 90 } }, // A-tier - deck size scaling
+  'j_dna': { strategies: { xmult_scaling: 85, flush: 80, face_cards: 85 } }, // S-tier - card duplication
   'j_lucky_cat': { strategies: { xmult_scaling: 70 } },
   'j_glass': { strategies: { xmult_scaling: 75 } },
   'j_glass_joker': { strategies: { xmult_scaling: 75 } },
@@ -94,8 +95,8 @@ const JOKER_AFFINITIES: Record<string, JokerAffinity> = {
   'j_ancient': { strategies: { xmult_scaling: 60 } },
   'j_ancient_joker': { strategies: { xmult_scaling: 60 } },
   'j_ramen': { strategies: { xmult_scaling: 70 } },
-  'j_blueprint': { strategies: { xmult_scaling: 40 } },
-  'j_brainstorm': { strategies: { xmult_scaling: 40 } },
+  'j_blueprint': { strategies: { xmult_scaling: 100 } }, // S-tier - copies xMult jokers
+  'j_brainstorm': { strategies: { xmult_scaling: 100 } }, // S-tier - copies leftmost joker
   'j_dusk': { strategies: { xmult_scaling: 50 } },
   'j_seltzer': { strategies: { xmult_scaling: 55 } },
   'j_drivers_license': { strategies: { xmult_scaling: 70 } },
@@ -117,9 +118,13 @@ const JOKER_AFFINITIES: Record<string, JokerAffinity> = {
   'j_sock_and_buskin': { strategies: { face_cards: 85 } },
   'j_hanging_chad': { strategies: { face_cards: 40 } },
   'j_shoot_the_moon': { strategies: { face_cards: 75 }, ranks: ['Q'] },
-  'j_triboulet': { strategies: { face_cards: 90, xmult_scaling: 70 }, ranks: ['K', 'Q'] },
+  'j_triboulet': { strategies: { face_cards: 100, xmult_scaling: 100 }, ranks: ['K', 'Q'] }, // S-tier legendary
   'j_midas_mask': { strategies: { face_cards: 60 } },
-  'j_canio': { strategies: { face_cards: 80, xmult_scaling: 60 } },
+  'j_canio': { strategies: { face_cards: 80, xmult_scaling: 85 } }, // S-tier legendary scaling
+  'j_perkeo': { strategies: { xmult_scaling: 95 } }, // S-tier legendary - consumable duplication
+  'j_chicot': { strategies: { xmult_scaling: 75 } }, // S-tier legendary - boss blind safety
+  'j_yorick': { strategies: { xmult_scaling: 80 } }, // Legendary - discard scaling
+  'j_invisible': { strategies: { xmult_scaling: 95 } }, // S-tier - joker duplication
 
   // Straight supporting jokers
   'j_crazy': { strategies: { straight: 80 } },

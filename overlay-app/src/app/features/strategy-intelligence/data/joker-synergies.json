@@ -178,73 +178,93 @@
     {
       "id": "j_triboulet",
       "name": "Triboulet",
+      "tier": "S",
       "synergiesWith": [
-        { "jokerId": "j_baron", "strength": "strong", "reason": "Both scale with Kings" },
-        { "jokerId": "j_shoot_the_moon", "strength": "strong", "reason": "Both scale with Queens" },
-        { "jokerId": "j_sock_and_buskin", "strength": "strong", "reason": "Retrigger K/Q for massive xMult" },
-        { "jokerId": "j_hanging_chad", "strength": "strong", "reason": "Retrigger first K/Q" },
-        { "jokerId": "j_pareidolia", "strength": "strong", "reason": "All cards are K/Q" }
+        { "jokerId": "j_baron", "strength": "strong", "reason": "Both scale with Kings - Baron held + Triboulet scored = massive xMult stacking" },
+        { "jokerId": "j_shoot_the_moon", "strength": "strong", "reason": "Both scale with Queens for mult stacking" },
+        { "jokerId": "j_sock_and_buskin", "strength": "strong", "reason": "Retrigger K/Q for x4 or x8 per card" },
+        { "jokerId": "j_hanging_chad", "strength": "strong", "reason": "Retrigger first K/Q for x4 mult" },
+        { "jokerId": "j_pareidolia", "strength": "strong", "reason": "All cards become K/Q - every scored card gives x2" },
+        { "jokerId": "j_blueprint", "strength": "strong", "reason": "Copy x2 per K/Q for exponential scaling" },
+        { "jokerId": "j_brainstorm", "strength": "strong", "reason": "Copy x2 per K/Q when leftmost" },
+        { "jokerId": "j_mime", "strength": "strong", "reason": "Retrigger held K/Q for Baron-style builds" }
       ],
       "strategies": [
         { "strategy": "face_cards", "affinity": 100 },
         { "strategy": "xmult_scaling", "affinity": 100 },
-        { "strategy": "retrigger", "affinity": 85 }
+        { "strategy": "retrigger", "affinity": 90 }
       ],
       "wantsRanks": ["K", "Q"],
       "isScaling": false,
       "generatesMoney": false,
       "costEfficiency": 100,
-      "tags": ["legendary", "face-card", "king", "queen", "xmult", "build-around"]
+      "tags": ["legendary", "face-card", "king", "queen", "xmult", "build-around", "s-tier", "always-take"]
     },
     {
       "id": "j_blueprint",
       "name": "Blueprint",
+      "tier": "S",
       "synergiesWith": [
-        { "jokerId": "j_brainstorm", "strength": "strong", "reason": "Chain copy effects" },
-        { "jokerId": "j_triboulet", "strength": "strong", "reason": "Copy legendary xMult" },
-        { "jokerId": "j_baron", "strength": "strong", "reason": "Double King xMult" }
+        { "jokerId": "j_brainstorm", "strength": "strong", "reason": "Chain copy effects for exponential scaling - Blueprint+Brainstorm is the most powerful combo in the game" },
+        { "jokerId": "j_cavendish", "strength": "strong", "reason": "Copy x3 Mult = x9 total unconditional multiplier" },
+        { "jokerId": "j_triboulet", "strength": "strong", "reason": "Copy legendary x2 per K/Q for massive face card scaling" },
+        { "jokerId": "j_baron", "strength": "strong", "reason": "Double held King xMult for exponential scaling" },
+        { "jokerId": "j_the_idol", "strength": "strong", "reason": "Copy x2 conditional xMult" },
+        { "jokerId": "j_obelisk", "strength": "strong", "reason": "Copy scaling xMult that grows infinitely" },
+        { "jokerId": "j_photograph", "strength": "strong", "reason": "Copy x2 for first face card played" },
+        { "jokerId": "j_loyalty_card", "strength": "strong", "reason": "Copy x4 every 6 hands" }
       ],
       "strategies": [
-        { "strategy": "xmult_scaling", "affinity": 80 },
-        { "strategy": "hybrid", "affinity": 90 }
+        { "strategy": "xmult_scaling", "affinity": 100 },
+        { "strategy": "hybrid", "affinity": 95 }
       ],
       "isScaling": false,
       "generatesMoney": false,
-      "costEfficiency": 95,
-      "tags": ["copy", "rare", "flexible", "position-matters"]
+      "costEfficiency": 100,
+      "tags": ["copy", "rare", "flexible", "position-matters", "s-tier", "always-take"]
     },
     {
       "id": "j_brainstorm",
       "name": "Brainstorm",
+      "tier": "S",
       "synergiesWith": [
-        { "jokerId": "j_blueprint", "strength": "strong", "reason": "Chain copy effects" },
-        { "jokerId": "j_triboulet", "strength": "strong", "reason": "Copy legendary xMult" }
+        { "jokerId": "j_blueprint", "strength": "strong", "reason": "Chain copy effects - copies leftmost, Blueprint copies to its right, enabling exponential xMult chains" },
+        { "jokerId": "j_triboulet", "strength": "strong", "reason": "Copy legendary x2 per K/Q when Triboulet is leftmost" },
+        { "jokerId": "j_cavendish", "strength": "strong", "reason": "Copy x3 Mult when Cavendish is leftmost" },
+        { "jokerId": "j_baron", "strength": "strong", "reason": "Copy held King xMult when Baron is leftmost" },
+        { "jokerId": "j_the_idol", "strength": "strong", "reason": "Copy conditional x2 xMult" },
+        { "jokerId": "j_obelisk", "strength": "strong", "reason": "Copy scaling xMult" }
       ],
       "strategies": [
-        { "strategy": "xmult_scaling", "affinity": 80 },
-        { "strategy": "hybrid", "affinity": 90 }
+        { "strategy": "xmult_scaling", "affinity": 100 },
+        { "strategy": "hybrid", "affinity": 95 }
       ],
       "isScaling": false,
       "generatesMoney": false,
-      "costEfficiency": 90,
-      "tags": ["copy", "rare", "flexible", "position-matters"]
+      "costEfficiency": 100,
+      "tags": ["copy", "rare", "flexible", "position-matters", "s-tier", "always-take"]
     },
     {
       "id": "j_mime",
       "name": "Mime",
+      "tier": "A",
       "synergiesWith": [
-        { "jokerId": "j_baron", "strength": "strong", "reason": "Retrigger held Kings" },
-        { "jokerId": "j_shoot_the_moon", "strength": "strong", "reason": "Retrigger held Queens" },
-        { "jokerId": "j_raised_fist", "strength": "medium", "reason": "Retrigger lowest card ability" }
+        { "jokerId": "j_baron", "strength": "strong", "reason": "Retrigger held Kings for x1.5 * x1.5 = x2.25 per King" },
+        { "jokerId": "j_shoot_the_moon", "strength": "strong", "reason": "Retrigger held Queens for +26 mult per Queen" },
+        { "jokerId": "j_raised_fist", "strength": "strong", "reason": "Retrigger lowest card for double mult reduction" },
+        { "jokerId": "j_steel_joker", "strength": "strong", "reason": "Retrigger held steel cards for x1.5 * x1.5 per card" },
+        { "jokerId": "j_reserved_parking", "strength": "medium", "reason": "Double chance to earn money from held face cards" },
+        { "jokerId": "j_triboulet", "strength": "medium", "reason": "Retrigger held K/Q with Triboulet for massive xMult" }
       ],
       "strategies": [
         { "strategy": "retrigger", "affinity": 100 },
-        { "strategy": "face_cards", "affinity": 70 }
+        { "strategy": "face_cards", "affinity": 85 },
+        { "strategy": "steel_scaling", "affinity": 80 }
       ],
       "isScaling": false,
       "generatesMoney": false,
-      "costEfficiency": 85,
-      "tags": ["retrigger", "held-cards", "uncommon"]
+      "costEfficiency": 90,
+      "tags": ["retrigger", "held-cards", "uncommon", "a-tier", "build-around"]
     },
     {
       "id": "j_dusk",
@@ -391,19 +411,22 @@
     {
       "id": "j_hologram",
       "name": "Hologram",
+      "tier": "A",
       "synergiesWith": [
-        { "jokerId": "j_marble", "strength": "strong", "reason": "Adds Stone cards to deck" },
-        { "jokerId": "j_dna", "strength": "strong", "reason": "DNA copies cards to deck" },
-        { "jokerId": "j_certificate", "strength": "medium", "reason": "Adds cards to hand/deck" }
+        { "jokerId": "j_dna", "strength": "strong", "reason": "DNA copies first card = +0.25 xMult per blind" },
+        { "jokerId": "j_marble", "strength": "strong", "reason": "Adds Stone cards to deck = +0.25 xMult per stone" },
+        { "jokerId": "j_certificate", "strength": "medium", "reason": "Random gold cards to hand/deck for xMult" },
+        { "jokerId": "j_madness", "strength": "medium", "reason": "Destroying jokers can add cards to deck" },
+        { "jokerId": "j_cartomancer", "strength": "medium", "reason": "Some tarots add cards to deck" }
       ],
       "strategies": [
-        { "strategy": "xmult_scaling", "affinity": 90 }
+        { "strategy": "xmult_scaling", "affinity": 100 }
       ],
       "isScaling": true,
       "scalingType": "multiplicative",
       "generatesMoney": false,
-      "costEfficiency": 85,
-      "tags": ["scaling", "xmult", "deck-size", "uncommon"]
+      "costEfficiency": 90,
+      "tags": ["scaling", "xmult", "deck-size", "uncommon", "a-tier"]
     },
     {
       "id": "j_vampire",
@@ -563,53 +586,66 @@
     {
       "id": "j_dna",
       "name": "DNA",
+      "tier": "S",
       "synergiesWith": [
-        { "jokerId": "j_hologram", "strength": "strong", "reason": "DNA adds cards, Hologram scales with deck size" },
-        { "jokerId": "j_triboulet", "strength": "strong", "reason": "Duplicate Kings/Queens for more xMult" },
-        { "jokerId": "j_steel_joker", "strength": "strong", "reason": "Duplicate steel cards for more xMult" },
-        { "jokerId": "j_baron", "strength": "strong", "reason": "Duplicate Kings for held-card builds" }
+        { "jokerId": "j_hologram", "strength": "strong", "reason": "DNA adds cards, Hologram gives +0.25 xMult per card added" },
+        { "jokerId": "j_triboulet", "strength": "strong", "reason": "Duplicate K/Q for more x2 triggers per hand" },
+        { "jokerId": "j_steel_joker", "strength": "strong", "reason": "Duplicate steel cards for exponential xMult growth" },
+        { "jokerId": "j_baron", "strength": "strong", "reason": "Duplicate Kings for massive held-card xMult" },
+        { "jokerId": "j_hiker", "strength": "strong", "reason": "Duplicate permanently scaled cards" },
+        { "jokerId": "j_smeared", "strength": "strong", "reason": "Duplicate same-suit cards for consistent flushes" },
+        { "jokerId": "j_mime", "strength": "strong", "reason": "Duplicate cards that trigger held effects" }
       ],
       "strategies": [
-        { "strategy": "flush", "affinity": 80 },
-        { "strategy": "straight", "affinity": 80 },
-        { "strategy": "steel_scaling", "affinity": 85 },
-        { "strategy": "face_cards", "affinity": 85 }
+        { "strategy": "flush", "affinity": 90 },
+        { "strategy": "straight", "affinity": 85 },
+        { "strategy": "steel_scaling", "affinity": 100 },
+        { "strategy": "face_cards", "affinity": 95 }
       ],
       "isScaling": false,
       "generatesMoney": false,
       "costEfficiency": 100,
-      "tags": ["rare", "deck-manipulation", "consistency", "s-tier", "build-around"]
+      "tags": ["rare", "deck-manipulation", "consistency", "s-tier", "build-around", "always-take"]
     },
     {
       "id": "j_cavendish",
       "name": "Cavendish",
+      "tier": "S",
       "synergiesWith": [
-        { "jokerId": "j_blueprint", "strength": "strong", "reason": "Copy x3 Mult safely" },
-        { "jokerId": "j_brainstorm", "strength": "strong", "reason": "Copy x3 Mult safely" }
+        { "jokerId": "j_blueprint", "strength": "strong", "reason": "Copy x3 Mult = x9 total, one of the strongest unconditional combos in the game" },
+        { "jokerId": "j_brainstorm", "strength": "strong", "reason": "Copy x3 Mult when leftmost for x9 total" },
+        { "jokerId": "j_oops", "strength": "strong", "reason": "Doubles survival odds - Cavendish becomes nearly immortal" },
+        { "jokerId": "j_invisible", "strength": "strong", "reason": "Duplicate Cavendish for x9 base mult before copying" },
+        { "jokerId": "j_vagabond", "strength": "medium", "reason": "Create Tarots when selling to avoid death" }
       ],
       "strategies": [
-        { "strategy": "xmult_scaling", "affinity": 90 }
-      ],
-      "isScaling": false,
-      "generatesMoney": false,
-      "costEfficiency": 95,
-      "tags": ["xmult", "common", "risky", "high-value"]
-    },
-    {
-      "id": "j_invisible",
-      "name": "Invisible Joker",
-      "synergiesWith": [
-        { "jokerId": "j_showman", "strength": "strong", "reason": "Can duplicate Invisible for chain" },
-        { "jokerId": "j_blueprint", "strength": "strong", "reason": "Duplicate best jokers" },
-        { "jokerId": "j_triboulet", "strength": "strong", "reason": "Duplicate legendary jokers" }
-      ],
-      "strategies": [
-        { "strategy": "hybrid", "affinity": 90 }
+        { "strategy": "xmult_scaling", "affinity": 100 }
       ],
       "isScaling": false,
       "generatesMoney": false,
       "costEfficiency": 100,
-      "tags": ["rare", "joker-duplication", "s-tier", "flexible"]
+      "tags": ["xmult", "common", "risky", "high-value", "s-tier", "copy-target"]
+    },
+    {
+      "id": "j_invisible",
+      "name": "Invisible Joker",
+      "tier": "S",
+      "synergiesWith": [
+        { "jokerId": "j_showman", "strength": "strong", "reason": "Can acquire duplicate Invisible for infinite duplication chain" },
+        { "jokerId": "j_blueprint", "strength": "strong", "reason": "Duplicate Blueprint to copy multiple jokers" },
+        { "jokerId": "j_brainstorm", "strength": "strong", "reason": "Duplicate Brainstorm for copy chains" },
+        { "jokerId": "j_triboulet", "strength": "strong", "reason": "Duplicate legendary jokers that can't normally appear twice" },
+        { "jokerId": "j_cavendish", "strength": "strong", "reason": "Duplicate x3 mult for x9 base before copying" },
+        { "jokerId": "j_perkeo", "strength": "strong", "reason": "Duplicate Perkeo for double consumable generation" }
+      ],
+      "strategies": [
+        { "strategy": "xmult_scaling", "affinity": 95 },
+        { "strategy": "hybrid", "affinity": 100 }
+      ],
+      "isScaling": false,
+      "generatesMoney": false,
+      "costEfficiency": 100,
+      "tags": ["rare", "joker-duplication", "s-tier", "flexible", "always-take"]
     },
     {
       "id": "j_canio",
@@ -635,21 +671,25 @@
     {
       "id": "j_perkeo",
       "name": "Perkeo",
+      "tier": "S",
       "synergiesWith": [
-        { "jokerId": "j_blueprint", "strength": "strong", "reason": "Generate 2-3 negative consumables per blind" },
-        { "jokerId": "j_brainstorm", "strength": "strong", "reason": "Generate 2-3 negative consumables per blind" },
-        { "jokerId": "j_constellation", "strength": "strong", "reason": "Free planets accelerate xMult scaling" },
-        { "jokerId": "j_fortune_teller", "strength": "strong", "reason": "Duplicated tarots boost mult" },
-        { "jokerId": "j_campfire", "strength": "strong", "reason": "Sell duplicated consumables for xMult" }
+        { "jokerId": "j_blueprint", "strength": "strong", "reason": "Copy Perkeo for 4-6 negative consumables per blind" },
+        { "jokerId": "j_brainstorm", "strength": "strong", "reason": "Copy Perkeo when leftmost for massive consumable generation" },
+        { "jokerId": "j_constellation", "strength": "strong", "reason": "Free negative planets accelerate xMult scaling exponentially" },
+        { "jokerId": "j_fortune_teller", "strength": "strong", "reason": "Duplicated negative tarots boost mult and dont use slots" },
+        { "jokerId": "j_campfire", "strength": "strong", "reason": "Sell duplicated consumables for xMult scaling" },
+        { "jokerId": "j_satellite", "strength": "strong", "reason": "Free planets = free money per unique planet" },
+        { "jokerId": "j_cartomancer", "strength": "medium", "reason": "More base tarots to duplicate" },
+        { "jokerId": "j_vagabond", "strength": "medium", "reason": "Create tarots to duplicate" }
       ],
       "strategies": [
-        { "strategy": "xmult_scaling", "affinity": 95 },
-        { "strategy": "economy", "affinity": 70 }
+        { "strategy": "xmult_scaling", "affinity": 100 },
+        { "strategy": "economy", "affinity": 85 }
       ],
       "isScaling": false,
       "generatesMoney": false,
       "costEfficiency": 100,
-      "tags": ["legendary", "consumable-duplication", "s-tier", "build-around"]
+      "tags": ["legendary", "consumable-duplication", "s-tier", "build-around", "always-take"]
     },
     {
       "id": "j_yorick",
@@ -670,14 +710,20 @@
     {
       "id": "j_chicot",
       "name": "Chicot",
-      "synergiesWith": [],
+      "tier": "S",
+      "synergiesWith": [
+        { "jokerId": "j_throwback", "strength": "strong", "reason": "Skip blinds freely - Chicot handles bosses, Throwback scales" },
+        { "jokerId": "j_green_joker", "strength": "medium", "reason": "Bosses dont reset Green Jokers mult" },
+        { "jokerId": "j_obelisk", "strength": "medium", "reason": "Never lose Obelisk stacks to boss debuffs" }
+      ],
       "strategies": [
-        { "strategy": "hybrid", "affinity": 80 }
+        { "strategy": "hybrid", "affinity": 100 },
+        { "strategy": "xmult_scaling", "affinity": 75 }
       ],
       "isScaling": false,
       "generatesMoney": false,
-      "costEfficiency": 90,
-      "tags": ["legendary", "boss-blind", "safety", "consistency"]
+      "costEfficiency": 100,
+      "tags": ["legendary", "boss-blind", "safety", "consistency", "s-tier", "always-take"]
     },
     {
       "id": "j_four_fingers",
@@ -760,21 +806,24 @@
     {
       "id": "j_hiker",
       "name": "Hiker",
+      "tier": "A",
       "synergiesWith": [
-        { "jokerId": "j_hanging_chad", "strength": "strong", "reason": "Retrigger scaled cards" },
-        { "jokerId": "j_dusk", "strength": "strong", "reason": "Retrigger scaled cards on final hand" },
-        { "jokerId": "j_hack", "strength": "medium", "reason": "Retrigger low scaled cards" },
-        { "jokerId": "j_dna", "strength": "medium", "reason": "Duplicate scaled cards" }
+        { "jokerId": "j_hanging_chad", "strength": "strong", "reason": "Retrigger scaled cards - permanent +5 chips per retrigger" },
+        { "jokerId": "j_dusk", "strength": "strong", "reason": "Retrigger scaled cards on final hand for double chip gains" },
+        { "jokerId": "j_hack", "strength": "strong", "reason": "Retrigger 2-5 cards for permanent chip scaling" },
+        { "jokerId": "j_sock_and_buskin", "strength": "strong", "reason": "Retrigger face cards for permanent scaling" },
+        { "jokerId": "j_dna", "strength": "strong", "reason": "Duplicate scaled cards to spread permanent chips" },
+        { "jokerId": "j_seltzer", "strength": "strong", "reason": "Extra retriggers while active = faster permanent scaling" }
       ],
       "strategies": [
         { "strategy": "chip_stacking", "affinity": 100 },
-        { "strategy": "retrigger", "affinity": 70 }
+        { "strategy": "retrigger", "affinity": 90 }
       ],
       "isScaling": true,
       "scalingType": "additive",
       "generatesMoney": false,
-      "costEfficiency": 90,
-      "tags": ["uncommon", "scaling", "chips", "permanent", "s-tier"]
+      "costEfficiency": 95,
+      "tags": ["uncommon", "scaling", "chips", "permanent", "a-tier", "build-around"]
     },
     {
       "id": "j_square",
