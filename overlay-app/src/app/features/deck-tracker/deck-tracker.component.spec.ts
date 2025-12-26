@@ -2,7 +2,7 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { DeckTrackerComponent, CardLocation } from './deck-tracker.component';
 import { GameStateService } from '../../core/services';
 import { signal, WritableSignal } from '@angular/core';
-import { DeckState, Card, Suit, Rank } from '../../../../../shared/models';
+import { DeckState, Card, Suit, Rank, DeckComposition } from '../../../../../shared/models';
 
 describe('DeckTrackerComponent', () => {
   let component: DeckTrackerComponent;
@@ -32,6 +32,26 @@ describe('DeckTrackerComponent', () => {
     }
     return cards;
   };
+
+  const emptyComposition: DeckComposition = {
+    bySuit: { hearts: 0, diamonds: 0, clubs: 0, spades: 0 },
+    byRank: { '2': 0, '3': 0, '4': 0, '5': 0, '6': 0, '7': 0, '8': 0, '9': 0, '10': 0, 'J': 0, 'Q': 0, 'K': 0, 'A': 0 },
+    enhancements: { none: 0, bonus: 0, mult: 0, wild: 0, glass: 0, steel: 0, stone: 0, gold: 0, lucky: 0 },
+    editions: { none: 0, foil: 0, holographic: 0, polychrome: 0, negative: 0 },
+    seals: { none: 0, gold: 0, red: 0, blue: 0, purple: 0 }
+  };
+
+  const createDeckState = (partial: Partial<DeckState>): DeckState => ({
+    remaining: [],
+    hand: [],
+    discarded: [],
+    played: [],
+    selected: [],
+    totalCards: 52,
+    cardsRemaining: 52,
+    composition: emptyComposition,
+    ...partial
+  });
 
   beforeEach(async () => {
     mockDeckSignal = signal<DeckState | null>(null);
@@ -75,14 +95,10 @@ describe('DeckTrackerComponent', () => {
     });
 
     it('should show correct remaining count from deck state', () => {
-      mockDeckSignal.set({
+      mockDeckSignal.set(createDeckState({
         remaining: createFullDeck().slice(0, 40),
-        hand: [],
-        discarded: [],
-        played: [],
-        totalCards: 52,
         cardsRemaining: 40
-      });
+      }));
       fixture.detectChanges();
 
       expect(component.remainingCount()).toBe(40);
@@ -142,14 +158,9 @@ describe('DeckTrackerComponent', () => {
     });
 
     it('should populate all 13 ranks per suit when deck state exists', () => {
-      mockDeckSignal.set({
-        remaining: createFullDeck(),
-        hand: [],
-        discarded: [],
-        played: [],
-        totalCards: 52,
-        cardsRemaining: 52
-      });
+      mockDeckSignal.set(createDeckState({
+        remaining: createFullDeck()
+      }));
       fixture.detectChanges();
       const cardsBySuit = component.cardsBySuitAndRank();
 
@@ -165,14 +176,11 @@ describe('DeckTrackerComponent', () => {
     });
 
     it('should mark cards in hand correctly', () => {
-      mockDeckSignal.set({
+      mockDeckSignal.set(createDeckState({
         remaining: createFullDeck().filter(c => !(c.suit === 'hearts' && c.rank === 'A')),
         hand: [createCard('hearts', 'A')],
-        discarded: [],
-        played: [],
-        totalCards: 52,
         cardsRemaining: 51
-      });
+      }));
       fixture.detectChanges();
 
       const cardsBySuit = component.cardsBySuitAndRank();
@@ -182,14 +190,11 @@ describe('DeckTrackerComponent', () => {
     });
 
     it('should mark cards in discard correctly', () => {
-      mockDeckSignal.set({
+      mockDeckSignal.set(createDeckState({
         remaining: createFullDeck().filter(c => !(c.suit === 'spades' && c.rank === 'K')),
-        hand: [],
         discarded: [createCard('spades', 'K')],
-        played: [],
-        totalCards: 52,
         cardsRemaining: 51
-      });
+      }));
       fixture.detectChanges();
 
       const cardsBySuit = component.cardsBySuitAndRank();
@@ -199,14 +204,11 @@ describe('DeckTrackerComponent', () => {
     });
 
     it('should mark cards in play correctly', () => {
-      mockDeckSignal.set({
+      mockDeckSignal.set(createDeckState({
         remaining: createFullDeck().filter(c => !(c.suit === 'diamonds' && c.rank === 'Q')),
-        hand: [],
-        discarded: [],
         played: [createCard('diamonds', 'Q')],
-        totalCards: 52,
         cardsRemaining: 51
-      });
+      }));
       fixture.detectChanges();
 
       const cardsBySuit = component.cardsBySuitAndRank();
@@ -219,14 +221,11 @@ describe('DeckTrackerComponent', () => {
       // Test case: two Aces of Hearts (one in hand, one in discard)
       const aceOfHearts1 = { ...createCard('hearts', 'A'), id: 'hearts-A-1' };
       const aceOfHearts2 = { ...createCard('hearts', 'A'), id: 'hearts-A-2' };
-      mockDeckSignal.set({
-        remaining: [],
+      mockDeckSignal.set(createDeckState({
         hand: [aceOfHearts1],
         discarded: [aceOfHearts2],
-        played: [],
-        totalCards: 52,
         cardsRemaining: 0
-      });
+      }));
       fixture.detectChanges();
 
       const cardsBySuit = component.cardsBySuitAndRank();
@@ -239,14 +238,9 @@ describe('DeckTrackerComponent', () => {
 
   describe('cell selection', () => {
     beforeEach(() => {
-      mockDeckSignal.set({
-        remaining: createFullDeck(),
-        hand: [],
-        discarded: [],
-        played: [],
-        totalCards: 52,
-        cardsRemaining: 52
-      });
+      mockDeckSignal.set(createDeckState({
+        remaining: createFullDeck()
+      }));
       fixture.detectChanges();
     });
 
@@ -288,14 +282,9 @@ describe('DeckTrackerComponent', () => {
 
   describe('template rendering', () => {
     beforeEach(() => {
-      mockDeckSignal.set({
-        remaining: createFullDeck(),
-        hand: [],
-        discarded: [],
-        played: [],
-        totalCards: 52,
-        cardsRemaining: 52
-      });
+      mockDeckSignal.set(createDeckState({
+        remaining: createFullDeck()
+      }));
       fixture.detectChanges();
     });
 
@@ -327,14 +316,11 @@ describe('DeckTrackerComponent', () => {
     });
 
     it('should show eye icon in button when toggled on', () => {
-      mockDeckSignal.set({
+      mockDeckSignal.set(createDeckState({
         remaining: createFullDeck().slice(0, 47),
-        hand: [],
         discarded: [createCard('hearts', 'A'), createCard('hearts', 'K'), createCard('hearts', 'Q')],
-        played: [],
-        totalCards: 52,
         cardsRemaining: 47
-      });
+      }));
       component.toggleDiscardView();
       fixture.detectChanges();
 

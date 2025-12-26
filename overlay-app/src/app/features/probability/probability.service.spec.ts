@@ -2,7 +2,7 @@ import { TestBed } from '@angular/core/testing';
 import { signal, WritableSignal } from '@angular/core';
 import { ProbabilityService } from './probability.service';
 import { GameStateService } from '../../core/services/game-state.service';
-import { Card, DeckState, Suit, Rank, Enhancement } from '../../../../../shared/models';
+import { Card, DeckState, DeckComposition, Suit, Rank, Enhancement } from '../../../../../shared/models';
 
 /**
  * Helper to create test cards with defaults.
@@ -25,6 +25,14 @@ function createCard(
   };
 }
 
+const emptyComposition: DeckComposition = {
+  bySuit: { hearts: 0, diamonds: 0, clubs: 0, spades: 0 },
+  byRank: { '2': 0, '3': 0, '4': 0, '5': 0, '6': 0, '7': 0, '8': 0, '9': 0, '10': 0, 'J': 0, 'Q': 0, 'K': 0, 'A': 0 },
+  enhancements: { none: 0, bonus: 0, mult: 0, wild: 0, glass: 0, steel: 0, stone: 0, gold: 0, lucky: 0 },
+  editions: { none: 0, foil: 0, holographic: 0, polychrome: 0, negative: 0 },
+  seals: { none: 0, gold: 0, red: 0, blue: 0, purple: 0 }
+};
+
 /**
  * Helper to create a test deck state.
  */
@@ -34,8 +42,10 @@ function createTestDeck(remaining: Card[], hand: Card[] = []): DeckState {
     hand,
     discarded: [],
     played: [],
+    selected: [],
     totalCards: remaining.length + hand.length,
-    cardsRemaining: remaining.length
+    cardsRemaining: remaining.length,
+    composition: emptyComposition
   };
 }
 
