@@ -178,14 +178,17 @@ function readAndSendGameState(): void {
   const gameStatePath = getGameStatePath();
 
   if (!fs.existsSync(gameStatePath)) {
+    console.log('[Main] Game state file does not exist');
     return;
   }
 
   try {
     const data = fs.readFileSync(gameStatePath, 'utf-8');
     const gameState = JSON.parse(data);
+    console.log('[Main] Sending game-state:update, phase:', gameState?.progress?.phase);
     mainWindow?.webContents.send('game-state:update', gameState);
   } catch (error) {
+    console.log('[Main] Error reading game state:', error);
     // Silently ignore read errors (file may be mid-write)
     // Chokidar's awaitWriteFinish should minimize these
   }

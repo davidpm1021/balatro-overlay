@@ -4,10 +4,11 @@ import { RouterOutlet } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 import { GameStateService } from './core/services';
 import { DeckTrackerComponent } from './features/deck-tracker';
+import { JokerBarComponent } from './features/joker-display';
 
 @Component({
   selector: 'app-root',
-  imports: [CommonModule, RouterOutlet, DeckTrackerComponent, FormsModule],
+  imports: [CommonModule, RouterOutlet, DeckTrackerComponent, JokerBarComponent, FormsModule],
   changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './app.component.html',
   styleUrl: './app.component.scss'
@@ -39,9 +40,8 @@ export class AppComponent {
   private boundDragEnd = this.onDragEnd.bind(this);
 
   toggleClickThrough(): void {
-    const newState = !this.clickThroughEnabled();
-    this.clickThroughEnabled.set(newState);
-    this.gameState.setClickThrough(newState);
+    this.clickThroughEnabled.update(v => !v);
+    this.gameState.toggleClickThrough();
   }
 
   minimize(): void {

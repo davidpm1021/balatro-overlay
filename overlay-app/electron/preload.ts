@@ -1,27 +1,37 @@
 // preload.ts - Use contextBridge, never expose raw Node APIs
 import { contextBridge, ipcRenderer } from 'electron';
 
+console.log('[Preload] Setting up electronAPI bridge');
+
 contextBridge.exposeInMainWorld('electronAPI', {
   // Game state updates from main process (channel fixed to match main.ts)
   onGameStateUpdate: (callback: (state: unknown) => void) => {
-    ipcRenderer.on('game-state:update', (_, state) => callback(state));
+    console.log('[Preload] Registering game-state:update listener');
+    ipcRenderer.on('game-state:update', (_, state) => {
+      console.log('[Preload] Received game-state:update', state ? 'with data' : 'empty');
+      callback(state);
+    });
   },
 
   // Overlay controls
+  toggleClickThrough: () => {
+    ipcRenderer.send('overlay:toggle-clickthrough');
+  },
+
   setClickThrough: (enabled: boolean) => {
     ipcRenderer.send('set-click-through', enabled);
   },
 
   setOpacity: (opacity: number) => {
-    ipcRenderer.send('set-opacity', opacity);
+    ipcRenderer.send('overlay:set-opacity', opacity);
   },
 
   minimizeOverlay: () => {
-    ipcRenderer.send('minimize-overlay');
+    ipcRenderer.send('overlay:minimize');
   },
 
   restoreOverlay: () => {
-    ipcRenderer.send('restore-overlay');
+    ipcRenderer.send('overlay:restore');
   },
 
   // Visibility toggle (for hotkey feedback)

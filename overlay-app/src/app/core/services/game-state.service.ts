@@ -6,6 +6,7 @@ declare global {
   interface Window {
     electronAPI?: {
       onGameStateUpdate: (callback: (gameState: OverlayGameState) => void) => void;
+      toggleClickThrough: () => void;
       setClickThrough: (enabled: boolean) => void;
       setOpacity: (opacity: number) => void;
       minimizeOverlay: () => void;
@@ -36,6 +37,7 @@ export class GameStateService {
   deckRemaining = computed(() => this.state()?.deck.remaining ?? []);
   hand = computed(() => this.state()?.deck.hand ?? []);
   discarded = computed(() => this.state()?.deck.discarded ?? []);
+  selectedCards = computed(() => this.hand().filter(c => c.highlighted));
 
   // Jokers
   jokers = computed(() => this.state()?.jokers ?? []);
@@ -64,10 +66,14 @@ export class GameStateService {
   }
 
   private initElectronListener(): void {
-    if (isPlatformBrowser(this.platformId) && window.electronAPI) {
-      window.electronAPI.onGameStateUpdate((gameState: OverlayGameState) => {
-        this.state.set(gameState);
-      });
+    if (isPlatformBrowser(this.platformId)) {
+      console.log('[GameStateService] Initializing, electronAPI:', !!window.electronAPI);
+      if (window.electronAPI) {
+        window.electronAPI.onGameStateUpdate((gameState: OverlayGameState) => {
+          console.log('[GameStateService] Received state update:', gameState?.progress?.phase);
+          this.state.set(gameState);
+        });
+      }
     }
   }
 
@@ -77,6 +83,10 @@ export class GameStateService {
   }
 
   // Overlay controls
+  toggleClickThrough(): void {
+    window.electronAPI?.toggleClickThrough();
+  }
+
   setClickThrough(enabled: boolean): void {
     window.electronAPI?.setClickThrough(enabled);
   }
