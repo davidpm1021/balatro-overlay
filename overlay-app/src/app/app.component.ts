@@ -3,10 +3,11 @@ import { CommonModule } from '@angular/common';
 import { RouterOutlet } from '@angular/router';
 import { GameStateService } from './core/services';
 import { DeckTrackerComponent } from './features/deck-tracker';
+import { JokerBarComponent } from './features/joker-display';
 
 @Component({
   selector: 'app-root',
-  imports: [CommonModule, RouterOutlet, DeckTrackerComponent],
+  imports: [CommonModule, RouterOutlet, DeckTrackerComponent, JokerBarComponent],
   changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './app.component.html',
   styleUrl: './app.component.scss'
