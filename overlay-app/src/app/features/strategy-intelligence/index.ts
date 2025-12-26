@@ -1,5 +1,6 @@
 // Services
 export { SynergyGraphService } from './services/synergy-graph.service';
+export { BuildDetectorService } from './services/build-detector.service';
 
 // Re-export relevant types from shared
 export type {
