@@ -4,6 +4,27 @@
 
 export type Suit = 'hearts' | 'diamonds' | 'clubs' | 'spades';
 
+/**
+ * Starting deck types available in Balatro
+ */
+export type DeckType =
+  | 'red'        // +1 discard
+  | 'blue'       // +1 hand per round
+  | 'yellow'     // +$10 starting money
+  | 'green'      // No interest, +$1 per hand/discard remaining at end of round
+  | 'black'      // +1 joker slot, -1 hand per round
+  | 'magic'      // Starts with Crystal Ball voucher + Ectoplasm
+  | 'nebula'     // Starts with Telescope voucher, -1 consumable slot
+  | 'ghost'      // Starts with Hex spectral, spectral cards appear more often
+  | 'abandoned'  // No face cards (J, Q, K)
+  | 'checkered'  // Only 2 suits (spades/hearts)
+  | 'zodiac'     // Starts with Tarot Merchant, Planet Merchant, Overstock vouchers
+  | 'painted'    // +2 hand size, -1 joker slot
+  | 'anaglyph'   // Double tag after every boss blind
+  | 'plasma'     // Chips and mult merge (balanced)
+  | 'erratic'    // All ranks and suits randomized
+  | 'challenge'; // Challenge deck (custom rules)
+
 export type Rank = '2' | '3' | '4' | '5' | '6' | '7' | '8' | '9' | '10' | 'J' | 'Q' | 'K' | 'A';
 
 export type Enhancement =
