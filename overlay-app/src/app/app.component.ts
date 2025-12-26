@@ -23,9 +23,8 @@ export class AppComponent {
   phase = this.gameState.phase;
 
   toggleClickThrough(): void {
-    const newState = !this.clickThroughEnabled();
-    this.clickThroughEnabled.set(newState);
-    this.gameState.setClickThrough(newState);
+    this.clickThroughEnabled.update(v => !v);
+    this.gameState.toggleClickThrough();
   }
 
   minimize(): void {

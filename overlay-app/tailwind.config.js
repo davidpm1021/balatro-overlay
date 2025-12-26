@@ -18,12 +18,12 @@ module.exports = {
           'purple': '#9c45e8',
           'border': 'rgba(255, 255, 255, 0.08)',
         },
-        // Suit colors (red suits, dark suits)
+        // Suit colors (red suits, light gray for dark suits on dark bg)
         'suit': {
           'hearts': '#e84545',
           'diamonds': '#e84545',
-          'clubs': '#2d2d3a',
-          'spades': '#2d2d3a',
+          'clubs': '#b8c0cc',
+          'spades': '#b8c0cc',
         },
         // Chip/mult display colors
         'chips': '#4dabf7',

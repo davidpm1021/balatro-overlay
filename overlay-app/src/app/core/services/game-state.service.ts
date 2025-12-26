@@ -6,7 +6,7 @@ declare global {
   interface Window {
     electronAPI?: {
       onGameStateUpdate: (callback: (gameState: OverlayGameState) => void) => void;
-      setClickThrough: (enabled: boolean) => void;
+      toggleClickThrough: () => void;
       setOpacity: (opacity: number) => void;
       minimizeOverlay: () => void;
       restoreOverlay: () => void;
@@ -61,10 +61,14 @@ export class GameStateService {
   }
 
   private initElectronListener(): void {
-    if (isPlatformBrowser(this.platformId) && window.electronAPI) {
-      window.electronAPI.onGameStateUpdate((gameState: OverlayGameState) => {
-        this.state.set(gameState);
-      });
+    if (isPlatformBrowser(this.platformId)) {
+      console.log('[GameStateService] Initializing, electronAPI:', !!window.electronAPI);
+      if (window.electronAPI) {
+        window.electronAPI.onGameStateUpdate((gameState: OverlayGameState) => {
+          console.log('[GameStateService] Received state update:', gameState?.progress?.phase);
+          this.state.set(gameState);
+        });
+      }
     }
   }
 
@@ -74,8 +78,8 @@ export class GameStateService {
   }
 
   // Overlay controls
-  setClickThrough(enabled: boolean): void {
-    window.electronAPI?.setClickThrough(enabled);
+  toggleClickThrough(): void {
+    window.electronAPI?.toggleClickThrough();
   }
 
   setOpacity(opacity: number): void {

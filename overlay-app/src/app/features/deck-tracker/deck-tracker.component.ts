@@ -32,7 +32,7 @@ export interface CardLocationMap {
           <span class="text-xs text-balatro-accent">{{ remainingCount() }}/{{ totalCount() }}</span>
         </div>
       </div>
-      <div class="grid grid-cols-4 gap-2">
+      <div class="grid grid-cols-4 gap-3">
         @for (suit of suits; track suit) {
           <app-suit-column
             [suit]="suit"

@@ -7,7 +7,7 @@ import { CardLocation } from '../deck-tracker.component';
   standalone: true,
   template: `
     <div
-      class="card-cell w-6 h-5 flex items-center justify-center text-xs font-mono font-bold rounded-sm transition-all duration-200"
+      class="card-cell w-9 h-7 flex items-center justify-center text-sm font-mono font-bold rounded transition-all duration-200"
       [class]="cellClasses()">
       {{ rank() }}
     </div>
