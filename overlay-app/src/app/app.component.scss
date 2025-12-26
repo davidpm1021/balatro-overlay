@@ -163,6 +163,34 @@
   gap: 4px;
 }
 
+// Strategy indicator
+.strategy-indicator {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 10px;
+  background: rgba(139, 92, 246, 0.15);
+  border: 1px solid rgba(139, 92, 246, 0.3);
+  border-radius: 6px;
+  font-size: 11px;
+}
+
+.strategy-label {
+  color: rgba(255, 255, 255, 0.5);
+}
+
+.strategy-name {
+  color: #a78bfa;
+  font-weight: 600;
+  flex: 1;
+}
+
+.strategy-confidence {
+  color: #4ade80;
+  font-weight: 700;
+  font-size: 12px;
+}
+
 // Waiting state
 .waiting-state {
   display: flex;

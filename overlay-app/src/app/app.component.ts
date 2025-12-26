@@ -1,21 +1,22 @@
-import { Component, ChangeDetectionStrategy, inject, signal, HostListener } from '@angular/core';
+import { Component, ChangeDetectionStrategy, inject, signal, computed, HostListener } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterOutlet } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 import { GameStateService } from './core/services';
 import { DeckTrackerComponent } from './features/deck-tracker';
 import { JokerBarComponent } from './features/joker-display';
-import { ScalingIndicatorComponent } from './features/strategy-intelligence';
+import { ScalingIndicatorComponent, ShopOverlayComponent, BuildDetectorService } from './features/strategy-intelligence';
 
 @Component({
   selector: 'app-root',
-  imports: [CommonModule, RouterOutlet, DeckTrackerComponent, JokerBarComponent, ScalingIndicatorComponent, FormsModule],
+  imports: [CommonModule, RouterOutlet, DeckTrackerComponent, JokerBarComponent, ScalingIndicatorComponent, ShopOverlayComponent, FormsModule],
   changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './app.component.html',
   styleUrl: './app.component.scss'
 })
 export class AppComponent {
   private gameState = inject(GameStateService);
+  private buildDetector = inject(BuildDetectorService);
 
   // Local UI state
   clickThroughEnabled = signal(true);
@@ -32,6 +33,23 @@ export class AppComponent {
   currentRound = this.gameState.currentRound;
   handsRemaining = this.gameState.handsRemaining;
   discardsRemaining = this.gameState.discardsRemaining;
+  isInShop = this.gameState.isInShop;
+
+  // Strategy detection
+  primaryStrategy = this.buildDetector.primaryStrategy;
+  strategyDisplay = computed(() => {
+    const strategy = this.primaryStrategy();
+    if (!strategy || strategy.confidence < 20) return null;
+    const name = this.formatStrategyName(strategy.type);
+    return { name, confidence: strategy.confidence };
+  });
+
+  private formatStrategyName(type: string): string {
+    return type
+      .split('_')
+      .map(word => word.charAt(0).toUpperCase() + word.slice(1))
+      .join(' ');
+  }
 
   // Double-click tracking for minimize
   private lastClickTime = 0;
