@@ -81,6 +81,20 @@
         </div>
       } @else {
         <div class="content-stack">
+          <!-- Strategy indicator -->
+          @if (strategyDisplay()) {
+            <div class="strategy-indicator">
+              <span class="strategy-label">Build:</span>
+              <span class="strategy-name">{{ strategyDisplay()!.name }}</span>
+              <span class="strategy-confidence">{{ strategyDisplay()!.confidence }}%</span>
+            </div>
+          }
+
+          <!-- Shop advisor (only during shop phase) -->
+          @if (isInShop()) {
+            <app-shop-overlay />
+          }
+
           <app-deck-tracker />
           <app-joker-bar />
           <router-outlet></router-outlet>

@@ -9,11 +9,11 @@
  * Provides recommendations with reasoning for each score.
  */
 
-import { Injectable, inject, computed, signal } from '@angular/core';
+import { Injectable, inject, computed } from '@angular/core';
 import { GameStateService } from '../../../core/services/game-state.service';
 import { SynergyGraphService } from './synergy-graph.service';
 import { BuildDetectorService } from './build-detector.service';
-import { ShopRecommendation } from '../../../../../../shared/models/strategy.model';
+import { ShopRecommendation, StrategyType } from '../../../../../../shared/models/strategy.model';
 import { ShopItem } from '../../../../../../shared/models/game-state.model';
 import { JokerState } from '../../../../../../shared/models/joker.model';
 import { JOKER_DESCRIPTIONS } from '../../joker-display/joker-descriptions';
@@ -68,6 +68,27 @@ const SITUATIONAL_JOKERS: Record<string, { penalty: number; reason: string }> = 
   'j_turtle_bean': { penalty: 8, reason: 'Hand size shrinks over time' },
   'j_stencil': { penalty: 10, reason: 'Needs empty joker slots' },
   'j_mr_bones': { penalty: 5, reason: 'Only useful when about to lose' }
+};
+
+/**
+ * Strategy-joker affinity mapping for scoring.
+ */
+const STRATEGY_JOKER_MAP: Partial<Record<StrategyType, string[]>> = {
+  flush: ['j_droll', 'j_crafty', 'j_tribe', 'j_four_fingers', 'j_lusty_joker', 'j_greedy_joker', 'j_wrathful_joker', 'j_gluttonous_joker'],
+  pairs: ['j_jolly', 'j_zany', 'j_mad', 'j_duo', 'j_trio', 'j_family', 'j_sly', 'j_wily', 'j_clever'],
+  mult_stacking: ['j_joker', 'j_half', 'j_abstract', 'j_gros_michel', 'j_green_joker', 'j_ride_the_bus', 'j_supernova'],
+  xmult_scaling: ['j_cavendish', 'j_loyalty_card', 'j_photograph', 'j_steel_joker', 'j_constellation', 'j_hologram', 'j_lucky_cat'],
+  fibonacci: ['j_fibonacci', 'j_hack', 'j_wee', 'j_scholar'],
+  face_cards: ['j_scary_face', 'j_smiley', 'j_pareidolia', 'j_sock_and_buskin', 'j_baron', 'j_triboulet'],
+  straight: ['j_crazy', 'j_devious', 'j_order', 'j_runner', 'j_shortcut', 'j_four_fingers'],
+};
+
+/**
+ * Known anti-synergies between jokers.
+ */
+const ANTI_SYNERGIES: Record<string, { with: string; reason: string }[]> = {
+  'j_pareidolia': [{ with: 'j_ride_the_bus', reason: 'All cards become face cards, breaking Bus' }],
+  'j_ride_the_bus': [{ with: 'j_pareidolia', reason: 'Pareidolia makes all cards face cards' }],
 };
 
 /**
@@ -144,21 +165,28 @@ export class ShopAdvisorService {
     }
 
     // 2. Synergy score with owned jokers
-    const synergyResult = this.synergyGraph.calculateSynergyScore(jokerId, ownedJokers);
-    breakdown.synergyScore = Math.round(synergyResult.score * 0.4); // Max ~40 points
+    const ownedIds = ownedJokers.map(j => j.id);
+    const allIds = [...ownedIds, jokerId];
+    const synergyScore = this.synergyGraph.calculateSynergyScore(allIds);
+    const currentScore = this.synergyGraph.calculateSynergyScore(ownedIds);
+    const synergyGain = synergyScore - currentScore;
+    breakdown.synergyScore = Math.round(Math.min(40, synergyGain * 4)); // Scale up
 
-    if (synergyResult.relations.length > 0) {
-      for (const relation of synergyResult.relations) {
-        const ownedJoker = ownedJokers.find(j => j.id === relation.jokerId);
-        if (ownedJoker) {
-          synergyWith.push(ownedJoker.name);
-          breakdown.reasons.push(`Synergizes with ${ownedJoker.name}: ${relation.reason}`);
+    // Get synergy details
+    const synergies = this.synergyGraph.findSynergiesBetween(allIds);
+    for (const synergy of synergies) {
+      if (synergy.jokerA === jokerId || synergy.jokerB === jokerId) {
+        const partnerId = synergy.jokerA === jokerId ? synergy.jokerB : synergy.jokerA;
+        const partner = ownedJokers.find(j => j.id === partnerId);
+        if (partner) {
+          synergyWith.push(partner.name);
+          breakdown.reasons.push(`Synergizes with ${partner.name}: ${synergy.reason}`);
         }
       }
     }
 
     // 3. Strategy fit score
-    const strategyBonus = this.buildDetector.getStrategyBonus(jokerId);
+    const strategyBonus = this.calculateStrategyBonus(jokerId);
     breakdown.strategyScore = strategyBonus;
 
     if (strategyBonus > 0) {
@@ -169,7 +197,7 @@ export class ShopAdvisorService {
     }
 
     // 4. Utility score based on joker effects
-    breakdown.utilityScore = this.calculateUtilityScore(jokerId, ownedJokers);
+    breakdown.utilityScore = this.calculateUtilityScore(jokerId);
 
     // 5. Economy penalty if can't afford
     if (item.cost > money) {
@@ -188,7 +216,7 @@ export class ShopAdvisorService {
     }
 
     // 7. Check for anti-synergies
-    const antiSynergies = this.synergyGraph.checkAntiSynergies(jokerId, ownedJokers);
+    const antiSynergies = this.checkAntiSynergies(jokerId, ownedJokers);
     if (antiSynergies.length > 0) {
       breakdown.economyPenalty += 20;
       for (const warning of antiSynergies) {
@@ -209,9 +237,45 @@ export class ShopAdvisorService {
   }
 
   /**
+   * Calculate strategy bonus based on primary detected strategy.
+   */
+  private calculateStrategyBonus(jokerId: string): number {
+    const primary = this.buildDetector.primaryStrategy();
+    if (!primary || primary.confidence < 30) return 0;
+
+    const strategyJokers = STRATEGY_JOKER_MAP[primary.type];
+    if (!strategyJokers) return 0;
+
+    if (strategyJokers.includes(jokerId)) {
+      // Scale bonus by confidence
+      return Math.round(20 + (primary.confidence / 10));
+    }
+
+    return 0;
+  }
+
+  /**
+   * Check for anti-synergies between candidate and owned jokers.
+   */
+  private checkAntiSynergies(jokerId: string, ownedJokers: JokerState[]): string[] {
+    const warnings: string[] = [];
+    const antiSynergies = ANTI_SYNERGIES[jokerId];
+
+    if (antiSynergies) {
+      for (const anti of antiSynergies) {
+        if (ownedJokers.some(j => j.id === anti.with)) {
+          warnings.push(anti.reason);
+        }
+      }
+    }
+
+    return warnings;
+  }
+
+  /**
    * Calculate utility score based on joker effects.
    */
-  private calculateUtilityScore(jokerId: string, ownedJokers: JokerState[]): number {
+  private calculateUtilityScore(jokerId: string): number {
     let score = 0;
     const desc = JOKER_DESCRIPTIONS[jokerId];
 
