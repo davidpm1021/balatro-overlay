@@ -4,25 +4,9 @@
 
 import { StrategyType } from './strategy.model';
 import { HandType } from './game-state.model';
+import { DeckType } from './card.model';
 
 export type RunOutcome = 'victory' | 'defeat' | 'abandoned';
-
-export type DeckType =
-  | 'red'
-  | 'blue'
-  | 'yellow'
-  | 'green'
-  | 'black'
-  | 'magic'
-  | 'nebula'
-  | 'ghost'
-  | 'abandoned'
-  | 'checkered'
-  | 'zodiac'
-  | 'painted'
-  | 'anaglyph'
-  | 'plasma'
-  | 'erratic';
 
 export type StakeLevel = 'white' | 'red' | 'green' | 'black' | 'blue' | 'purple' | 'orange' | 'gold';
 
