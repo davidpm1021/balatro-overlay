@@ -4,3 +4,4 @@ export type { ScalingProjection, BlindComparison } from './scaling-calculator.se
 export { SynergyGraphService } from './synergy-graph.service';
 export { ShopAdvisorService } from './shop-advisor.service';
 export type { ScoredShopItem, ScoreBreakdown } from './shop-advisor.service';
+export { BossAwarenessService } from './boss-awareness.service';
