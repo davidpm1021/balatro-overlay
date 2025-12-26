@@ -1,4 +1,4 @@
-import { app, BrowserWindow, ipcMain, screen } from 'electron';
+import { app, BrowserWindow, ipcMain, screen, globalShortcut } from 'electron';
 import * as path from 'path';
 import * as fs from 'fs';
 import * as chokidar from 'chokidar';
@@ -6,7 +6,12 @@ import * as chokidar from 'chokidar';
 let mainWindow: BrowserWindow | null = null;
 let fileWatcher: chokidar.FSWatcher | null = null;
 let isClickThrough = true;
+let isVisible = true;
 let debounceTimer: NodeJS.Timeout | null = null;
+
+// Window dimensions
+const WINDOW_WIDTH = 280;
+const COLLAPSED_HEIGHT = 32;
 
 // Path to the game state JSON file
 const getGameStatePath = (): string => {
@@ -19,21 +24,57 @@ function createWindow(): void {
   const { width, height } = primaryDisplay.workAreaSize;
 
   mainWindow = new BrowserWindow({
-    width: 400,
+    width: WINDOW_WIDTH,
     height: height,
-    x: width - 400,
+    x: width - WINDOW_WIDTH,
     y: 0,
     frame: false,
     transparent: true,
-    alwaysOnTop: true,
     skipTaskbar: false,
     resizable: true,
+    opacity: 0.75,
+    type: 'toolbar',  // Helps stay above fullscreen apps
     webPreferences: {
       preload: path.join(__dirname, 'preload.js'),
       contextIsolation: true,
       nodeIntegration: false,
     },
   });
+
+  // Set always on top with highest priority to stay above fullscreen games
+  mainWindow.setAlwaysOnTop(true, 'screen-saver');
+
+  // Make visible on all workspaces including fullscreen
+  mainWindow.setVisibleOnAllWorkspaces(true, { visibleOnFullScreen: true });
+
+  // Fight-back #1: Re-assert alwaysOnTop when window loses focus
+  mainWindow.on('blur', () => {
+    setTimeout(() => {
+      if (mainWindow && !mainWindow.isDestroyed()) {
+        mainWindow.setAlwaysOnTop(false);
+        mainWindow.setAlwaysOnTop(true, 'screen-saver');
+        mainWindow.moveTop();
+      }
+    }, 50);
+  });
+
+  // Fight-back #2: Re-show if hidden
+  mainWindow.on('hide', () => {
+    if (mainWindow && !mainWindow.isDestroyed()) {
+      mainWindow.show();
+    }
+  });
+
+  // Fight-back #3: Periodic re-assertion every 500ms
+  setInterval(() => {
+    if (mainWindow && !mainWindow.isDestroyed()) {
+      if (!mainWindow.isVisible()) {
+        mainWindow.show();
+      }
+      mainWindow.setAlwaysOnTop(true, 'screen-saver');
+      mainWindow.moveTop();
+    }
+  }, 500);
 
   // Enable click-through by default
   mainWindow.setIgnoreMouseEvents(true, { forward: true });
@@ -42,7 +83,7 @@ function createWindow(): void {
   const isDev = !app.isPackaged;
   if (isDev) {
     mainWindow.loadURL('http://localhost:4200');
-    mainWindow.webContents.openDevTools({ mode: 'detach' });
+    // Don't auto-open devtools in production-like testing
   } else {
     mainWindow.loadFile(path.join(__dirname, '../dist/overlay-app/browser/index.html'));
   }
@@ -54,6 +95,28 @@ function createWindow(): void {
 
   // Start watching the game state file
   startFileWatcher();
+
+  // Register global shortcut
+  registerGlobalShortcuts();
+}
+
+function registerGlobalShortcuts(): void {
+  // Toggle visibility with Ctrl+Shift+B
+  globalShortcut.register('CommandOrControl+Shift+B', () => {
+    toggleVisibility();
+  });
+}
+
+function toggleVisibility(): void {
+  if (!mainWindow) return;
+
+  isVisible = !isVisible;
+  if (isVisible) {
+    mainWindow.show();
+  } else {
+    mainWindow.hide();
+  }
+  mainWindow.webContents.send('visibility-changed', isVisible);
 }
 
 function startFileWatcher(): void {
@@ -128,32 +191,61 @@ function readAndSendGameState(): void {
   }
 }
 
-// IPC Handlers
-ipcMain.on('overlay:toggle-clickthrough', () => {
+// IPC Handlers - using consistent channel names matching preload.ts
+ipcMain.on('set-click-through', (_event, enabled: boolean) => {
   if (!mainWindow) return;
-
-  isClickThrough = !isClickThrough;
-  mainWindow.setIgnoreMouseEvents(isClickThrough, { forward: true });
+  isClickThrough = enabled;
+  mainWindow.setIgnoreMouseEvents(enabled, { forward: true });
 });
 
-ipcMain.on('overlay:set-opacity', (_event, opacity: number) => {
+ipcMain.on('set-opacity', (_event, opacity: number) => {
   if (!mainWindow) return;
   mainWindow.setOpacity(Math.max(0.1, Math.min(1, opacity)));
 });
 
-ipcMain.on('overlay:minimize', () => {
+ipcMain.on('minimize-overlay', () => {
   if (!mainWindow) return;
   // Collapse to minimal bar (adjust height)
   const bounds = mainWindow.getBounds();
-  mainWindow.setBounds({ ...bounds, height: 50 });
+  mainWindow.setBounds({ ...bounds, height: COLLAPSED_HEIGHT });
 });
 
-ipcMain.on('overlay:restore', () => {
+ipcMain.on('restore-overlay', () => {
   if (!mainWindow) return;
   const primaryDisplay = screen.getPrimaryDisplay();
   const { height } = primaryDisplay.workAreaSize;
   const bounds = mainWindow.getBounds();
   mainWindow.setBounds({ ...bounds, height });
+});
+
+ipcMain.on('toggle-visibility', () => {
+  toggleVisibility();
+});
+
+// Window dragging
+let dragOffset = { x: 0, y: 0 };
+
+ipcMain.on('start-drag', (_event, mouseX: number, mouseY: number) => {
+  if (!mainWindow) return;
+  const bounds = mainWindow.getBounds();
+  dragOffset = {
+    x: mouseX,
+    y: mouseY
+  };
+});
+
+ipcMain.on('drag-move', (_event, screenX: number, screenY: number) => {
+  if (!mainWindow) return;
+  mainWindow.setPosition(
+    Math.round(screenX - dragOffset.x),
+    Math.round(screenY - dragOffset.y)
+  );
+});
+
+ipcMain.handle('get-window-position', () => {
+  if (!mainWindow) return { x: 0, y: 0 };
+  const [x, y] = mainWindow.getPosition();
+  return { x, y };
 });
 
 // App lifecycle
@@ -163,6 +255,11 @@ app.on('window-all-closed', () => {
   if (process.platform !== 'darwin') {
     app.quit();
   }
+});
+
+app.on('will-quit', () => {
+  // Unregister all shortcuts
+  globalShortcut.unregisterAll();
 });
 
 app.on('activate', () => {

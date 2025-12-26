@@ -31,6 +31,10 @@ export interface Card {
 
   // Computed chip value (base + modifiers)
   chipValue: number;
+
+  // Card states
+  debuffed: boolean;
+  faceDown: boolean;
 }
 
 export interface DeckState {

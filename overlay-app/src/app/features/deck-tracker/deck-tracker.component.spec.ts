@@ -16,7 +16,9 @@ describe('DeckTrackerComponent', () => {
     enhancement: 'none',
     edition: 'none',
     seal: 'none',
-    chipValue: 10
+    chipValue: 10,
+    debuffed: false,
+    faceDown: false
   });
 
   const createFullDeck = (): Card[] => {
@@ -87,20 +89,6 @@ describe('DeckTrackerComponent', () => {
       expect(component.totalCount()).toBe(52);
     });
 
-    it('should show discarded count', () => {
-      const discardedCards = [createCard('hearts', 'A'), createCard('spades', 'K')];
-      mockDeckSignal.set({
-        remaining: createFullDeck().slice(0, 50),
-        hand: [],
-        discarded: discardedCards,
-        played: [],
-        totalCards: 52,
-        cardsRemaining: 50
-      });
-      fixture.detectChanges();
-
-      expect(component.discardedCount()).toBe(2);
-    });
   });
 
   describe('toggle discard view', () => {
@@ -143,19 +131,17 @@ describe('DeckTrackerComponent', () => {
     });
   });
 
-  describe('card locations by suit', () => {
-    it('should return empty maps when deck is null', () => {
+  describe('cards by suit and rank', () => {
+    it('should return empty arrays when deck is null', () => {
       fixture.detectChanges();
-      const locations = component.cardLocationsBySuit();
+      const cardsBySuit = component.cardsBySuitAndRank();
 
-      // When deck is null, maps are empty (no cards tracked yet)
-      expect(locations.hearts.size).toBe(0);
-      expect(locations.diamonds.size).toBe(0);
-      expect(locations.clubs.size).toBe(0);
-      expect(locations.spades.size).toBe(0);
+      // When deck is null, arrays are initialized but empty
+      expect(cardsBySuit.hearts.get('A')?.length).toBe(0);
+      expect(cardsBySuit.diamonds.get('K')?.length).toBe(0);
     });
 
-    it('should populate all 13 cards per suit when deck state exists', () => {
+    it('should populate all 13 ranks per suit when deck state exists', () => {
       mockDeckSignal.set({
         remaining: createFullDeck(),
         hand: [],
@@ -165,15 +151,17 @@ describe('DeckTrackerComponent', () => {
         cardsRemaining: 52
       });
       fixture.detectChanges();
-      const locations = component.cardLocationsBySuit();
+      const cardsBySuit = component.cardsBySuitAndRank();
 
-      expect(locations.hearts.size).toBe(13);
-      expect(locations.diamonds.size).toBe(13);
-      expect(locations.clubs.size).toBe(13);
-      expect(locations.spades.size).toBe(13);
+      expect(cardsBySuit.hearts.size).toBe(13);
+      expect(cardsBySuit.diamonds.size).toBe(13);
+      expect(cardsBySuit.clubs.size).toBe(13);
+      expect(cardsBySuit.spades.size).toBe(13);
 
-      // All should be 'deck' when full deck
-      expect(locations.hearts.get('A')).toBe('deck');
+      // All should be in 'deck' location when full deck
+      const aceOfHearts = cardsBySuit.hearts.get('A');
+      expect(aceOfHearts?.length).toBe(1);
+      expect(aceOfHearts?.[0].location).toBe('deck');
     });
 
     it('should mark cards in hand correctly', () => {
@@ -187,8 +175,10 @@ describe('DeckTrackerComponent', () => {
       });
       fixture.detectChanges();
 
-      const locations = component.cardLocationsBySuit();
-      expect(locations.hearts.get('A')).toBe('hand');
+      const cardsBySuit = component.cardsBySuitAndRank();
+      const aceOfHearts = cardsBySuit.hearts.get('A');
+      expect(aceOfHearts?.length).toBe(1);
+      expect(aceOfHearts?.[0].location).toBe('hand');
     });
 
     it('should mark cards in discard correctly', () => {
@@ -202,8 +192,10 @@ describe('DeckTrackerComponent', () => {
       });
       fixture.detectChanges();
 
-      const locations = component.cardLocationsBySuit();
-      expect(locations.spades.get('K')).toBe('discarded');
+      const cardsBySuit = component.cardsBySuitAndRank();
+      const kingOfSpades = cardsBySuit.spades.get('K');
+      expect(kingOfSpades?.length).toBe(1);
+      expect(kingOfSpades?.[0].location).toBe('discarded');
     });
 
     it('should mark cards in play correctly', () => {
@@ -217,26 +209,80 @@ describe('DeckTrackerComponent', () => {
       });
       fixture.detectChanges();
 
-      const locations = component.cardLocationsBySuit();
-      expect(locations.diamonds.get('Q')).toBe('played');
+      const cardsBySuit = component.cardsBySuitAndRank();
+      const queenOfDiamonds = cardsBySuit.diamonds.get('Q');
+      expect(queenOfDiamonds?.length).toBe(1);
+      expect(queenOfDiamonds?.[0].location).toBe('played');
     });
 
-    it('should prioritize hand over discarded for same card', () => {
-      // Edge case: if a card appears in both (shouldn't happen in game, but test the logic)
-      const aceOfHearts = createCard('hearts', 'A');
+    it('should track multiple cards with same rank+suit', () => {
+      // Test case: two Aces of Hearts (one in hand, one in discard)
+      const aceOfHearts1 = { ...createCard('hearts', 'A'), id: 'hearts-A-1' };
+      const aceOfHearts2 = { ...createCard('hearts', 'A'), id: 'hearts-A-2' };
       mockDeckSignal.set({
         remaining: [],
-        hand: [aceOfHearts],
-        discarded: [aceOfHearts], // Same card in both
+        hand: [aceOfHearts1],
+        discarded: [aceOfHearts2],
         played: [],
         totalCards: 52,
         cardsRemaining: 0
       });
       fixture.detectChanges();
 
-      const locations = component.cardLocationsBySuit();
-      // Hand is applied last, so it should win
-      expect(locations.hearts.get('A')).toBe('hand');
+      const cardsBySuit = component.cardsBySuitAndRank();
+      const acesOfHearts = cardsBySuit.hearts.get('A');
+      expect(acesOfHearts?.length).toBe(2);
+      expect(acesOfHearts?.some(c => c.location === 'hand')).toBe(true);
+      expect(acesOfHearts?.some(c => c.location === 'discarded')).toBe(true);
+    });
+  });
+
+  describe('cell selection', () => {
+    beforeEach(() => {
+      mockDeckSignal.set({
+        remaining: createFullDeck(),
+        hand: [],
+        discarded: [],
+        played: [],
+        totalCards: 52,
+        cardsRemaining: 52
+      });
+      fixture.detectChanges();
+    });
+
+    it('should have no selection initially', () => {
+      expect(component.selectedCell()).toBeNull();
+    });
+
+    it('should select a cell when clicked', () => {
+      component.onCellClicked({ suit: 'hearts', rank: 'A' });
+      expect(component.selectedCell()).toEqual({ suit: 'hearts', rank: 'A' });
+    });
+
+    it('should deselect when clicking the same cell', () => {
+      component.onCellClicked({ suit: 'hearts', rank: 'A' });
+      component.onCellClicked({ suit: 'hearts', rank: 'A' });
+      expect(component.selectedCell()).toBeNull();
+    });
+
+    it('should switch selection when clicking a different cell', () => {
+      component.onCellClicked({ suit: 'hearts', rank: 'A' });
+      component.onCellClicked({ suit: 'spades', rank: 'K' });
+      expect(component.selectedCell()).toEqual({ suit: 'spades', rank: 'K' });
+    });
+
+    it('should clear selection with clearSelection()', () => {
+      component.onCellClicked({ suit: 'hearts', rank: 'A' });
+      component.clearSelection();
+      expect(component.selectedCell()).toBeNull();
+    });
+
+    it('should return selected cards for the selected cell', () => {
+      component.onCellClicked({ suit: 'hearts', rank: 'A' });
+      const selectedCards = component.selectedCards();
+      expect(selectedCards.length).toBe(1);
+      expect(selectedCards[0].suit).toBe('hearts');
+      expect(selectedCards[0].rank).toBe('A');
     });
   });
 
@@ -254,8 +300,9 @@ describe('DeckTrackerComponent', () => {
     });
 
     it('should display remaining/total count', () => {
-      const countSpan = fixture.nativeElement.querySelector('.text-balatro-accent');
-      expect(countSpan.textContent).toContain('52/52');
+      const countSpan = fixture.nativeElement.querySelector('.count');
+      expect(countSpan.textContent).toContain('52');
+      expect(countSpan.textContent).toContain('/52');
     });
 
     it('should render 4 suit columns', () => {
@@ -274,11 +321,12 @@ describe('DeckTrackerComponent', () => {
 
       const legend = fixture.nativeElement.querySelector('.legend');
       expect(legend).not.toBeNull();
-      expect(legend.textContent).toContain('Discarded');
-      expect(legend.textContent).toContain('In Hand');
+      expect(legend.textContent).toContain('Disc');
+      expect(legend.textContent).toContain('Hand');
+      expect(legend.textContent).toContain('Play');
     });
 
-    it('should show discard count in button when toggled on', () => {
+    it('should show eye icon in button when toggled on', () => {
       mockDeckSignal.set({
         remaining: createFullDeck().slice(0, 47),
         hand: [],
@@ -291,7 +339,8 @@ describe('DeckTrackerComponent', () => {
       fixture.detectChanges();
 
       const button = fixture.nativeElement.querySelector('button');
-      expect(button.textContent).toContain('3');
+      // Button now shows eye icon when active, circle when inactive
+      expect(button.textContent).toContain('👁');
     });
   });
 });
