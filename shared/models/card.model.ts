@@ -31,6 +31,9 @@ export interface Card {
 
   // Computed chip value (base + modifiers)
   chipValue: number;
+
+  // True when card is selected/highlighted in Balatro
+  highlighted?: boolean;
 }
 
 export interface DeckState {

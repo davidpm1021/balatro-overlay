@@ -32,6 +32,7 @@ export class GameStateService {
   deckRemaining = computed(() => this.state()?.deck.remaining ?? []);
   hand = computed(() => this.state()?.deck.hand ?? []);
   discarded = computed(() => this.state()?.deck.discarded ?? []);
+  selectedCards = computed(() => this.hand().filter(c => c.highlighted));
 
   // Jokers
   jokers = computed(() => this.state()?.jokers ?? []);

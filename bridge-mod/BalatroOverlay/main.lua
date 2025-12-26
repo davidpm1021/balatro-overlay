@@ -133,7 +133,8 @@ local function serialize_card(card)
         enhancement = enhancement,
         edition = edition,
         seal = seal,
-        chipValue = card.base.nominal or 0
+        chipValue = card.base.nominal or 0,
+        highlighted = card.highlighted or false
     }
 end
 
@@ -199,6 +200,43 @@ local function serialize_jokers()
         end
     end
     return jokers
+end
+
+local function get_hand_levels()
+    local levels = {}
+    if not G or not G.GAME or not G.GAME.hands then
+        return levels
+    end
+
+    local hand_mapping = {
+        ["High Card"] = "high_card",
+        ["Pair"] = "pair",
+        ["Two Pair"] = "two_pair",
+        ["Three of a Kind"] = "three_of_a_kind",
+        ["Straight"] = "straight",
+        ["Flush"] = "flush",
+        ["Full House"] = "full_house",
+        ["Four of a Kind"] = "four_of_a_kind",
+        ["Straight Flush"] = "straight_flush",
+        ["Royal Flush"] = "royal_flush",
+        ["Five of a Kind"] = "five_of_a_kind",
+        ["Flush House"] = "flush_house",
+        ["Flush Five"] = "flush_five"
+    }
+
+    for hand_name, hand_data in pairs(G.GAME.hands) do
+        local hand_type = hand_mapping[hand_name]
+        if hand_type and hand_data then
+            table.insert(levels, {
+                handType = hand_type,
+                level = hand_data.level or 1,
+                baseChips = hand_data.chips or 0,
+                baseMult = hand_data.mult or 0
+            })
+        end
+    end
+
+    return levels
 end
 
 local function get_blind_info()
@@ -318,7 +356,7 @@ local function export_state()
             money = G and G.GAME and G.GAME.dollars or 0
         },
         blind = get_blind_info(),
-        handLevels = {},  -- TODO: implement hand level tracking
+        handLevels = get_hand_levels(),
         consumables = {
             tarots = {},
             planets = {},
