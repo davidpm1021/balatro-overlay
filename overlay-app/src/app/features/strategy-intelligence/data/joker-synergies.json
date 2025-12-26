@@ -1107,11 +1107,12 @@
       "name": "The Trio",
       "synergiesWith": [
         { "jokerId": "j_zany", "strength": "strong", "reason": "Both reward three of a kind" },
-        { "jokerId": "j_wily", "strength": "medium", "reason": "Chips + xMult on three of a kind" }
+        { "jokerId": "j_wily", "strength": "medium", "reason": "Chips + xMult on three of a kind" },
+        { "jokerId": "j_dna", "strength": "strong", "reason": "Duplicate cards for easier three of a kind" }
       ],
       "strategies": [
-        { "strategy": "pairs", "affinity": 95 },
-        { "strategy": "xmult_scaling", "affinity": 85 }
+        { "strategy": "pairs", "affinity": 70 },
+        { "strategy": "xmult_scaling", "affinity": 90 }
       ],
       "isScaling": false,
       "generatesMoney": false,

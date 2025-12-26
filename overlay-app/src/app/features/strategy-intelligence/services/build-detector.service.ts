@@ -27,7 +27,7 @@ const JOKER_AFFINITIES: Record<string, JokerAffinity> = {
   'j_crafty': { strategies: { flush: 60 } },
   'j_tribe': { strategies: { flush: 90 } },
   'j_the_tribe': { strategies: { flush: 90 } },
-  'j_smeared': { strategies: { flush: 50 } },
+  'j_smeared': { strategies: { flush: 95 } }, // Merges suits - dramatically improves flush viability
   'j_rough_gem': { strategies: { flush: 60 }, suits: ['diamonds'] },
   'j_bloodstone': { strategies: { flush: 60, xmult_scaling: 40 }, suits: ['hearts'] },
   'j_arrowhead': { strategies: { flush: 60 }, suits: ['spades'] },
@@ -43,12 +43,12 @@ const JOKER_AFFINITIES: Record<string, JokerAffinity> = {
   'j_sly': { strategies: { pairs: 60 } },
   'j_wily': { strategies: { pairs: 65 } },
   'j_clever': { strategies: { pairs: 60 } },
-  'j_duo': { strategies: { pairs: 90 } },
-  'j_the_duo': { strategies: { pairs: 90 } },
-  'j_trio': { strategies: { pairs: 95 } },
-  'j_the_trio': { strategies: { pairs: 95 } },
-  'j_family': { strategies: { pairs: 100 } },
-  'j_the_family': { strategies: { pairs: 100 } },
+  'j_duo': { strategies: { pairs: 90, xmult_scaling: 60 } },
+  'j_the_duo': { strategies: { pairs: 90, xmult_scaling: 60 } },
+  'j_trio': { strategies: { pairs: 70, xmult_scaling: 85 } }, // Three of a kind xMult - wants trips, not pairs
+  'j_the_trio': { strategies: { pairs: 70, xmult_scaling: 85 } },
+  'j_family': { strategies: { pairs: 80, xmult_scaling: 90 } }, // Four of a kind xMult
+  'j_the_family': { strategies: { pairs: 80, xmult_scaling: 90 } },
   'j_trousers': { strategies: { pairs: 70 } },
   'j_spare_trousers': { strategies: { pairs: 70 } },
   'j_card_sharp': { strategies: { pairs: 40 } },
@@ -223,32 +223,55 @@ export class BuildDetectorService {
     const suitCounts = this.getSuitDistribution(cards);
     const totalCards = cards.length || 1;
 
-    // Find dominant suit
+    // Check for Smeared Joker - merges hearts/diamonds and clubs/spades
+    const hasSmeared = jokers.some(j => j.id === 'j_smeared');
+
+    // Find dominant suit (accounting for Smeared Joker suit merging)
     let dominantSuit: Suit = 'hearts';
     let maxCount = 0;
-    for (const [suit, count] of Object.entries(suitCounts)) {
-      if (count > maxCount) {
-        maxCount = count;
-        dominantSuit = suit as Suit;
-      }
-    }
+    let effectiveSuitConcentration: number;
 
-    const suitConcentration = maxCount / totalCards;
+    if (hasSmeared) {
+      // Smeared: Hearts + Diamonds count together, Clubs + Spades count together
+      const redCount = suitCounts.hearts + suitCounts.diamonds;
+      const blackCount = suitCounts.clubs + suitCounts.spades;
+
+      if (redCount >= blackCount) {
+        maxCount = redCount;
+        dominantSuit = suitCounts.hearts >= suitCounts.diamonds ? 'hearts' : 'diamonds';
+      } else {
+        maxCount = blackCount;
+        dominantSuit = suitCounts.spades >= suitCounts.clubs ? 'spades' : 'clubs';
+      }
+      effectiveSuitConcentration = maxCount / totalCards;
+    } else {
+      // Normal suit counting
+      for (const [suit, count] of Object.entries(suitCounts)) {
+        if (count > maxCount) {
+          maxCount = count;
+          dominantSuit = suit as Suit;
+        }
+      }
+      effectiveSuitConcentration = maxCount / totalCards;
+    }
 
     // Joker affinity score
     const jokerScore = this.calculateJokerAffinity(jokers, 'flush', dominantSuit);
 
     // Base confidence from deck composition (40% of score)
     // 25% concentration = 0, 50% = 50, 75% = 100
-    const deckScore = Math.min(100, Math.max(0, (suitConcentration - 0.25) * 200));
+    const deckScore = Math.min(100, Math.max(0, (effectiveSuitConcentration - 0.25) * 200));
 
     // Combined score: 40% deck, 60% jokers
     const confidence = Math.round(deckScore * 0.4 + jokerScore * 0.6);
 
     // Build reasoning
     const reasons: string[] = [];
-    if (suitConcentration >= 0.4) {
-      reasons.push(`${Math.round(suitConcentration * 100)}% ${dominantSuit}`);
+    if (hasSmeared) {
+      reasons.push('Smeared Joker merges suits');
+    }
+    if (effectiveSuitConcentration >= 0.4) {
+      reasons.push(`${Math.round(effectiveSuitConcentration * 100)}% ${dominantSuit}${hasSmeared ? ' (effective)' : ''}`);
     }
     const flushJokers = this.getJokersForStrategy(jokers, 'flush');
     if (flushJokers.length > 0) {
@@ -257,7 +280,7 @@ export class BuildDetectorService {
 
     // Calculate current strength
     const currentStrength = Math.round(
-      (suitConcentration >= 0.5 ? 50 : suitConcentration * 100) +
+      (effectiveSuitConcentration >= 0.5 ? 50 : effectiveSuitConcentration * 100) +
       (flushJokers.length * 15)
     );
 
@@ -265,7 +288,7 @@ export class BuildDetectorService {
       type: 'flush',
       confidence,
       viability: this.calculateViability('flush', confidence, jokers),
-      requirements: this.getFlushRequirements(suitConcentration, flushJokers),
+      requirements: this.getFlushRequirements(effectiveSuitConcentration, flushJokers),
       currentStrength: Math.min(100, currentStrength),
       suit: dominantSuit,
       keyJokers: flushJokers.map(j => j.id),

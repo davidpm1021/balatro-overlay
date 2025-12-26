@@ -58,6 +58,12 @@ export class GameStateService {
   shop = computed(() => this.state()?.shop ?? null);
   isInShop = computed(() => this.phase() === 'shop');
 
+  // Booster pack
+  booster = computed(() => this.state()?.booster ?? null);
+  isInBooster = computed(() => this.phase() === 'booster');
+  boosterCards = computed(() => this.state()?.booster?.cards ?? []);
+  boosterPackType = computed(() => this.state()?.booster?.packType ?? null);
+
   // Playing state
   isPlaying = computed(() => this.phase() === 'playing' || this.phase() === 'scoring');
 

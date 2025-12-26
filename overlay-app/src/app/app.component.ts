@@ -5,11 +5,11 @@ import { FormsModule } from '@angular/forms';
 import { GameStateService } from './core/services';
 import { DeckTrackerComponent } from './features/deck-tracker';
 import { JokerBarComponent } from './features/joker-display';
-import { ScalingIndicatorComponent, ShopOverlayComponent, BuildDetectorService } from './features/strategy-intelligence';
+import { ScalingIndicatorComponent, ShopOverlayComponent, BoosterOverlayComponent, BuildDetectorService } from './features/strategy-intelligence';
 
 @Component({
   selector: 'app-root',
-  imports: [CommonModule, RouterOutlet, DeckTrackerComponent, JokerBarComponent, ScalingIndicatorComponent, ShopOverlayComponent, FormsModule],
+  imports: [CommonModule, RouterOutlet, DeckTrackerComponent, JokerBarComponent, ScalingIndicatorComponent, ShopOverlayComponent, BoosterOverlayComponent, FormsModule],
   changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './app.component.html',
   styleUrl: './app.component.scss'

@@ -14,12 +14,17 @@ import { GameStateService } from '../../../core/services/game-state.service';
 import { SynergyGraphService } from './synergy-graph.service';
 import { BuildDetectorService } from './build-detector.service';
 import { ShopRecommendation, StrategyType } from '../../../../../../shared/models/strategy.model';
-import { ShopItem } from '../../../../../../shared/models/game-state.model';
+import { ShopItem, BoosterCard, BoosterJokerCard } from '../../../../../../shared/models/game-state.model';
 import { JokerState } from '../../../../../../shared/models/joker.model';
 import { JOKER_DESCRIPTIONS } from '../../joker-display/joker-descriptions';
 
 export interface ScoredShopItem extends ShopRecommendation {
   item: ShopItem;
+  breakdown: ScoreBreakdown;
+}
+
+export interface ScoredBoosterJoker extends ShopRecommendation {
+  card: BoosterJokerCard;
   breakdown: ScoreBreakdown;
 }
 
@@ -132,6 +137,79 @@ export class ShopAdvisorService {
     const items = this.scoredItems();
     return items.length > 0 ? items[0] : null;
   });
+
+  /**
+   * Scored booster pack jokers (for Buffoon packs).
+   */
+  readonly scoredBoosterJokers = computed(() => {
+    const booster = this.gameState.booster();
+    if (!booster || booster.packType !== 'buffoon') return [];
+
+    const jokers = this.gameState.jokers();
+    const money = this.gameState.money();
+
+    return booster.cards
+      .filter((card): card is BoosterJokerCard => card.type === 'joker')
+      .map(card => this.scoreBoosterJoker(card, jokers, money))
+      .sort((a, b) => b.score - a.score);
+  });
+
+  /**
+   * Best joker in current booster pack.
+   */
+  readonly bestBoosterJoker = computed(() => {
+    const jokers = this.scoredBoosterJokers();
+    return jokers.length > 0 ? jokers[0] : null;
+  });
+
+  /**
+   * Check if we're in a booster pack with scoreable jokers.
+   */
+  readonly hasBoosterJokers = computed(() =>
+    this.scoredBoosterJokers().length > 0
+  );
+
+  /**
+   * Score a joker from a booster pack.
+   */
+  scoreBoosterJoker(card: BoosterJokerCard, ownedJokers: JokerState[], money: number): ScoredBoosterJoker {
+    // Convert booster card to shop item format for reuse of scoring logic
+    const fakeShopItem: ShopItem = {
+      id: card.id,
+      name: card.name,
+      type: 'joker',
+      cost: 0, // Free in booster packs
+      sold: false
+    };
+
+    const result = this.scoreShopItem(fakeShopItem, ownedJokers, money);
+
+    // Remove economy penalty since booster cards are free
+    result.breakdown.economyPenalty = 0;
+    const newReasons = result.breakdown.reasons.filter(
+      r => !r.includes("afford") && !r.includes("money")
+    );
+    result.breakdown.reasons = newReasons;
+
+    // Recalculate score without economy penalty
+    const totalScore = Math.max(0, Math.min(100,
+      result.breakdown.baseScore +
+      result.breakdown.synergyScore +
+      result.breakdown.strategyScore +
+      result.breakdown.utilityScore
+    ));
+
+    return {
+      itemId: card.id,
+      itemName: card.name,
+      score: Math.round(totalScore),
+      reason: result.reason,
+      isPriority: totalScore >= 80,
+      synergyWith: result.synergyWith,
+      card,
+      breakdown: result.breakdown
+    };
+  }
 
   /**
    * Score a single shop item.
