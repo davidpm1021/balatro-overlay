@@ -1,11 +1,24 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { SuitColumnComponent } from './suit-column.component';
-import { CardLocation } from '../deck-tracker.component';
-import { Rank, Suit } from '../../../../../../shared/models';
+import { CardWithLocation, CardLocation } from '../deck-tracker.component';
+import { Rank, Suit, Card } from '../../../../../../shared/models';
 
 describe('SuitColumnComponent', () => {
   let component: SuitColumnComponent;
   let fixture: ComponentFixture<SuitColumnComponent>;
+
+  const createCard = (suit: Suit, rank: Rank, location: CardLocation): CardWithLocation => ({
+    id: `${suit}-${rank}`,
+    suit,
+    rank,
+    enhancement: 'none',
+    edition: 'none',
+    seal: 'none',
+    chipValue: 10,
+    debuffed: false,
+    faceDown: false,
+    location
+  });
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
@@ -92,43 +105,93 @@ describe('SuitColumnComponent', () => {
     });
   });
 
-  describe('card locations', () => {
+  describe('card data', () => {
     beforeEach(() => {
       fixture.componentRef.setInput('suit', 'hearts');
     });
 
-    it('should return deck as default location when cardLocations is empty', () => {
-      fixture.componentRef.setInput('cardLocations', new Map<Rank, CardLocation>());
+    it('should return empty array when cardsBySuit is empty', () => {
+      fixture.componentRef.setInput('cardsBySuit', new Map<Rank, CardWithLocation[]>());
       fixture.detectChanges();
 
-      expect(component.getCardLocation('A')).toBe('deck');
-      expect(component.getCardLocation('K')).toBe('deck');
+      expect(component.getCards('A')).toEqual([]);
+      expect(component.getCards('K')).toEqual([]);
     });
 
-    it('should return correct location from cardLocations map', () => {
-      const locations = new Map<Rank, CardLocation>([
-        ['A', 'hand'],
-        ['K', 'discarded'],
-        ['Q', 'played'],
-        ['J', 'deck']
+    it('should return correct cards from cardsBySuit map', () => {
+      const cardsBySuit = new Map<Rank, CardWithLocation[]>([
+        ['A', [createCard('hearts', 'A', 'hand')]],
+        ['K', [createCard('hearts', 'K', 'discarded')]],
+        ['Q', [createCard('hearts', 'Q', 'played')]],
+        ['J', [createCard('hearts', 'J', 'deck')]]
       ]);
-      fixture.componentRef.setInput('cardLocations', locations);
+      fixture.componentRef.setInput('cardsBySuit', cardsBySuit);
       fixture.detectChanges();
 
-      expect(component.getCardLocation('A')).toBe('hand');
-      expect(component.getCardLocation('K')).toBe('discarded');
-      expect(component.getCardLocation('Q')).toBe('played');
-      expect(component.getCardLocation('J')).toBe('deck');
+      expect(component.getCards('A')[0].location).toBe('hand');
+      expect(component.getCards('K')[0].location).toBe('discarded');
+      expect(component.getCards('Q')[0].location).toBe('played');
+      expect(component.getCards('J')[0].location).toBe('deck');
     });
 
-    it('should return deck for ranks not in the map', () => {
-      const locations = new Map<Rank, CardLocation>([
-        ['A', 'hand']
+    it('should return empty array for ranks not in the map', () => {
+      const cardsBySuit = new Map<Rank, CardWithLocation[]>([
+        ['A', [createCard('hearts', 'A', 'hand')]]
       ]);
-      fixture.componentRef.setInput('cardLocations', locations);
+      fixture.componentRef.setInput('cardsBySuit', cardsBySuit);
       fixture.detectChanges();
 
-      expect(component.getCardLocation('2')).toBe('deck');
+      expect(component.getCards('2')).toEqual([]);
+    });
+
+    it('should handle multiple cards with same rank', () => {
+      const cardsBySuit = new Map<Rank, CardWithLocation[]>([
+        ['A', [
+          createCard('hearts', 'A', 'hand'),
+          { ...createCard('hearts', 'A', 'discarded'), id: 'hearts-A-2' }
+        ]]
+      ]);
+      fixture.componentRef.setInput('cardsBySuit', cardsBySuit);
+      fixture.detectChanges();
+
+      const cards = component.getCards('A');
+      expect(cards.length).toBe(2);
+      expect(cards[0].location).toBe('hand');
+      expect(cards[1].location).toBe('discarded');
+    });
+  });
+
+  describe('cell selection', () => {
+    beforeEach(() => {
+      fixture.componentRef.setInput('suit', 'hearts');
+    });
+
+    it('should return false when no cell is selected', () => {
+      fixture.componentRef.setInput('selectedCell', null);
+      fixture.detectChanges();
+
+      expect(component.isCellSelected('A')).toBe(false);
+    });
+
+    it('should return true when matching cell is selected', () => {
+      fixture.componentRef.setInput('selectedCell', { suit: 'hearts', rank: 'A' });
+      fixture.detectChanges();
+
+      expect(component.isCellSelected('A')).toBe(true);
+    });
+
+    it('should return false when different rank is selected', () => {
+      fixture.componentRef.setInput('selectedCell', { suit: 'hearts', rank: 'K' });
+      fixture.detectChanges();
+
+      expect(component.isCellSelected('A')).toBe(false);
+    });
+
+    it('should return false when different suit is selected', () => {
+      fixture.componentRef.setInput('selectedCell', { suit: 'spades', rank: 'A' });
+      fixture.detectChanges();
+
+      expect(component.isCellSelected('A')).toBe(false);
     });
   });
 

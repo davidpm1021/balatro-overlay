@@ -4,15 +4,18 @@
 
 /* Balatro-inspired CSS variables */
 :root {
-  --balatro-bg: rgba(15, 15, 23, 0.92);
-  --balatro-panel: rgba(25, 25, 40, 0.95);
-  --balatro-card: rgba(35, 35, 55, 0.9);
-  --balatro-border: rgba(255, 255, 255, 0.08);
-  --balatro-glow: rgba(74, 158, 255, 0.3);
-  --suit-red: #e84545;
-  --suit-dark: #2d2d3a;
+  --balatro-bg: rgba(26, 26, 46, 0.75);
+  --balatro-panel: rgba(30, 30, 52, 0.90);
+  --balatro-card: rgba(38, 38, 60, 0.85);
+  --balatro-border: #4a4a6a;
+  --balatro-border-subtle: rgba(74, 74, 106, 0.5);
+  --balatro-gold: #d4af37;
+  --balatro-gold-glow: rgba(212, 175, 55, 0.4);
+  --balatro-accent-glow: rgba(74, 158, 255, 0.3);
+  --suit-red: #e74c3c;
+  --suit-light: #e0e0e0;
   --chips-blue: #4dabf7;
-  --mult-red: #e84545;
+  --mult-red: #e74c3c;
 }
 
 html, body {
@@ -23,7 +26,8 @@ html, body {
   font-family: 'JetBrains Mono', Consolas, monospace;
   color: #e0e0e0;
   user-select: none;
-  font-size: 13px;
+  font-size: 11px;
+  -webkit-font-smoothing: antialiased;
 }
 
 /* Compact scrollbar */
@@ -48,57 +52,67 @@ html, body {
 @layer components {
   /* Panel with subtle glow effect */
   .balatro-panel {
-    @apply bg-balatro-panel border border-balatro-border rounded;
+    @apply bg-balatro-panel rounded;
+    border: 1px solid var(--balatro-border-subtle);
     box-shadow:
       inset 0 1px 0 rgba(255, 255, 255, 0.03),
-      0 2px 8px rgba(0, 0, 0, 0.3);
+      0 2px 8px rgba(0, 0, 0, 0.4);
   }
 
   /* Card-like element */
   .balatro-card {
-    @apply bg-balatro-card border border-balatro-border rounded;
+    @apply bg-balatro-card rounded;
+    border: 1px solid var(--balatro-border-subtle);
     box-shadow:
       inset 0 1px 0 rgba(255, 255, 255, 0.05),
-      0 1px 3px rgba(0, 0, 0, 0.2);
+      0 1px 3px rgba(0, 0, 0, 0.3);
   }
 
-  /* Glowing accent border */
-  .balatro-glow {
+  /* Gold glow effect */
+  .balatro-glow-gold {
     box-shadow:
-      0 0 10px var(--balatro-glow),
-      inset 0 0 10px rgba(74, 158, 255, 0.05);
+      0 0 8px var(--balatro-gold-glow),
+      inset 0 0 4px rgba(212, 175, 55, 0.1);
+  }
+
+  /* Accent glow effect */
+  .balatro-glow-accent {
+    box-shadow:
+      0 0 8px var(--balatro-accent-glow),
+      inset 0 0 4px rgba(74, 158, 255, 0.1);
   }
 
   /* Score display styling */
   .score-chips {
     @apply text-chips font-bold;
-    text-shadow: 0 0 8px rgba(77, 171, 247, 0.5);
+    text-shadow: 0 0 6px rgba(77, 171, 247, 0.5);
   }
 
   .score-mult {
     @apply text-mult font-bold;
-    text-shadow: 0 0 8px rgba(232, 69, 69, 0.5);
+    text-shadow: 0 0 6px rgba(231, 76, 60, 0.5);
   }
 
   .score-xmult {
     @apply text-xmult font-bold;
-    text-shadow: 0 0 8px rgba(232, 165, 69, 0.5);
+    text-shadow: 0 0 6px rgba(232, 165, 69, 0.5);
   }
 
   /* Playing card mini display */
   .playing-card {
     @apply inline-flex items-center justify-center
-           w-5 h-7 rounded-sm text-xs font-bold
-           bg-white/90 border border-white/20;
+           w-4 h-5 rounded-sm text-[9px] font-bold
+           bg-white/90;
+    border: 1px solid rgba(255, 255, 255, 0.2);
     box-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
   }
 
   .playing-card.red {
-    @apply text-suit-hearts;
+    color: var(--suit-red);
   }
 
   .playing-card.black {
-    @apply text-suit-spades;
+    color: var(--suit-light);
   }
 
   /* Status indicator */
@@ -114,18 +128,140 @@ html, body {
 
   .status-dot.disconnected {
     @apply bg-balatro-red;
-    box-shadow: 0 0 6px rgba(232, 69, 69, 0.6);
+    box-shadow: 0 0 6px rgba(231, 76, 60, 0.6);
   }
 
   /* Compact button */
   .btn-icon {
-    @apply p-1 rounded text-white/50 hover:text-white/80
-           hover:bg-white/5 transition-colors duration-150;
+    @apply p-0.5 rounded text-white/40 hover:text-white/70
+           hover:bg-white/5 transition-all duration-300 ease-out;
   }
 
   /* Section header */
   .section-header {
-    @apply text-[10px] uppercase tracking-wider text-white/40
-           font-semibold mb-1 px-1;
+    @apply text-[9px] uppercase tracking-wider font-semibold mb-0.5 px-0.5;
+    color: var(--balatro-gold);
+    text-shadow: 0 0 4px var(--balatro-gold-glow);
+  }
+
+  /* Gold text with glow */
+  .text-gold-glow {
+    color: var(--balatro-gold);
+    text-shadow: 0 0 6px var(--balatro-gold-glow);
+  }
+
+  /* Phase pill indicator */
+  .phase-pill {
+    @apply px-1.5 py-0.5 rounded text-[9px] font-semibold uppercase;
+    background: rgba(212, 175, 55, 0.15);
+    color: var(--balatro-gold);
+    border: 1px solid rgba(212, 175, 55, 0.3);
+  }
+
+  /* Stat display */
+  .stat-item {
+    @apply text-[9px] text-white/60;
+  }
+
+  .stat-value {
+    @apply font-bold text-white/90;
+  }
+
+  /* Drag handle */
+  .drag-handle {
+    @apply cursor-move;
+    &:active {
+      cursor: grabbing;
+    }
+  }
+
+  /* Collapsed state */
+  .overlay-collapsed {
+    max-height: 32px;
+    overflow: hidden;
+  }
+
+  /* Hover interaction zone */
+  .hover-interactive {
+    @apply transition-opacity duration-300 ease-out;
   }
 }
+
+/* Smooth transitions for card state changes */
+@keyframes card-dim {
+  from { opacity: 1; transform: scale(1); }
+  to { opacity: 0.2; transform: scale(0.95); }
+}
+
+@keyframes card-highlight {
+  from { opacity: 0.2; transform: scale(0.95); }
+  to { opacity: 1; transform: scale(1); }
+}
+
+/* Card modification color utilities */
+:root {
+  /* Enhancement colors */
+  --enhancement-bonus: #4dabf7;
+  --enhancement-mult: #e74c3c;
+  --enhancement-wild: linear-gradient(90deg, #e74c3c, #4dabf7);
+  --enhancement-glass: rgba(255, 255, 255, 0.8);
+  --enhancement-steel: #8a8a8a;
+  --enhancement-stone: #6b5b4f;
+  --enhancement-gold: #d4af37;
+  --enhancement-lucky: #45e845;
+
+  /* Edition colors */
+  --edition-foil: #c0c0c0;
+  --edition-holographic: linear-gradient(90deg, #ff6b6b, #feca57, #48dbfb, #9b59b6);
+  --edition-polychrome: linear-gradient(135deg, #ff6b9d, #c96ddb, #6dceff);
+  --edition-negative: #333;
+
+  /* Seal colors */
+  --seal-gold: #d4af37;
+  --seal-red: #e74c3c;
+  --seal-blue: #4dabf7;
+  --seal-purple: #9b59b6;
+}
+
+/* Enhancement background utilities */
+.bg-enhancement-bonus { background-color: rgba(77, 171, 247, 0.25); }
+.bg-enhancement-mult { background-color: rgba(231, 76, 60, 0.25); }
+.bg-enhancement-wild { background: linear-gradient(90deg, rgba(231, 76, 60, 0.2), rgba(77, 171, 247, 0.2)); }
+.bg-enhancement-glass { background-color: rgba(255, 255, 255, 0.15); }
+.bg-enhancement-steel { background-color: rgba(138, 138, 138, 0.25); }
+.bg-enhancement-stone { background-color: rgba(107, 91, 79, 0.3); }
+.bg-enhancement-gold { background-color: rgba(212, 175, 55, 0.25); }
+.bg-enhancement-lucky { background-color: rgba(69, 232, 69, 0.25); }
+
+/* Edition border utilities */
+.border-edition-foil {
+  border: 1px solid rgba(192, 192, 192, 0.6);
+  box-shadow: 0 0 4px rgba(192, 192, 192, 0.3);
+}
+.border-edition-holographic {
+  border: 1px solid transparent;
+  background-clip: padding-box;
+  box-shadow: 0 0 6px rgba(255, 200, 100, 0.4);
+}
+.border-edition-polychrome {
+  border: 1px solid rgba(200, 150, 255, 0.5);
+  box-shadow: 0 0 6px rgba(150, 100, 255, 0.3);
+}
+.border-edition-negative {
+  border: 1px solid rgba(100, 100, 100, 0.5);
+  filter: invert(0.1);
+}
+
+/* Seal corner dot utilities */
+.seal-indicator {
+  position: absolute;
+  top: 2px;
+  right: 2px;
+  width: 4px;
+  height: 4px;
+  border-radius: 50%;
+}
+.seal-indicator.seal-gold { background-color: #d4af37; box-shadow: 0 0 3px #d4af37; }
+.seal-indicator.seal-red { background-color: #e74c3c; box-shadow: 0 0 3px #e74c3c; }
+.seal-indicator.seal-blue { background-color: #4dabf7; box-shadow: 0 0 3px #4dabf7; }
+.seal-indicator.seal-purple { background-color: #9b59b6; box-shadow: 0 0 3px #9b59b6; }

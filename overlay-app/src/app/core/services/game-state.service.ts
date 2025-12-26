@@ -7,9 +7,13 @@ declare global {
     electronAPI?: {
       onGameStateUpdate: (callback: (gameState: OverlayGameState) => void) => void;
       toggleClickThrough: () => void;
+      setClickThrough: (enabled: boolean) => void;
       setOpacity: (opacity: number) => void;
       minimizeOverlay: () => void;
       restoreOverlay: () => void;
+      startDrag: (mouseX: number, mouseY: number) => void;
+      dragMove: (screenX: number, screenY: number) => void;
+      getWindowPosition: () => Promise<{ x: number; y: number }>;
     };
   }
 }
@@ -26,6 +30,7 @@ export class GameStateService {
   phase = computed(() => this.state()?.progress.phase ?? 'menu');
   isInGame = computed(() => this.phase() !== 'menu');
   currentAnte = computed(() => this.state()?.progress.ante ?? 0);
+  currentRound = computed(() => this.state()?.progress.round ?? 0);
 
   // Deck state
   deck = computed(() => this.state()?.deck ?? null);
@@ -82,6 +87,10 @@ export class GameStateService {
     window.electronAPI?.toggleClickThrough();
   }
 
+  setClickThrough(enabled: boolean): void {
+    window.electronAPI?.setClickThrough(enabled);
+  }
+
   setOpacity(opacity: number): void {
     window.electronAPI?.setOpacity(opacity);
   }
@@ -92,5 +101,14 @@ export class GameStateService {
 
   restoreOverlay(): void {
     window.electronAPI?.restoreOverlay();
+  }
+
+  // Window dragging
+  startDrag(mouseX: number, mouseY: number): void {
+    window.electronAPI?.startDrag(mouseX, mouseY);
+  }
+
+  dragMove(screenX: number, screenY: number): void {
+    window.electronAPI?.dragMove(screenX, screenY);
   }
 }

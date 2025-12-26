@@ -34,6 +34,10 @@ export interface Card {
 
   // True when card is selected/highlighted in Balatro
   highlighted?: boolean;
+
+  // Card states
+  debuffed: boolean;
+  faceDown: boolean;
 }
 
 export interface DeckState {

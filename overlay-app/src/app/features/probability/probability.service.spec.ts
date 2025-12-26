@@ -19,7 +19,9 @@ function createCard(
     enhancement,
     edition: 'none',
     seal: 'none',
-    chipValue: 0
+    chipValue: 0,
+    debuffed: false,
+    faceDown: false
   };
 }
 

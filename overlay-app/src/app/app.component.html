@@ -1,66 +1,120 @@
-<div class="overlay-container h-screen w-full bg-balatro-bg flex flex-col">
+<div class="overlay-container" [class.collapsed]="collapsed()">
   <!-- Compact header bar -->
-  <header class="balatro-panel flex items-center justify-between px-2 py-1.5 rounded-none border-x-0 border-t-0">
-    <div class="flex items-center gap-1.5">
-      <span class="text-balatro-accent font-bold text-[11px] tracking-wide">OVERLAY</span>
+  <header class="header" (click)="onHeaderDoubleClick()">
+    <div class="header-left">
+      <!-- Collapse toggle -->
+      <button
+        (click)="toggleCollapsed(); $event.stopPropagation()"
+        class="btn-icon collapse-btn"
+        [title]="collapsed() ? 'Expand' : 'Collapse'">
+        <svg class="chevron" [class.rotated]="collapsed()" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
+        </svg>
+      </button>
+      <span class="title">BALATRO</span>
       @if (isConnected()) {
         <span class="status-dot connected"></span>
       } @else {
         <span class="status-dot disconnected"></span>
       }
     </div>
-    <div class="flex items-center">
-      <button
-        (click)="toggleClickThrough()"
-        class="btn-icon text-[10px]"
-        title="Toggle click-through (Alt+Click to interact)">
-        <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                d="M15 15l-2 5L9 9l11 4-5 2zm0 0l5 5M7.188 2.239l.777 2.897M5.136 7.965l-2.898-.777M13.95 4.05l-2.122 2.122m-5.657 5.656l-2.12 2.122"/>
+    <div class="header-right">
+      <!-- Drag handle -->
+      <div
+        class="drag-handle"
+        (mousedown)="onDragStart($event)"
+        title="Drag to reposition">
+        <svg class="icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 8h16M4 16h16"/>
         </svg>
-      </button>
+      </div>
       <button
-        (click)="minimize()"
-        class="btn-icon text-[10px]"
-        title="Minimize overlay">
-        <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 12H4"/>
+        (click)="toggleSettings(); $event.stopPropagation()"
+        class="btn-icon"
+        title="Settings">
+        <svg class="icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"/>
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/>
         </svg>
       </button>
     </div>
   </header>
 
+  <!-- Settings panel (collapsible) -->
+  @if (showSettings() && !collapsed()) {
+    <div class="settings-panel">
+      <div class="setting-row">
+        <span class="setting-label">Opacity</span>
+        <input
+          type="range"
+          class="opacity-slider"
+          [min]="0.5"
+          [max]="1"
+          [step]="0.05"
+          [value]="opacity()"
+          (input)="onOpacityChange($any($event.target).valueAsNumber)">
+        <span class="setting-value">{{ (opacity() * 100) | number:'1.0-0' }}%</span>
+      </div>
+      <div class="setting-row">
+        <span class="setting-label">Click-through</span>
+        <button
+          class="toggle-pill"
+          [class.active]="clickThroughEnabled()"
+          (click)="toggleClickThrough()">
+          {{ clickThroughEnabled() ? 'ON' : 'OFF' }}
+        </button>
+      </div>
+    </div>
+  }
+
   <!-- Main content area -->
-  <main class="flex-1 overflow-y-auto px-1.5 py-1">
-    @if (!isConnected()) {
-      <div class="flex flex-col items-center justify-center h-full text-center px-4">
-        <div class="balatro-card p-4 max-w-[200px]">
-          <div class="text-white/30 text-2xl mb-2">🎴</div>
-          <p class="text-white/60 text-xs">Waiting for Balatro...</p>
-          <p class="text-white/30 text-[10px] mt-1">Launch game with mod installed</p>
+  @if (!collapsed()) {
+    <main class="main-content">
+      @if (!isConnected()) {
+        <div class="waiting-state">
+          <div class="waiting-card">
+            <div class="waiting-icon">🎴</div>
+            <p class="waiting-text">Waiting for Balatro...</p>
+            <p class="waiting-hint">Launch game with mod</p>
+          </div>
+        </div>
+      } @else {
+        <div class="content-stack">
+          <app-deck-tracker />
+          <app-joker-bar />
+          <router-outlet></router-outlet>
+        </div>
+      }
+    </main>
+  }
+
+  <!-- Status bar -->
+  <footer class="status-bar" [class.collapsed]="collapsed()">
+    @if (isConnected()) {
+      <div class="status-row status-top">
+        <span class="phase-pill">{{ phase() }}</span>
+      </div>
+      <div class="status-row status-stats">
+        <div class="stat-group">
+          <span class="stat-label">Ante</span>
+          <span class="stat-value">{{ currentAnte() }}</span>
+        </div>
+        <div class="stat-group">
+          <span class="stat-label">Round</span>
+          <span class="stat-value">{{ currentRound() }}</span>
+        </div>
+        <div class="stat-group">
+          <span class="stat-label">Hands</span>
+          <span class="stat-value stat-highlight">{{ handsRemaining() }}</span>
+        </div>
+        <div class="stat-group">
+          <span class="stat-label">Disc</span>
+          <span class="stat-value">{{ discardsRemaining() }}</span>
         </div>
       </div>
     } @else {
-      <div class="space-y-1.5">
-        <!-- Phase indicator -->
-        <div class="balatro-card px-2 py-1.5 flex items-center justify-between">
-          <span class="section-header !mb-0 !px-0">Phase</span>
-          <span class="text-balatro-accent text-xs font-medium">{{ phase() | uppercase }}</span>
-        </div>
-
-        <!-- Joker display -->
-        <app-joker-bar />
-
-        <app-deck-tracker />
-
-        <router-outlet></router-outlet>
-      </div>
+      <span class="status-disconnected">Disconnected</span>
     }
-  </main>
-
-  <!-- Minimal status bar -->
-  <footer class="px-2 py-0.5 bg-black/20 border-t border-balatro-border text-[9px] text-white/30 flex justify-between">
-    <span>v0.1.0</span>
-    <span>{{ phase() }}</span>
   </footer>
 </div>
