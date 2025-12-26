@@ -1,76 +1,104 @@
-import { Injectable, signal, computed } from '@angular/core';
-import { OverlayGameState, GamePhase, BlindState, DeckState } from '../../../../../shared/models';
-import { JokerState } from '../../../../../shared/models';
+import { Injectable, signal, computed, inject, PLATFORM_ID } from '@angular/core';
+import { isPlatformBrowser } from '@angular/common';
+import { OverlayGameState } from '../../../../../shared/models';
 
 declare global {
   interface Window {
     electronAPI?: {
       onGameStateUpdate: (callback: (gameState: OverlayGameState) => void) => void;
-      toggleClickThrough: () => void;
+      setClickThrough: (enabled: boolean) => void;
       setOpacity: (opacity: number) => void;
-      minimize: () => void;
-      restore: () => void;
+      minimizeOverlay: () => void;
+      restoreOverlay: () => void;
+      startDrag: (mouseX: number, mouseY: number) => void;
+      dragMove: (screenX: number, screenY: number) => void;
+      getWindowPosition: () => Promise<{ x: number; y: number }>;
     };
   }
 }
 
-@Injectable({
-  providedIn: 'root'
-})
+@Injectable({ providedIn: 'root' })
 export class GameStateService {
+  private platformId = inject(PLATFORM_ID);
+
   // Main state signal
-  private _state = signal<OverlayGameState | null>(null);
+  state = signal<OverlayGameState | null>(null);
 
-  // Exposed as readonly
-  readonly state = this._state.asReadonly();
+  // Derived computed signals
+  isConnected = computed(() => this.state() !== null);
+  phase = computed(() => this.state()?.progress.phase ?? 'menu');
+  isInGame = computed(() => this.phase() !== 'menu');
+  currentAnte = computed(() => this.state()?.progress.ante ?? 0);
+  currentRound = computed(() => this.state()?.progress.round ?? 0);
 
-  // Derived signals for convenience
-  readonly isConnected = computed(() => this._state() !== null);
+  // Deck state
+  deck = computed(() => this.state()?.deck ?? null);
+  deckRemaining = computed(() => this.state()?.deck.remaining ?? []);
+  hand = computed(() => this.state()?.deck.hand ?? []);
+  discarded = computed(() => this.state()?.deck.discarded ?? []);
 
-  readonly phase = computed(() => this._state()?.progress.phase ?? 'menu');
+  // Jokers
+  jokers = computed(() => this.state()?.jokers ?? []);
 
-  readonly deck = computed(() => this._state()?.deck ?? null);
+  // Progress
+  progress = computed(() => this.state()?.progress ?? null);
+  handsRemaining = computed(() => this.state()?.progress.handsRemaining ?? 0);
+  discardsRemaining = computed(() => this.state()?.progress.discardsRemaining ?? 0);
+  money = computed(() => this.state()?.progress.money ?? 0);
 
-  readonly jokers = computed(() => this._state()?.jokers ?? []);
+  // Blind
+  blind = computed(() => this.state()?.blind ?? null);
 
-  readonly blind = computed(() => this._state()?.blind ?? null);
+  // Hand levels
+  handLevels = computed(() => this.state()?.handLevels ?? []);
 
-  readonly progress = computed(() => this._state()?.progress ?? null);
+  // Shop
+  shop = computed(() => this.state()?.shop ?? null);
+  isInShop = computed(() => this.phase() === 'shop');
 
-  readonly handLevels = computed(() => this._state()?.handLevels ?? []);
-
-  readonly shop = computed(() => this._state()?.shop ?? null);
-
-  readonly isInShop = computed(() => this.phase() === 'shop');
-
-  readonly isPlaying = computed(() => this.phase() === 'playing' || this.phase() === 'scoring');
+  // Playing state
+  isPlaying = computed(() => this.phase() === 'playing' || this.phase() === 'scoring');
 
   constructor() {
     this.initElectronListener();
   }
 
   private initElectronListener(): void {
-    if (typeof window !== 'undefined' && window.electronAPI) {
+    if (isPlatformBrowser(this.platformId) && window.electronAPI) {
       window.electronAPI.onGameStateUpdate((gameState: OverlayGameState) => {
-        this._state.set(gameState);
+        this.state.set(gameState);
       });
     }
   }
 
+  // Methods update the signal
+  updateState(newState: OverlayGameState): void {
+    this.state.set(newState);
+  }
+
   // Overlay controls
-  toggleClickThrough(): void {
-    window.electronAPI?.toggleClickThrough();
+  setClickThrough(enabled: boolean): void {
+    window.electronAPI?.setClickThrough(enabled);
   }
 
   setOpacity(opacity: number): void {
     window.electronAPI?.setOpacity(opacity);
   }
 
-  minimize(): void {
-    window.electronAPI?.minimize();
+  minimizeOverlay(): void {
+    window.electronAPI?.minimizeOverlay();
   }
 
-  restore(): void {
-    window.electronAPI?.restore();
+  restoreOverlay(): void {
+    window.electronAPI?.restoreOverlay();
+  }
+
+  // Window dragging
+  startDrag(mouseX: number, mouseY: number): void {
+    window.electronAPI?.startDrag(mouseX, mouseY);
+  }
+
+  dragMove(screenX: number, screenY: number): void {
+    window.electronAPI?.dragMove(screenX, screenY);
   }
 }
