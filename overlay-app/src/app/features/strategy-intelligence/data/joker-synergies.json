@@ -1,0 +1,1375 @@
+{
+  "$schema": "./joker-synergies.schema.json",
+  "version": "1.0.0",
+  "jokers": [
+    {
+      "id": "j_lusty_joker",
+      "name": "Lusty Joker",
+      "synergiesWith": [
+        { "jokerId": "j_bloodstone", "strength": "strong", "reason": "Both scale with Hearts scored" },
+        { "jokerId": "j_smeared", "strength": "strong", "reason": "Diamonds count as Hearts" },
+        { "jokerId": "j_tribe", "strength": "medium", "reason": "Flush builds benefit from suit mult" },
+        { "jokerId": "j_droll", "strength": "medium", "reason": "Both reward flush plays" }
+      ],
+      "strategies": [
+        { "strategy": "flush", "affinity": 95 },
+        { "strategy": "mult_stacking", "affinity": 60 }
+      ],
+      "wantsSuits": ["hearts"],
+      "isScaling": false,
+      "generatesMoney": false,
+      "costEfficiency": 70,
+      "tags": ["suit", "hearts", "mult", "flush-enabler"]
+    },
+    {
+      "id": "j_greedy_joker",
+      "name": "Greedy Joker",
+      "synergiesWith": [
+        { "jokerId": "j_rough_gem", "strength": "strong", "reason": "Both scale with Diamonds scored" },
+        { "jokerId": "j_smeared", "strength": "strong", "reason": "Hearts count as Diamonds" },
+        { "jokerId": "j_tribe", "strength": "medium", "reason": "Flush builds benefit from suit mult" },
+        { "jokerId": "j_droll", "strength": "medium", "reason": "Both reward flush plays" }
+      ],
+      "strategies": [
+        { "strategy": "flush", "affinity": 95 },
+        { "strategy": "mult_stacking", "affinity": 60 },
+        { "strategy": "economy", "affinity": 30 }
+      ],
+      "wantsSuits": ["diamonds"],
+      "isScaling": false,
+      "generatesMoney": false,
+      "costEfficiency": 70,
+      "tags": ["suit", "diamonds", "mult", "flush-enabler"]
+    },
+    {
+      "id": "j_wrathful_joker",
+      "name": "Wrathful Joker",
+      "synergiesWith": [
+        { "jokerId": "j_arrowhead", "strength": "strong", "reason": "Both scale with Spades scored" },
+        { "jokerId": "j_smeared", "strength": "strong", "reason": "Clubs count as Spades" },
+        { "jokerId": "j_blackboard", "strength": "medium", "reason": "Both want black suits" },
+        { "jokerId": "j_tribe", "strength": "medium", "reason": "Flush builds benefit from suit mult" }
+      ],
+      "strategies": [
+        { "strategy": "flush", "affinity": 95 },
+        { "strategy": "mult_stacking", "affinity": 60 },
+        { "strategy": "chip_stacking", "affinity": 40 }
+      ],
+      "wantsSuits": ["spades"],
+      "isScaling": false,
+      "generatesMoney": false,
+      "costEfficiency": 70,
+      "tags": ["suit", "spades", "mult", "flush-enabler"]
+    },
+    {
+      "id": "j_gluttonous_joker",
+      "name": "Gluttonous Joker",
+      "synergiesWith": [
+        { "jokerId": "j_onyx_agate", "strength": "strong", "reason": "Both scale with Clubs scored" },
+        { "jokerId": "j_smeared", "strength": "strong", "reason": "Spades count as Clubs" },
+        { "jokerId": "j_blackboard", "strength": "medium", "reason": "Both want black suits" },
+        { "jokerId": "j_seeing_double", "strength": "medium", "reason": "Requires Club in hand" }
+      ],
+      "strategies": [
+        { "strategy": "flush", "affinity": 95 },
+        { "strategy": "mult_stacking", "affinity": 60 }
+      ],
+      "wantsSuits": ["clubs"],
+      "isScaling": false,
+      "generatesMoney": false,
+      "costEfficiency": 70,
+      "tags": ["suit", "clubs", "mult", "flush-enabler"]
+    },
+    {
+      "id": "j_fibonacci",
+      "name": "Fibonacci",
+      "synergiesWith": [
+        { "jokerId": "j_scholar", "strength": "strong", "reason": "Aces are Fibonacci numbers" },
+        { "jokerId": "j_hack", "strength": "strong", "reason": "2,3,5 overlap with Hack's 2,3,4,5" },
+        { "jokerId": "j_wee", "strength": "medium", "reason": "2s are Fibonacci numbers" },
+        { "jokerId": "j_hanging_chad", "strength": "medium", "reason": "Retrigger Fibonacci cards" }
+      ],
+      "strategies": [
+        { "strategy": "fibonacci", "affinity": 100 },
+        { "strategy": "mult_stacking", "affinity": 75 }
+      ],
+      "wantsRanks": ["A", "2", "3", "5", "8"],
+      "isScaling": false,
+      "generatesMoney": false,
+      "costEfficiency": 85,
+      "tags": ["rank-specific", "fibonacci", "mult", "build-around"]
+    },
+    {
+      "id": "j_even_steven",
+      "name": "Even Steven",
+      "synergiesWith": [
+        { "jokerId": "j_scholar", "strength": "weak", "reason": "Aces are odd, anti-synergy" },
+        { "jokerId": "j_walkie_talkie", "strength": "strong", "reason": "10 and 4 are even" },
+        { "jokerId": "j_8_ball", "strength": "medium", "reason": "8s are even" },
+        { "jokerId": "j_hack", "strength": "medium", "reason": "2,4 are even" }
+      ],
+      "strategies": [
+        { "strategy": "even_steven", "affinity": 100 },
+        { "strategy": "mult_stacking", "affinity": 65 }
+      ],
+      "wantsRanks": ["2", "4", "6", "8", "10"],
+      "isScaling": false,
+      "generatesMoney": false,
+      "costEfficiency": 75,
+      "tags": ["rank-specific", "even", "mult", "build-around"]
+    },
+    {
+      "id": "j_odd_todd",
+      "name": "Odd Todd",
+      "synergiesWith": [
+        { "jokerId": "j_scholar", "strength": "strong", "reason": "Aces are odd" },
+        { "jokerId": "j_fibonacci", "strength": "medium", "reason": "A,3,5 overlap" },
+        { "jokerId": "j_hack", "strength": "medium", "reason": "3,5 are odd" }
+      ],
+      "strategies": [
+        { "strategy": "odd_todd", "affinity": 100 },
+        { "strategy": "chip_stacking", "affinity": 70 }
+      ],
+      "wantsRanks": ["A", "3", "5", "7", "9"],
+      "isScaling": false,
+      "generatesMoney": false,
+      "costEfficiency": 75,
+      "tags": ["rank-specific", "odd", "chips", "build-around"]
+    },
+    {
+      "id": "j_baron",
+      "name": "Baron",
+      "synergiesWith": [
+        { "jokerId": "j_triboulet", "strength": "strong", "reason": "Both scale with Kings" },
+        { "jokerId": "j_sock_and_buskin", "strength": "strong", "reason": "Retrigger face cards" },
+        { "jokerId": "j_photograph", "strength": "medium", "reason": "Face card xMult" },
+        { "jokerId": "j_pareidolia", "strength": "strong", "reason": "All cards become face cards" },
+        { "jokerId": "j_mime", "strength": "strong", "reason": "Retrigger held Kings" }
+      ],
+      "strategies": [
+        { "strategy": "face_cards", "affinity": 100 },
+        { "strategy": "xmult_scaling", "affinity": 90 }
+      ],
+      "wantsRanks": ["K"],
+      "isScaling": false,
+      "generatesMoney": false,
+      "costEfficiency": 90,
+      "tags": ["face-card", "king", "xmult", "held-cards", "build-around"]
+    },
+    {
+      "id": "j_shoot_the_moon",
+      "name": "Shoot the Moon",
+      "synergiesWith": [
+        { "jokerId": "j_triboulet", "strength": "strong", "reason": "Both scale with Queens" },
+        { "jokerId": "j_sock_and_buskin", "strength": "medium", "reason": "Face card synergy" },
+        { "jokerId": "j_mime", "strength": "strong", "reason": "Retrigger held Queens" },
+        { "jokerId": "j_pareidolia", "strength": "strong", "reason": "All cards become face cards" }
+      ],
+      "strategies": [
+        { "strategy": "face_cards", "affinity": 90 },
+        { "strategy": "mult_stacking", "affinity": 75 }
+      ],
+      "wantsRanks": ["Q"],
+      "isScaling": false,
+      "generatesMoney": false,
+      "costEfficiency": 80,
+      "tags": ["face-card", "queen", "mult", "held-cards"]
+    },
+    {
+      "id": "j_triboulet",
+      "name": "Triboulet",
+      "synergiesWith": [
+        { "jokerId": "j_baron", "strength": "strong", "reason": "Both scale with Kings" },
+        { "jokerId": "j_shoot_the_moon", "strength": "strong", "reason": "Both scale with Queens" },
+        { "jokerId": "j_sock_and_buskin", "strength": "strong", "reason": "Retrigger K/Q for massive xMult" },
+        { "jokerId": "j_hanging_chad", "strength": "strong", "reason": "Retrigger first K/Q" },
+        { "jokerId": "j_pareidolia", "strength": "strong", "reason": "All cards are K/Q" }
+      ],
+      "strategies": [
+        { "strategy": "face_cards", "affinity": 100 },
+        { "strategy": "xmult_scaling", "affinity": 100 },
+        { "strategy": "retrigger", "affinity": 85 }
+      ],
+      "wantsRanks": ["K", "Q"],
+      "isScaling": false,
+      "generatesMoney": false,
+      "costEfficiency": 100,
+      "tags": ["legendary", "face-card", "king", "queen", "xmult", "build-around"]
+    },
+    {
+      "id": "j_blueprint",
+      "name": "Blueprint",
+      "synergiesWith": [
+        { "jokerId": "j_brainstorm", "strength": "strong", "reason": "Chain copy effects" },
+        { "jokerId": "j_triboulet", "strength": "strong", "reason": "Copy legendary xMult" },
+        { "jokerId": "j_baron", "strength": "strong", "reason": "Double King xMult" }
+      ],
+      "strategies": [
+        { "strategy": "xmult_scaling", "affinity": 80 },
+        { "strategy": "hybrid", "affinity": 90 }
+      ],
+      "isScaling": false,
+      "generatesMoney": false,
+      "costEfficiency": 95,
+      "tags": ["copy", "rare", "flexible", "position-matters"]
+    },
+    {
+      "id": "j_brainstorm",
+      "name": "Brainstorm",
+      "synergiesWith": [
+        { "jokerId": "j_blueprint", "strength": "strong", "reason": "Chain copy effects" },
+        { "jokerId": "j_triboulet", "strength": "strong", "reason": "Copy legendary xMult" }
+      ],
+      "strategies": [
+        { "strategy": "xmult_scaling", "affinity": 80 },
+        { "strategy": "hybrid", "affinity": 90 }
+      ],
+      "isScaling": false,
+      "generatesMoney": false,
+      "costEfficiency": 90,
+      "tags": ["copy", "rare", "flexible", "position-matters"]
+    },
+    {
+      "id": "j_mime",
+      "name": "Mime",
+      "synergiesWith": [
+        { "jokerId": "j_baron", "strength": "strong", "reason": "Retrigger held Kings" },
+        { "jokerId": "j_shoot_the_moon", "strength": "strong", "reason": "Retrigger held Queens" },
+        { "jokerId": "j_raised_fist", "strength": "medium", "reason": "Retrigger lowest card ability" }
+      ],
+      "strategies": [
+        { "strategy": "retrigger", "affinity": 100 },
+        { "strategy": "face_cards", "affinity": 70 }
+      ],
+      "isScaling": false,
+      "generatesMoney": false,
+      "costEfficiency": 85,
+      "tags": ["retrigger", "held-cards", "uncommon"]
+    },
+    {
+      "id": "j_dusk",
+      "name": "Dusk",
+      "synergiesWith": [
+        { "jokerId": "j_hanging_chad", "strength": "strong", "reason": "Stack retriggers" },
+        { "jokerId": "j_sock_and_buskin", "strength": "strong", "reason": "Face cards retrigger twice" },
+        { "jokerId": "j_hack", "strength": "strong", "reason": "Low cards retrigger twice" },
+        { "jokerId": "j_seltzer", "strength": "medium", "reason": "Stack retrigger effects" }
+      ],
+      "strategies": [
+        { "strategy": "retrigger", "affinity": 100 }
+      ],
+      "isScaling": false,
+      "generatesMoney": false,
+      "costEfficiency": 75,
+      "tags": ["retrigger", "final-hand", "uncommon"]
+    },
+    {
+      "id": "j_hack",
+      "name": "Hack",
+      "synergiesWith": [
+        { "jokerId": "j_fibonacci", "strength": "strong", "reason": "2,3,5 overlap" },
+        { "jokerId": "j_wee", "strength": "strong", "reason": "2s retrigger" },
+        { "jokerId": "j_dusk", "strength": "strong", "reason": "Stack retriggers on final hand" },
+        { "jokerId": "j_hanging_chad", "strength": "medium", "reason": "Stack retriggers" }
+      ],
+      "strategies": [
+        { "strategy": "retrigger", "affinity": 90 },
+        { "strategy": "fibonacci", "affinity": 60 }
+      ],
+      "wantsRanks": ["2", "3", "4", "5"],
+      "isScaling": false,
+      "generatesMoney": false,
+      "costEfficiency": 80,
+      "tags": ["retrigger", "low-cards", "uncommon"]
+    },
+    {
+      "id": "j_hanging_chad",
+      "name": "Hanging Chad",
+      "synergiesWith": [
+        { "jokerId": "j_triboulet", "strength": "strong", "reason": "Retrigger K/Q" },
+        { "jokerId": "j_fibonacci", "strength": "medium", "reason": "Retrigger Fib cards" },
+        { "jokerId": "j_dusk", "strength": "strong", "reason": "Stack retriggers" },
+        { "jokerId": "j_photograph", "strength": "medium", "reason": "Retrigger face card xMult" }
+      ],
+      "strategies": [
+        { "strategy": "retrigger", "affinity": 95 }
+      ],
+      "isScaling": false,
+      "generatesMoney": false,
+      "costEfficiency": 75,
+      "tags": ["retrigger", "first-card", "common"]
+    },
+    {
+      "id": "j_sock_and_buskin",
+      "name": "Sock and Buskin",
+      "synergiesWith": [
+        { "jokerId": "j_triboulet", "strength": "strong", "reason": "Retrigger K/Q for xMult" },
+        { "jokerId": "j_baron", "strength": "strong", "reason": "Double King held effect" },
+        { "jokerId": "j_photograph", "strength": "strong", "reason": "Retrigger face card xMult" },
+        { "jokerId": "j_smiley", "strength": "strong", "reason": "Double face card mult" },
+        { "jokerId": "j_pareidolia", "strength": "strong", "reason": "All cards retrigger" }
+      ],
+      "strategies": [
+        { "strategy": "retrigger", "affinity": 95 },
+        { "strategy": "face_cards", "affinity": 100 }
+      ],
+      "wantsRanks": ["J", "Q", "K"],
+      "isScaling": false,
+      "generatesMoney": false,
+      "costEfficiency": 90,
+      "tags": ["retrigger", "face-card", "uncommon"]
+    },
+    {
+      "id": "j_steel_joker",
+      "name": "Steel Joker",
+      "synergiesWith": [
+        { "jokerId": "j_mime", "strength": "strong", "reason": "Retrigger steel cards in hand" },
+        { "jokerId": "j_drivers_license", "strength": "medium", "reason": "Both want enhanced cards" }
+      ],
+      "strategies": [
+        { "strategy": "steel_scaling", "affinity": 100 },
+        { "strategy": "xmult_scaling", "affinity": 85 }
+      ],
+      "wantsEnhancements": ["steel"],
+      "isScaling": true,
+      "scalingType": "multiplicative",
+      "generatesMoney": false,
+      "costEfficiency": 80,
+      "tags": ["enhancement", "steel", "xmult", "scaling", "build-around"]
+    },
+    {
+      "id": "j_glass",
+      "name": "Glass Joker",
+      "synergiesWith": [
+        { "jokerId": "j_drivers_license", "strength": "medium", "reason": "Both want enhanced cards" },
+        { "jokerId": "j_oops", "strength": "medium", "reason": "Glass cards break less often" }
+      ],
+      "strategies": [
+        { "strategy": "glass_cannon", "affinity": 100 },
+        { "strategy": "xmult_scaling", "affinity": 75 }
+      ],
+      "wantsEnhancements": ["glass"],
+      "isScaling": true,
+      "scalingType": "multiplicative",
+      "generatesMoney": false,
+      "costEfficiency": 70,
+      "tags": ["enhancement", "glass", "xmult", "scaling", "risky"]
+    },
+    {
+      "id": "j_ride_the_bus",
+      "name": "Ride the Bus",
+      "synergiesWith": [
+        { "jokerId": "j_fibonacci", "strength": "medium", "reason": "No face cards in Fibonacci" },
+        { "jokerId": "j_even_steven", "strength": "medium", "reason": "No face cards in even" },
+        { "jokerId": "j_odd_todd", "strength": "medium", "reason": "No face cards in odd" }
+      ],
+      "strategies": [
+        { "strategy": "mult_stacking", "affinity": 70 }
+      ],
+      "isScaling": true,
+      "scalingType": "additive",
+      "generatesMoney": false,
+      "costEfficiency": 65,
+      "tags": ["scaling", "mult", "no-face-cards", "risky"]
+    },
+    {
+      "id": "j_constellation",
+      "name": "Constellation",
+      "synergiesWith": [
+        { "jokerId": "j_astronomer", "strength": "strong", "reason": "Free planets accelerate scaling" },
+        { "jokerId": "j_satellite", "strength": "medium", "reason": "Both reward planet use" }
+      ],
+      "strategies": [
+        { "strategy": "xmult_scaling", "affinity": 85 }
+      ],
+      "isScaling": true,
+      "scalingType": "multiplicative",
+      "generatesMoney": false,
+      "costEfficiency": 80,
+      "tags": ["scaling", "xmult", "planets", "uncommon"]
+    },
+    {
+      "id": "j_hologram",
+      "name": "Hologram",
+      "synergiesWith": [
+        { "jokerId": "j_marble", "strength": "strong", "reason": "Adds Stone cards to deck" },
+        { "jokerId": "j_dna", "strength": "strong", "reason": "DNA copies cards to deck" },
+        { "jokerId": "j_certificate", "strength": "medium", "reason": "Adds cards to hand/deck" }
+      ],
+      "strategies": [
+        { "strategy": "xmult_scaling", "affinity": 90 }
+      ],
+      "isScaling": true,
+      "scalingType": "multiplicative",
+      "generatesMoney": false,
+      "costEfficiency": 85,
+      "tags": ["scaling", "xmult", "deck-size", "uncommon"]
+    },
+    {
+      "id": "j_vampire",
+      "name": "Vampire",
+      "synergiesWith": [
+        { "jokerId": "j_drivers_license", "strength": "weak", "reason": "Removes enhancements - anti-synergy" }
+      ],
+      "strategies": [
+        { "strategy": "xmult_scaling", "affinity": 75 }
+      ],
+      "wantsEnhancements": ["bonus", "mult", "wild", "glass", "gold", "lucky"],
+      "isScaling": true,
+      "scalingType": "multiplicative",
+      "generatesMoney": false,
+      "costEfficiency": 70,
+      "tags": ["scaling", "xmult", "enhancement-consumer", "uncommon"]
+    },
+    {
+      "id": "j_oops",
+      "name": "Oops! All 6s",
+      "synergiesWith": [
+        { "jokerId": "j_lucky_cat", "strength": "strong", "reason": "Lucky cards trigger more" },
+        { "jokerId": "j_bloodstone", "strength": "strong", "reason": "Heart xMult more likely" },
+        { "jokerId": "j_space", "strength": "strong", "reason": "Hand upgrades more likely" },
+        { "jokerId": "j_8_ball", "strength": "medium", "reason": "Tarot creation more likely" },
+        { "jokerId": "j_glass", "strength": "medium", "reason": "Glass cards more likely to survive" }
+      ],
+      "strategies": [
+        { "strategy": "hybrid", "affinity": 80 }
+      ],
+      "wantsEnhancements": ["lucky"],
+      "isScaling": false,
+      "generatesMoney": false,
+      "costEfficiency": 85,
+      "tags": ["probability", "luck", "uncommon", "enabler"]
+    },
+    {
+      "id": "j_lucky_cat",
+      "name": "Lucky Cat",
+      "synergiesWith": [
+        { "jokerId": "j_oops", "strength": "strong", "reason": "Double lucky trigger chance" }
+      ],
+      "strategies": [
+        { "strategy": "xmult_scaling", "affinity": 80 }
+      ],
+      "wantsEnhancements": ["lucky"],
+      "isScaling": true,
+      "scalingType": "multiplicative",
+      "generatesMoney": false,
+      "costEfficiency": 75,
+      "tags": ["scaling", "xmult", "lucky", "uncommon"]
+    },
+    {
+      "id": "j_golden",
+      "name": "Golden Joker",
+      "synergiesWith": [
+        { "jokerId": "j_to_the_moon", "strength": "strong", "reason": "More money = more interest" },
+        { "jokerId": "j_bull", "strength": "strong", "reason": "More money = more chips" },
+        { "jokerId": "j_bootstraps", "strength": "strong", "reason": "More money = more mult" }
+      ],
+      "strategies": [
+        { "strategy": "economy", "affinity": 100 }
+      ],
+      "isScaling": false,
+      "generatesMoney": true,
+      "costEfficiency": 85,
+      "tags": ["economy", "money", "common", "passive-income"]
+    },
+    {
+      "id": "j_to_the_moon",
+      "name": "To the Moon",
+      "synergiesWith": [
+        { "jokerId": "j_golden", "strength": "strong", "reason": "Generates money to earn interest" },
+        { "jokerId": "j_bull", "strength": "strong", "reason": "Both scale with money" },
+        { "jokerId": "j_bootstraps", "strength": "strong", "reason": "Both scale with money" },
+        { "jokerId": "j_delayed_grat", "strength": "medium", "reason": "Money generation" }
+      ],
+      "strategies": [
+        { "strategy": "economy", "affinity": 100 }
+      ],
+      "isScaling": false,
+      "generatesMoney": true,
+      "costEfficiency": 90,
+      "tags": ["economy", "money", "interest", "uncommon"]
+    },
+    {
+      "id": "j_bull",
+      "name": "Bull",
+      "synergiesWith": [
+        { "jokerId": "j_golden", "strength": "strong", "reason": "More money = more chips" },
+        { "jokerId": "j_to_the_moon", "strength": "strong", "reason": "More money = more chips" },
+        { "jokerId": "j_bootstraps", "strength": "medium", "reason": "Both scale with money" }
+      ],
+      "strategies": [
+        { "strategy": "economy", "affinity": 85 },
+        { "strategy": "chip_stacking", "affinity": 80 }
+      ],
+      "isScaling": false,
+      "generatesMoney": false,
+      "costEfficiency": 80,
+      "tags": ["economy", "chips", "money-scaling", "uncommon"]
+    },
+    {
+      "id": "j_bootstraps",
+      "name": "Bootstraps",
+      "synergiesWith": [
+        { "jokerId": "j_golden", "strength": "strong", "reason": "More money = more mult" },
+        { "jokerId": "j_to_the_moon", "strength": "strong", "reason": "More money = more mult" },
+        { "jokerId": "j_bull", "strength": "medium", "reason": "Both scale with money" }
+      ],
+      "strategies": [
+        { "strategy": "economy", "affinity": 85 },
+        { "strategy": "mult_stacking", "affinity": 80 }
+      ],
+      "isScaling": false,
+      "generatesMoney": false,
+      "costEfficiency": 80,
+      "tags": ["economy", "mult", "money-scaling", "uncommon"]
+    },
+    {
+      "id": "j_pareidolia",
+      "name": "Pareidolia",
+      "synergiesWith": [
+        { "jokerId": "j_triboulet", "strength": "strong", "reason": "All cards give xMult" },
+        { "jokerId": "j_baron", "strength": "strong", "reason": "All cards are Kings" },
+        { "jokerId": "j_sock_and_buskin", "strength": "strong", "reason": "All cards retrigger" },
+        { "jokerId": "j_smiley", "strength": "strong", "reason": "All cards give +5 Mult" },
+        { "jokerId": "j_scary_face", "strength": "strong", "reason": "All cards give +30 Chips" },
+        { "jokerId": "j_photograph", "strength": "medium", "reason": "First card always face" }
+      ],
+      "strategies": [
+        { "strategy": "face_cards", "affinity": 100 },
+        { "strategy": "retrigger", "affinity": 70 }
+      ],
+      "isScaling": false,
+      "generatesMoney": false,
+      "costEfficiency": 95,
+      "tags": ["face-card", "enabler", "uncommon", "build-around"]
+    },
+    {
+      "id": "j_drivers_license",
+      "name": "Driver's License",
+      "synergiesWith": [
+        { "jokerId": "j_steel_joker", "strength": "medium", "reason": "Both want enhanced cards" },
+        { "jokerId": "j_vampire", "strength": "weak", "reason": "Vampire removes enhancements - anti-synergy" }
+      ],
+      "strategies": [
+        { "strategy": "steel_scaling", "affinity": 70 },
+        { "strategy": "xmult_scaling", "affinity": 85 }
+      ],
+      "wantsEnhancements": ["bonus", "mult", "wild", "glass", "steel", "stone", "gold", "lucky"],
+      "isScaling": false,
+      "generatesMoney": false,
+      "costEfficiency": 75,
+      "tags": ["enhancement", "xmult", "threshold", "rare"]
+    },
+    {
+      "id": "j_dna",
+      "name": "DNA",
+      "synergiesWith": [
+        { "jokerId": "j_hologram", "strength": "strong", "reason": "DNA adds cards, Hologram scales with deck size" },
+        { "jokerId": "j_triboulet", "strength": "strong", "reason": "Duplicate Kings/Queens for more xMult" },
+        { "jokerId": "j_steel_joker", "strength": "strong", "reason": "Duplicate steel cards for more xMult" },
+        { "jokerId": "j_baron", "strength": "strong", "reason": "Duplicate Kings for held-card builds" }
+      ],
+      "strategies": [
+        { "strategy": "flush", "affinity": 80 },
+        { "strategy": "straight", "affinity": 80 },
+        { "strategy": "steel_scaling", "affinity": 85 },
+        { "strategy": "face_cards", "affinity": 85 }
+      ],
+      "isScaling": false,
+      "generatesMoney": false,
+      "costEfficiency": 100,
+      "tags": ["rare", "deck-manipulation", "consistency", "s-tier", "build-around"]
+    },
+    {
+      "id": "j_cavendish",
+      "name": "Cavendish",
+      "synergiesWith": [
+        { "jokerId": "j_blueprint", "strength": "strong", "reason": "Copy x3 Mult safely" },
+        { "jokerId": "j_brainstorm", "strength": "strong", "reason": "Copy x3 Mult safely" }
+      ],
+      "strategies": [
+        { "strategy": "xmult_scaling", "affinity": 90 }
+      ],
+      "isScaling": false,
+      "generatesMoney": false,
+      "costEfficiency": 95,
+      "tags": ["xmult", "common", "risky", "high-value"]
+    },
+    {
+      "id": "j_invisible",
+      "name": "Invisible Joker",
+      "synergiesWith": [
+        { "jokerId": "j_showman", "strength": "strong", "reason": "Can duplicate Invisible for chain" },
+        { "jokerId": "j_blueprint", "strength": "strong", "reason": "Duplicate best jokers" },
+        { "jokerId": "j_triboulet", "strength": "strong", "reason": "Duplicate legendary jokers" }
+      ],
+      "strategies": [
+        { "strategy": "hybrid", "affinity": 90 }
+      ],
+      "isScaling": false,
+      "generatesMoney": false,
+      "costEfficiency": 100,
+      "tags": ["rare", "joker-duplication", "s-tier", "flexible"]
+    },
+    {
+      "id": "j_canio",
+      "name": "Canio",
+      "synergiesWith": [
+        { "jokerId": "j_pareidolia", "strength": "strong", "reason": "All cards are face cards for destruction" },
+        { "jokerId": "j_glass", "strength": "strong", "reason": "Glass face cards scale both jokers" },
+        { "jokerId": "j_triboulet", "strength": "medium", "reason": "Face card synergy" }
+      ],
+      "strategies": [
+        { "strategy": "xmult_scaling", "affinity": 100 },
+        { "strategy": "face_cards", "affinity": 85 },
+        { "strategy": "glass_cannon", "affinity": 80 }
+      ],
+      "wantsRanks": ["J", "Q", "K"],
+      "wantsEnhancements": ["glass"],
+      "isScaling": true,
+      "scalingType": "multiplicative",
+      "generatesMoney": false,
+      "costEfficiency": 100,
+      "tags": ["legendary", "xmult", "scaling", "face-card", "destruction", "build-around"]
+    },
+    {
+      "id": "j_perkeo",
+      "name": "Perkeo",
+      "synergiesWith": [
+        { "jokerId": "j_blueprint", "strength": "strong", "reason": "Generate 2-3 negative consumables per blind" },
+        { "jokerId": "j_brainstorm", "strength": "strong", "reason": "Generate 2-3 negative consumables per blind" },
+        { "jokerId": "j_constellation", "strength": "strong", "reason": "Free planets accelerate xMult scaling" },
+        { "jokerId": "j_fortune_teller", "strength": "strong", "reason": "Duplicated tarots boost mult" },
+        { "jokerId": "j_campfire", "strength": "strong", "reason": "Sell duplicated consumables for xMult" }
+      ],
+      "strategies": [
+        { "strategy": "xmult_scaling", "affinity": 95 },
+        { "strategy": "economy", "affinity": 70 }
+      ],
+      "isScaling": false,
+      "generatesMoney": false,
+      "costEfficiency": 100,
+      "tags": ["legendary", "consumable-duplication", "s-tier", "build-around"]
+    },
+    {
+      "id": "j_yorick",
+      "name": "Yorick",
+      "synergiesWith": [
+        { "jokerId": "j_mime", "strength": "strong", "reason": "Held cards retrigger for snowball mult" },
+        { "jokerId": "j_drunkard", "strength": "medium", "reason": "More discards = faster scaling" }
+      ],
+      "strategies": [
+        { "strategy": "xmult_scaling", "affinity": 85 }
+      ],
+      "isScaling": true,
+      "scalingType": "multiplicative",
+      "generatesMoney": false,
+      "costEfficiency": 85,
+      "tags": ["legendary", "xmult", "scaling", "discard"]
+    },
+    {
+      "id": "j_chicot",
+      "name": "Chicot",
+      "synergiesWith": [],
+      "strategies": [
+        { "strategy": "hybrid", "affinity": 80 }
+      ],
+      "isScaling": false,
+      "generatesMoney": false,
+      "costEfficiency": 90,
+      "tags": ["legendary", "boss-blind", "safety", "consistency"]
+    },
+    {
+      "id": "j_four_fingers",
+      "name": "Four Fingers",
+      "synergiesWith": [
+        { "jokerId": "j_shortcut", "strength": "strong", "reason": "4-card straights with gaps" },
+        { "jokerId": "j_smeared", "strength": "strong", "reason": "Easy 4-card flushes across merged suits" },
+        { "jokerId": "j_tribe", "strength": "strong", "reason": "Easier flush activation" },
+        { "jokerId": "j_order", "strength": "strong", "reason": "Easier straight activation" },
+        { "jokerId": "j_seance", "strength": "strong", "reason": "Straight flushes much easier" },
+        { "jokerId": "j_square", "strength": "medium", "reason": "4-card hands scale Square Joker" }
+      ],
+      "strategies": [
+        { "strategy": "flush", "affinity": 100 },
+        { "strategy": "straight", "affinity": 100 }
+      ],
+      "isScaling": false,
+      "generatesMoney": false,
+      "costEfficiency": 95,
+      "tags": ["uncommon", "hand-enabler", "flush-enabler", "straight-enabler", "build-around"]
+    },
+    {
+      "id": "j_shortcut",
+      "name": "Shortcut",
+      "synergiesWith": [
+        { "jokerId": "j_four_fingers", "strength": "strong", "reason": "4-card straights with gaps" },
+        { "jokerId": "j_runner", "strength": "strong", "reason": "More straights = more chip scaling" },
+        { "jokerId": "j_order", "strength": "strong", "reason": "Easier straight activation" },
+        { "jokerId": "j_smeared", "strength": "medium", "reason": "Gaps + suit merge = easy straight flush" },
+        { "jokerId": "j_crazy", "strength": "medium", "reason": "Easier straight activation for mult" }
+      ],
+      "strategies": [
+        { "strategy": "straight", "affinity": 100 }
+      ],
+      "isScaling": false,
+      "generatesMoney": false,
+      "costEfficiency": 85,
+      "tags": ["uncommon", "straight-enabler", "hand-enabler"]
+    },
+    {
+      "id": "j_smeared",
+      "name": "Smeared Joker",
+      "synergiesWith": [
+        { "jokerId": "j_lusty_joker", "strength": "strong", "reason": "Diamonds count as Hearts" },
+        { "jokerId": "j_greedy_joker", "strength": "strong", "reason": "Hearts count as Diamonds" },
+        { "jokerId": "j_wrathful_joker", "strength": "strong", "reason": "Clubs count as Spades" },
+        { "jokerId": "j_gluttonous_joker", "strength": "strong", "reason": "Spades count as Clubs" },
+        { "jokerId": "j_four_fingers", "strength": "strong", "reason": "Easy 4-card flushes" },
+        { "jokerId": "j_shortcut", "strength": "medium", "reason": "Easy straight flushes" },
+        { "jokerId": "j_tribe", "strength": "strong", "reason": "Easier flush activation" },
+        { "jokerId": "j_blackboard", "strength": "strong", "reason": "Black suits easier to achieve" }
+      ],
+      "strategies": [
+        { "strategy": "flush", "affinity": 100 }
+      ],
+      "isScaling": false,
+      "generatesMoney": false,
+      "costEfficiency": 95,
+      "tags": ["uncommon", "suit-merge", "flush-enabler", "build-around"]
+    },
+    {
+      "id": "j_runner",
+      "name": "Runner",
+      "synergiesWith": [
+        { "jokerId": "j_shortcut", "strength": "strong", "reason": "More straights = faster scaling" },
+        { "jokerId": "j_four_fingers", "strength": "strong", "reason": "More straights = faster scaling" },
+        { "jokerId": "j_order", "strength": "medium", "reason": "Both reward straights" },
+        { "jokerId": "j_crazy", "strength": "medium", "reason": "Both reward straights" }
+      ],
+      "strategies": [
+        { "strategy": "straight", "affinity": 100 },
+        { "strategy": "chip_stacking", "affinity": 90 }
+      ],
+      "isScaling": true,
+      "scalingType": "additive",
+      "generatesMoney": false,
+      "costEfficiency": 80,
+      "tags": ["common", "scaling", "chips", "straight-specific"]
+    },
+    {
+      "id": "j_hiker",
+      "name": "Hiker",
+      "synergiesWith": [
+        { "jokerId": "j_hanging_chad", "strength": "strong", "reason": "Retrigger scaled cards" },
+        { "jokerId": "j_dusk", "strength": "strong", "reason": "Retrigger scaled cards on final hand" },
+        { "jokerId": "j_hack", "strength": "medium", "reason": "Retrigger low scaled cards" },
+        { "jokerId": "j_dna", "strength": "medium", "reason": "Duplicate scaled cards" }
+      ],
+      "strategies": [
+        { "strategy": "chip_stacking", "affinity": 100 },
+        { "strategy": "retrigger", "affinity": 70 }
+      ],
+      "isScaling": true,
+      "scalingType": "additive",
+      "generatesMoney": false,
+      "costEfficiency": 90,
+      "tags": ["uncommon", "scaling", "chips", "permanent", "s-tier"]
+    },
+    {
+      "id": "j_square",
+      "name": "Square Joker",
+      "synergiesWith": [
+        { "jokerId": "j_four_fingers", "strength": "strong", "reason": "4-card hands scale both" },
+        { "jokerId": "j_trousers", "strength": "strong", "reason": "Both scale on 4-card plays" }
+      ],
+      "strategies": [
+        { "strategy": "chip_stacking", "affinity": 90 },
+        { "strategy": "pairs", "affinity": 70 }
+      ],
+      "isScaling": true,
+      "scalingType": "additive",
+      "generatesMoney": false,
+      "costEfficiency": 80,
+      "tags": ["common", "scaling", "chips", "4-card"]
+    },
+    {
+      "id": "j_abstract",
+      "name": "Abstract Joker",
+      "synergiesWith": [
+        { "jokerId": "j_riff_raff", "strength": "medium", "reason": "Creates more jokers" },
+        { "jokerId": "j_invisible", "strength": "medium", "reason": "Duplicate jokers for more mult" }
+      ],
+      "strategies": [
+        { "strategy": "mult_stacking", "affinity": 85 }
+      ],
+      "isScaling": false,
+      "generatesMoney": false,
+      "costEfficiency": 75,
+      "tags": ["common", "mult", "joker-count"]
+    },
+    {
+      "id": "j_supernova",
+      "name": "Supernova",
+      "synergiesWith": [
+        { "jokerId": "j_jolly", "strength": "strong", "reason": "Pairs easy to spam repeatedly" },
+        { "jokerId": "j_duo", "strength": "strong", "reason": "Both reward pairs" },
+        { "jokerId": "j_shortcut", "strength": "medium", "reason": "Consistent straights boost scaling" },
+        { "jokerId": "j_smeared", "strength": "medium", "reason": "Consistent flushes boost scaling" }
+      ],
+      "strategies": [
+        { "strategy": "mult_stacking", "affinity": 85 },
+        { "strategy": "pairs", "affinity": 90 }
+      ],
+      "isScaling": true,
+      "scalingType": "additive",
+      "generatesMoney": false,
+      "costEfficiency": 80,
+      "tags": ["common", "scaling", "mult", "hand-type"]
+    },
+    {
+      "id": "j_photograph",
+      "name": "Photograph",
+      "synergiesWith": [
+        { "jokerId": "j_hanging_chad", "strength": "strong", "reason": "Retrigger first face card for triple x2" },
+        { "jokerId": "j_sock_and_buskin", "strength": "strong", "reason": "Retrigger face card xMult" },
+        { "jokerId": "j_triboulet", "strength": "strong", "reason": "Stack face card xMults" },
+        { "jokerId": "j_pareidolia", "strength": "medium", "reason": "First card always face" }
+      ],
+      "strategies": [
+        { "strategy": "face_cards", "affinity": 95 },
+        { "strategy": "xmult_scaling", "affinity": 80 },
+        { "strategy": "retrigger", "affinity": 75 }
+      ],
+      "wantsRanks": ["J", "Q", "K"],
+      "isScaling": false,
+      "generatesMoney": false,
+      "costEfficiency": 85,
+      "tags": ["common", "xmult", "face-card", "first-card"]
+    },
+    {
+      "id": "j_smiley",
+      "name": "Smiley Face",
+      "synergiesWith": [
+        { "jokerId": "j_sock_and_buskin", "strength": "strong", "reason": "Retrigger face cards for double mult" },
+        { "jokerId": "j_pareidolia", "strength": "strong", "reason": "All cards give +5 Mult" },
+        { "jokerId": "j_triboulet", "strength": "medium", "reason": "Both reward face cards" }
+      ],
+      "strategies": [
+        { "strategy": "face_cards", "affinity": 90 },
+        { "strategy": "mult_stacking", "affinity": 80 }
+      ],
+      "wantsRanks": ["J", "Q", "K"],
+      "isScaling": false,
+      "generatesMoney": false,
+      "costEfficiency": 75,
+      "tags": ["common", "mult", "face-card"]
+    },
+    {
+      "id": "j_scary_face",
+      "name": "Scary Face",
+      "synergiesWith": [
+        { "jokerId": "j_sock_and_buskin", "strength": "strong", "reason": "Retrigger face cards for double chips" },
+        { "jokerId": "j_pareidolia", "strength": "strong", "reason": "All cards give +30 Chips" },
+        { "jokerId": "j_triboulet", "strength": "medium", "reason": "Both reward face cards" }
+      ],
+      "strategies": [
+        { "strategy": "face_cards", "affinity": 85 },
+        { "strategy": "chip_stacking", "affinity": 80 }
+      ],
+      "wantsRanks": ["J", "Q", "K"],
+      "isScaling": false,
+      "generatesMoney": false,
+      "costEfficiency": 70,
+      "tags": ["common", "chips", "face-card"]
+    },
+    {
+      "id": "j_midas_mask",
+      "name": "Midas Mask",
+      "synergiesWith": [
+        { "jokerId": "j_vampire", "strength": "strong", "reason": "Vampire eats gold enhancement for xMult" },
+        { "jokerId": "j_pareidolia", "strength": "strong", "reason": "All cards become gold when scored" },
+        { "jokerId": "j_golden_ticket", "strength": "strong", "reason": "Gold cards earn $4" },
+        { "jokerId": "j_sock_and_buskin", "strength": "medium", "reason": "Retrigger gold face cards" }
+      ],
+      "strategies": [
+        { "strategy": "face_cards", "affinity": 80 },
+        { "strategy": "economy", "affinity": 85 },
+        { "strategy": "xmult_scaling", "affinity": 70 }
+      ],
+      "wantsRanks": ["J", "Q", "K"],
+      "isScaling": false,
+      "generatesMoney": true,
+      "costEfficiency": 80,
+      "tags": ["uncommon", "gold", "face-card", "economy", "enhancement"]
+    },
+    {
+      "id": "j_campfire",
+      "name": "Campfire",
+      "synergiesWith": [
+        { "jokerId": "j_perkeo", "strength": "strong", "reason": "Sell duplicated consumables for xMult" },
+        { "jokerId": "j_gift", "strength": "medium", "reason": "Increases sell value of consumables" },
+        { "jokerId": "j_egg", "strength": "medium", "reason": "Egg grows sell value over time" }
+      ],
+      "strategies": [
+        { "strategy": "xmult_scaling", "affinity": 85 }
+      ],
+      "isScaling": true,
+      "scalingType": "multiplicative",
+      "generatesMoney": false,
+      "costEfficiency": 75,
+      "tags": ["uncommon", "xmult", "scaling", "selling"]
+    },
+    {
+      "id": "j_wee",
+      "name": "Wee Joker",
+      "synergiesWith": [
+        { "jokerId": "j_hack", "strength": "strong", "reason": "Retrigger 2s for faster scaling" },
+        { "jokerId": "j_fibonacci", "strength": "medium", "reason": "2s are Fibonacci numbers" },
+        { "jokerId": "j_hanging_chad", "strength": "medium", "reason": "Retrigger first 2 for more chips" }
+      ],
+      "strategies": [
+        { "strategy": "chip_stacking", "affinity": 90 },
+        { "strategy": "fibonacci", "affinity": 60 }
+      ],
+      "wantsRanks": ["2"],
+      "isScaling": true,
+      "scalingType": "additive",
+      "generatesMoney": false,
+      "costEfficiency": 85,
+      "tags": ["rare", "scaling", "chips", "rank-specific"]
+    },
+    {
+      "id": "j_space",
+      "name": "Space Joker",
+      "synergiesWith": [
+        { "jokerId": "j_oops", "strength": "strong", "reason": "Double hand upgrade chance" },
+        { "jokerId": "j_supernova", "strength": "medium", "reason": "Both benefit from repeated hand types" }
+      ],
+      "strategies": [
+        { "strategy": "hybrid", "affinity": 75 }
+      ],
+      "isScaling": false,
+      "generatesMoney": false,
+      "costEfficiency": 80,
+      "tags": ["uncommon", "hand-level", "probability"]
+    },
+    {
+      "id": "j_satellite",
+      "name": "Satellite",
+      "synergiesWith": [
+        { "jokerId": "j_constellation", "strength": "strong", "reason": "Both reward planet use" },
+        { "jokerId": "j_astronomer", "strength": "strong", "reason": "Free planets = free money" },
+        { "jokerId": "j_perkeo", "strength": "medium", "reason": "Duplicate planets for more money" }
+      ],
+      "strategies": [
+        { "strategy": "economy", "affinity": 90 }
+      ],
+      "isScaling": false,
+      "generatesMoney": true,
+      "costEfficiency": 80,
+      "tags": ["uncommon", "economy", "money", "planets"]
+    },
+    {
+      "id": "j_astronomer",
+      "name": "Astronomer",
+      "synergiesWith": [
+        { "jokerId": "j_constellation", "strength": "strong", "reason": "Free planets accelerate xMult scaling" },
+        { "jokerId": "j_satellite", "strength": "strong", "reason": "More unique planets = more money" },
+        { "jokerId": "j_perkeo", "strength": "medium", "reason": "Duplicate free planets" }
+      ],
+      "strategies": [
+        { "strategy": "xmult_scaling", "affinity": 80 },
+        { "strategy": "economy", "affinity": 75 }
+      ],
+      "isScaling": false,
+      "generatesMoney": false,
+      "costEfficiency": 90,
+      "tags": ["uncommon", "planets", "free", "hand-level"]
+    },
+    {
+      "id": "j_fortune_teller",
+      "name": "Fortune Teller",
+      "synergiesWith": [
+        { "jokerId": "j_perkeo", "strength": "strong", "reason": "Duplicate tarots for more mult" },
+        { "jokerId": "j_hallucination", "strength": "medium", "reason": "Create tarots from boosters" },
+        { "jokerId": "j_cartomancer", "strength": "medium", "reason": "Create tarots when blind selected" }
+      ],
+      "strategies": [
+        { "strategy": "mult_stacking", "affinity": 80 }
+      ],
+      "isScaling": true,
+      "scalingType": "additive",
+      "generatesMoney": false,
+      "costEfficiency": 75,
+      "tags": ["common", "scaling", "mult", "tarots"]
+    },
+    {
+      "id": "j_loyalty_card",
+      "name": "Loyalty Card",
+      "synergiesWith": [
+        { "jokerId": "j_blueprint", "strength": "strong", "reason": "Copy x4 Mult every 6 hands" },
+        { "jokerId": "j_brainstorm", "strength": "strong", "reason": "Copy x4 Mult every 6 hands" }
+      ],
+      "strategies": [
+        { "strategy": "xmult_scaling", "affinity": 75 }
+      ],
+      "isScaling": false,
+      "generatesMoney": false,
+      "costEfficiency": 70,
+      "tags": ["uncommon", "xmult", "periodic"]
+    },
+    {
+      "id": "j_seance",
+      "name": "Séance",
+      "synergiesWith": [
+        { "jokerId": "j_four_fingers", "strength": "strong", "reason": "4-card straight flushes possible" },
+        { "jokerId": "j_shortcut", "strength": "strong", "reason": "Gapped straight flushes easier" },
+        { "jokerId": "j_smeared", "strength": "strong", "reason": "Suit merge enables straight flush" }
+      ],
+      "strategies": [
+        { "strategy": "flush", "affinity": 70 },
+        { "strategy": "straight", "affinity": 70 }
+      ],
+      "isScaling": false,
+      "generatesMoney": false,
+      "costEfficiency": 65,
+      "tags": ["uncommon", "spectral", "straight-flush"]
+    },
+    {
+      "id": "j_seltzer",
+      "name": "Seltzer",
+      "synergiesWith": [
+        { "jokerId": "j_dusk", "strength": "strong", "reason": "Stack retriggers" },
+        { "jokerId": "j_hanging_chad", "strength": "strong", "reason": "Stack retriggers on first card" },
+        { "jokerId": "j_hack", "strength": "strong", "reason": "Low cards retrigger multiple times" },
+        { "jokerId": "j_sock_and_buskin", "strength": "strong", "reason": "Face cards retrigger multiple times" }
+      ],
+      "strategies": [
+        { "strategy": "retrigger", "affinity": 95 }
+      ],
+      "isScaling": false,
+      "generatesMoney": false,
+      "costEfficiency": 80,
+      "tags": ["uncommon", "retrigger", "temporary"]
+    },
+    {
+      "id": "j_acrobat",
+      "name": "Acrobat",
+      "synergiesWith": [
+        { "jokerId": "j_dusk", "strength": "strong", "reason": "Both trigger on final hand" },
+        { "jokerId": "j_blueprint", "strength": "medium", "reason": "Copy x3 on final hand" }
+      ],
+      "strategies": [
+        { "strategy": "xmult_scaling", "affinity": 75 }
+      ],
+      "isScaling": false,
+      "generatesMoney": false,
+      "costEfficiency": 75,
+      "tags": ["uncommon", "xmult", "final-hand"]
+    },
+    {
+      "id": "j_jolly",
+      "name": "Jolly Joker",
+      "synergiesWith": [
+        { "jokerId": "j_supernova", "strength": "strong", "reason": "Pairs easy to spam for Supernova" },
+        { "jokerId": "j_duo", "strength": "strong", "reason": "Both reward pairs" },
+        { "jokerId": "j_sly", "strength": "medium", "reason": "Both give bonus on pairs" }
+      ],
+      "strategies": [
+        { "strategy": "pairs", "affinity": 90 },
+        { "strategy": "mult_stacking", "affinity": 75 }
+      ],
+      "isScaling": false,
+      "generatesMoney": false,
+      "costEfficiency": 70,
+      "tags": ["common", "mult", "pairs"]
+    },
+    {
+      "id": "j_duo",
+      "name": "The Duo",
+      "synergiesWith": [
+        { "jokerId": "j_jolly", "strength": "strong", "reason": "Both reward pairs" },
+        { "jokerId": "j_supernova", "strength": "strong", "reason": "Pairs easy to spam" },
+        { "jokerId": "j_sly", "strength": "medium", "reason": "Both give bonus on pairs" }
+      ],
+      "strategies": [
+        { "strategy": "pairs", "affinity": 100 },
+        { "strategy": "xmult_scaling", "affinity": 80 }
+      ],
+      "isScaling": false,
+      "generatesMoney": false,
+      "costEfficiency": 85,
+      "tags": ["rare", "xmult", "pairs"]
+    },
+    {
+      "id": "j_trio",
+      "name": "The Trio",
+      "synergiesWith": [
+        { "jokerId": "j_zany", "strength": "strong", "reason": "Both reward three of a kind" },
+        { "jokerId": "j_wily", "strength": "medium", "reason": "Chips + xMult on three of a kind" }
+      ],
+      "strategies": [
+        { "strategy": "pairs", "affinity": 95 },
+        { "strategy": "xmult_scaling", "affinity": 85 }
+      ],
+      "isScaling": false,
+      "generatesMoney": false,
+      "costEfficiency": 85,
+      "tags": ["rare", "xmult", "three-of-a-kind"]
+    },
+    {
+      "id": "j_family",
+      "name": "The Family",
+      "synergiesWith": [
+        { "jokerId": "j_dna", "strength": "strong", "reason": "Duplicate cards for easier four of a kind" }
+      ],
+      "strategies": [
+        { "strategy": "pairs", "affinity": 100 },
+        { "strategy": "xmult_scaling", "affinity": 90 }
+      ],
+      "isScaling": false,
+      "generatesMoney": false,
+      "costEfficiency": 90,
+      "tags": ["rare", "xmult", "four-of-a-kind"]
+    },
+    {
+      "id": "j_order",
+      "name": "The Order",
+      "synergiesWith": [
+        { "jokerId": "j_shortcut", "strength": "strong", "reason": "Easier straights" },
+        { "jokerId": "j_four_fingers", "strength": "strong", "reason": "4-card straights" },
+        { "jokerId": "j_runner", "strength": "strong", "reason": "Both reward straights" },
+        { "jokerId": "j_crazy", "strength": "medium", "reason": "Both reward straights" }
+      ],
+      "strategies": [
+        { "strategy": "straight", "affinity": 100 },
+        { "strategy": "xmult_scaling", "affinity": 85 }
+      ],
+      "isScaling": false,
+      "generatesMoney": false,
+      "costEfficiency": 90,
+      "tags": ["rare", "xmult", "straight"]
+    },
+    {
+      "id": "j_tribe",
+      "name": "The Tribe",
+      "synergiesWith": [
+        { "jokerId": "j_smeared", "strength": "strong", "reason": "Easier flushes" },
+        { "jokerId": "j_four_fingers", "strength": "strong", "reason": "4-card flushes" },
+        { "jokerId": "j_lusty_joker", "strength": "medium", "reason": "Both reward flushes" },
+        { "jokerId": "j_droll", "strength": "medium", "reason": "Both reward flushes" }
+      ],
+      "strategies": [
+        { "strategy": "flush", "affinity": 100 },
+        { "strategy": "xmult_scaling", "affinity": 80 }
+      ],
+      "isScaling": false,
+      "generatesMoney": false,
+      "costEfficiency": 85,
+      "tags": ["rare", "xmult", "flush"]
+    },
+    {
+      "id": "j_blackboard",
+      "name": "Blackboard",
+      "synergiesWith": [
+        { "jokerId": "j_smeared", "strength": "strong", "reason": "Easier all-black hands" },
+        { "jokerId": "j_wrathful_joker", "strength": "medium", "reason": "Both want spades" },
+        { "jokerId": "j_gluttonous_joker", "strength": "medium", "reason": "Both want clubs" },
+        { "jokerId": "j_arrowhead", "strength": "medium", "reason": "Both want spades" },
+        { "jokerId": "j_onyx_agate", "strength": "medium", "reason": "Both want clubs" }
+      ],
+      "strategies": [
+        { "strategy": "flush", "affinity": 80 },
+        { "strategy": "xmult_scaling", "affinity": 85 }
+      ],
+      "wantsSuits": ["spades", "clubs"],
+      "isScaling": false,
+      "generatesMoney": false,
+      "costEfficiency": 80,
+      "tags": ["uncommon", "xmult", "black-suits", "held-cards"]
+    },
+    {
+      "id": "j_throwback",
+      "name": "Throwback",
+      "synergiesWith": [],
+      "strategies": [
+        { "strategy": "xmult_scaling", "affinity": 75 }
+      ],
+      "isScaling": true,
+      "scalingType": "multiplicative",
+      "generatesMoney": false,
+      "costEfficiency": 70,
+      "tags": ["uncommon", "xmult", "scaling", "blind-skip"]
+    },
+    {
+      "id": "j_red_card",
+      "name": "Red Card",
+      "synergiesWith": [],
+      "strategies": [
+        { "strategy": "mult_stacking", "affinity": 70 }
+      ],
+      "isScaling": true,
+      "scalingType": "additive",
+      "generatesMoney": false,
+      "costEfficiency": 65,
+      "tags": ["common", "scaling", "mult", "booster-skip"]
+    },
+    {
+      "id": "j_showman",
+      "name": "Showman",
+      "synergiesWith": [
+        { "jokerId": "j_invisible", "strength": "strong", "reason": "Can acquire duplicate Invisible" },
+        { "jokerId": "j_perkeo", "strength": "medium", "reason": "Legendaries can reappear" }
+      ],
+      "strategies": [
+        { "strategy": "hybrid", "affinity": 80 }
+      ],
+      "isScaling": false,
+      "generatesMoney": false,
+      "costEfficiency": 75,
+      "tags": ["uncommon", "shop", "duplicate-cards"]
+    },
+    {
+      "id": "j_bloodstone",
+      "name": "Bloodstone",
+      "synergiesWith": [
+        { "jokerId": "j_lusty_joker", "strength": "strong", "reason": "Both scale with Hearts" },
+        { "jokerId": "j_smeared", "strength": "strong", "reason": "Diamonds count as Hearts" },
+        { "jokerId": "j_oops", "strength": "strong", "reason": "Double xMult trigger chance" }
+      ],
+      "strategies": [
+        { "strategy": "flush", "affinity": 90 },
+        { "strategy": "xmult_scaling", "affinity": 85 }
+      ],
+      "wantsSuits": ["hearts"],
+      "isScaling": false,
+      "generatesMoney": false,
+      "costEfficiency": 80,
+      "tags": ["uncommon", "xmult", "hearts", "probability"]
+    },
+    {
+      "id": "j_arrowhead",
+      "name": "Arrowhead",
+      "synergiesWith": [
+        { "jokerId": "j_wrathful_joker", "strength": "strong", "reason": "Both scale with Spades" },
+        { "jokerId": "j_smeared", "strength": "strong", "reason": "Clubs count as Spades" },
+        { "jokerId": "j_blackboard", "strength": "medium", "reason": "Both want black suits" }
+      ],
+      "strategies": [
+        { "strategy": "flush", "affinity": 90 },
+        { "strategy": "chip_stacking", "affinity": 85 }
+      ],
+      "wantsSuits": ["spades"],
+      "isScaling": false,
+      "generatesMoney": false,
+      "costEfficiency": 80,
+      "tags": ["uncommon", "chips", "spades"]
+    },
+    {
+      "id": "j_onyx_agate",
+      "name": "Onyx Agate",
+      "synergiesWith": [
+        { "jokerId": "j_gluttonous_joker", "strength": "strong", "reason": "Both scale with Clubs" },
+        { "jokerId": "j_smeared", "strength": "strong", "reason": "Spades count as Clubs" },
+        { "jokerId": "j_blackboard", "strength": "medium", "reason": "Both want black suits" },
+        { "jokerId": "j_seeing_double", "strength": "medium", "reason": "Both want Clubs" }
+      ],
+      "strategies": [
+        { "strategy": "flush", "affinity": 90 },
+        { "strategy": "mult_stacking", "affinity": 85 }
+      ],
+      "wantsSuits": ["clubs"],
+      "isScaling": false,
+      "generatesMoney": false,
+      "costEfficiency": 80,
+      "tags": ["uncommon", "mult", "clubs"]
+    },
+    {
+      "id": "j_rough_gem",
+      "name": "Rough Gem",
+      "synergiesWith": [
+        { "jokerId": "j_greedy_joker", "strength": "strong", "reason": "Both scale with Diamonds" },
+        { "jokerId": "j_smeared", "strength": "strong", "reason": "Hearts count as Diamonds" }
+      ],
+      "strategies": [
+        { "strategy": "flush", "affinity": 85 },
+        { "strategy": "economy", "affinity": 90 }
+      ],
+      "wantsSuits": ["diamonds"],
+      "isScaling": false,
+      "generatesMoney": true,
+      "costEfficiency": 75,
+      "tags": ["uncommon", "economy", "money", "diamonds"]
+    }
+  ],
+  "strategyDefinitions": {
+    "flush": {
+      "description": "Focus on one suit for Flush hands",
+      "requiredTags": ["suit", "flush-enabler"],
+      "minSuitConcentration": 0.4
+    },
+    "straight": {
+      "description": "Build around sequential card straights",
+      "requiredTags": ["straight-enabler", "straight-specific"]
+    },
+    "pairs": {
+      "description": "Focus on Pair, Two Pair, Three/Four of a Kind hands",
+      "requiredTags": ["pairs", "three-of-a-kind", "four-of-a-kind"]
+    },
+    "fibonacci": {
+      "description": "Build around A,2,3,5,8 rank cards",
+      "requiredTags": ["fibonacci"],
+      "requiredRanks": ["A", "2", "3", "5", "8"]
+    },
+    "even_steven": {
+      "description": "Build around even rank cards (2,4,6,8,10)",
+      "requiredTags": ["even"],
+      "requiredRanks": ["2", "4", "6", "8", "10"]
+    },
+    "odd_todd": {
+      "description": "Build around odd rank cards (A,3,5,7,9)",
+      "requiredTags": ["odd"],
+      "requiredRanks": ["A", "3", "5", "7", "9"]
+    },
+    "face_cards": {
+      "description": "Build around J,Q,K face cards",
+      "requiredTags": ["face-card"],
+      "requiredRanks": ["J", "Q", "K"]
+    },
+    "retrigger": {
+      "description": "Stack retrigger effects for massive scoring",
+      "requiredTags": ["retrigger"]
+    },
+    "steel_scaling": {
+      "description": "Build around Steel card xMult",
+      "requiredTags": ["steel"],
+      "requiredEnhancements": ["steel"]
+    },
+    "glass_cannon": {
+      "description": "High risk Glass card build",
+      "requiredTags": ["glass"],
+      "requiredEnhancements": ["glass"]
+    },
+    "economy": {
+      "description": "Money generation and scaling",
+      "requiredTags": ["economy", "money"]
+    },
+    "mult_stacking": {
+      "description": "Stack additive mult bonuses",
+      "requiredTags": ["mult"]
+    },
+    "xmult_scaling": {
+      "description": "Stack multiplicative xMult bonuses",
+      "requiredTags": ["xmult"]
+    },
+    "chip_stacking": {
+      "description": "Stack chip bonuses",
+      "requiredTags": ["chips"]
+    },
+    "hybrid": {
+      "description": "Mixed approach with multiple synergies",
+      "requiredTags": []
+    }
+  }
+}
