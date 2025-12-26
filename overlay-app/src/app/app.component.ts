@@ -2,11 +2,12 @@ import { Component, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterOutlet } from '@angular/router';
 import { GameStateService } from './core/services';
+import { JokerBarComponent } from './features/joker-display';
 
 @Component({
   selector: 'app-root',
   standalone: true,
-  imports: [CommonModule, RouterOutlet],
+  imports: [CommonModule, RouterOutlet, JokerBarComponent],
   templateUrl: './app.component.html',
   styleUrl: './app.component.scss'
 })

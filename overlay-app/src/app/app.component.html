@@ -33,9 +33,11 @@
         <p class="text-sm mt-2">Start the game with the BalatroOverlay mod installed</p>
       </div>
     } @else {
-      <div class="text-sm text-white/70">
-        <p>Phase: {{ phase() }}</p>
-        <!-- Feature components will be added here -->
+      <div class="space-y-2">
+        <!-- Joker display -->
+        <app-joker-bar />
+
+        <!-- Other feature components -->
         <router-outlet></router-outlet>
       </div>
     }
