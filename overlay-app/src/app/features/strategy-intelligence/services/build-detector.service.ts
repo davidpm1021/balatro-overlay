@@ -4,149 +4,34 @@ import { DetectedStrategy, StrategyType } from '../../../../../../shared/models'
 import { Card, Suit, Rank } from '../../../../../../shared/models';
 import { JokerState } from '../../../../../../shared/models';
 
+// Import joker data from consolidated source
+import jokersData from '../../../data/jokers-complete.json';
+
 /**
- * Joker affinity mapping - which strategies each joker supports
+ * Joker entry from the JSON database
  */
-interface JokerAffinity {
-  strategies: Partial<Record<StrategyType, number>>; // 0-100 affinity
-  suits?: Suit[];
-  ranks?: Rank[];
+interface JokerDataEntry {
+  id: string;
+  name: string;
+  builds: {
+    flush: number;
+    pairs: number;
+    straights: number;
+    face_cards: number;
+    xmult_scaling: number;
+    retrigger: number;
+    economy: number;
+  };
 }
 
 /**
- * JOKER_AFFINITIES maps joker IDs to their strategy affinities.
- * Built from analyzing joker descriptions and effects.
+ * Internal affinity structure derived from joker data
  */
-const JOKER_AFFINITIES: Record<string, JokerAffinity> = {
-  // Flush-supporting jokers
-  'j_greedy_joker': { strategies: { flush: 70 }, suits: ['diamonds'] },
-  'j_lusty_joker': { strategies: { flush: 70 }, suits: ['hearts'] },
-  'j_wrathful_joker': { strategies: { flush: 70 }, suits: ['spades'] },
-  'j_gluttonous_joker': { strategies: { flush: 70 }, suits: ['clubs'] },
-  'j_droll': { strategies: { flush: 80 } },
-  'j_crafty': { strategies: { flush: 60 } },
-  'j_tribe': { strategies: { flush: 90 } },
-  'j_the_tribe': { strategies: { flush: 90 } },
-  'j_smeared': { strategies: { flush: 50 } },
-  'j_rough_gem': { strategies: { flush: 60 }, suits: ['diamonds'] },
-  'j_bloodstone': { strategies: { flush: 60, xmult_scaling: 40 }, suits: ['hearts'] },
-  'j_arrowhead': { strategies: { flush: 60 }, suits: ['spades'] },
-  'j_onyx_agate': { strategies: { flush: 60 }, suits: ['clubs'] },
-  'j_blackboard': { strategies: { flush: 50 }, suits: ['spades', 'clubs'] },
-  'j_four_fingers': { strategies: { flush: 70, straight: 70 } },
-  'j_flower_pot': { strategies: { flush: -30 } }, // Anti-flush, needs all suits
-
-  // Pair/Set supporting jokers
-  'j_jolly': { strategies: { pairs: 80 } },
-  'j_zany': { strategies: { pairs: 85 } },
-  'j_mad': { strategies: { pairs: 75 } },
-  'j_sly': { strategies: { pairs: 60 } },
-  'j_wily': { strategies: { pairs: 65 } },
-  'j_clever': { strategies: { pairs: 60 } },
-  'j_duo': { strategies: { pairs: 90 } },
-  'j_the_duo': { strategies: { pairs: 90 } },
-  'j_trio': { strategies: { pairs: 95 } },
-  'j_the_trio': { strategies: { pairs: 95 } },
-  'j_family': { strategies: { pairs: 100 } },
-  'j_the_family': { strategies: { pairs: 100 } },
-  'j_trousers': { strategies: { pairs: 70 } },
-  'j_spare_trousers': { strategies: { pairs: 70 } },
-  'j_card_sharp': { strategies: { pairs: 40 } },
-
-  // +Mult stacking jokers
-  'j_joker': { strategies: { mult_stacking: 50 } },
-  'j_half': { strategies: { mult_stacking: 60 } },
-  'j_mystic_summit': { strategies: { mult_stacking: 50 } },
-  'j_gros_michel': { strategies: { mult_stacking: 70 } },
-  'j_abstract': { strategies: { mult_stacking: 60 } },
-  'j_misprint': { strategies: { mult_stacking: 40 } },
-  'j_raised_fist': { strategies: { mult_stacking: 50 } },
-  'j_green_joker': { strategies: { mult_stacking: 60 } },
-  'j_popcorn': { strategies: { mult_stacking: 50 } },
-  'j_flash': { strategies: { mult_stacking: 50 } },
-  'j_flash_card': { strategies: { mult_stacking: 50 } },
-  'j_bootstraps': { strategies: { mult_stacking: 60 } },
-  'j_fortune_teller': { strategies: { mult_stacking: 50 } },
-  'j_erosion': { strategies: { mult_stacking: 55 } },
-  'j_swashbuckler': { strategies: { mult_stacking: 50 } },
-  'j_ride_the_bus': { strategies: { mult_stacking: 60 } },
-  'j_supernova': { strategies: { mult_stacking: 55 } },
-
-  // xMult scaling jokers
-  'j_cavendish': { strategies: { xmult_scaling: 90 } },
-  'j_loyalty_card': { strategies: { xmult_scaling: 75 } },
-  'j_photograph': { strategies: { xmult_scaling: 60, face_cards: 40 } },
-  'j_steel_joker': { strategies: { xmult_scaling: 80 } },
-  'j_constellation': { strategies: { xmult_scaling: 70 } },
-  'j_madness': { strategies: { xmult_scaling: 65 } },
-  'j_vampire': { strategies: { xmult_scaling: 70 } },
-  'j_hologram': { strategies: { xmult_scaling: 75 } },
-  'j_lucky_cat': { strategies: { xmult_scaling: 70 } },
-  'j_glass': { strategies: { xmult_scaling: 75 } },
-  'j_glass_joker': { strategies: { xmult_scaling: 75 } },
-  'j_campfire': { strategies: { xmult_scaling: 65 } },
-  'j_acrobat': { strategies: { xmult_scaling: 70 } },
-  'j_throwback': { strategies: { xmult_scaling: 60 } },
-  'j_obelisk': { strategies: { xmult_scaling: 70 } },
-  'j_stencil': { strategies: { xmult_scaling: 50 } },
-  'j_joker_stencil': { strategies: { xmult_scaling: 50 } },
-  'j_baron': { strategies: { xmult_scaling: 75, face_cards: 80 } },
-  'j_ancient': { strategies: { xmult_scaling: 60 } },
-  'j_ancient_joker': { strategies: { xmult_scaling: 60 } },
-  'j_ramen': { strategies: { xmult_scaling: 70 } },
-  'j_blueprint': { strategies: { xmult_scaling: 40 } },
-  'j_brainstorm': { strategies: { xmult_scaling: 40 } },
-  'j_dusk': { strategies: { xmult_scaling: 50 } },
-  'j_seltzer': { strategies: { xmult_scaling: 55 } },
-  'j_drivers_license': { strategies: { xmult_scaling: 70 } },
-
-  // Fibonacci jokers (2, 3, 5, 8, Ace)
-  'j_fibonacci': { strategies: { fibonacci: 100 }, ranks: ['2', '3', '5', '8', 'A'] },
-  'j_hack': { strategies: { fibonacci: 40 }, ranks: ['2', '3', '4', '5'] },
-  'j_wee': { strategies: { fibonacci: 50 }, ranks: ['2'] },
-  'j_wee_joker': { strategies: { fibonacci: 50 }, ranks: ['2'] },
-  'j_scholar': { strategies: { fibonacci: 30 }, ranks: ['A'] },
-
-  // Face card jokers (J, Q, K)
-  'j_scary_face': { strategies: { face_cards: 80 } },
-  'j_smiley': { strategies: { face_cards: 80 } },
-  'j_business': { strategies: { face_cards: 60 } },
-  'j_faceless': { strategies: { face_cards: 50 } },
-  'j_reserved_parking': { strategies: { face_cards: 50 } },
-  'j_pareidolia': { strategies: { face_cards: 70 } },
-  'j_sock_and_buskin': { strategies: { face_cards: 85 } },
-  'j_hanging_chad': { strategies: { face_cards: 40 } },
-  'j_shoot_the_moon': { strategies: { face_cards: 75 }, ranks: ['Q'] },
-  'j_triboulet': { strategies: { face_cards: 90, xmult_scaling: 70 }, ranks: ['K', 'Q'] },
-  'j_midas_mask': { strategies: { face_cards: 60 } },
-  'j_canio': { strategies: { face_cards: 80, xmult_scaling: 60 } },
-
-  // Straight supporting jokers
-  'j_crazy': { strategies: { straight: 80 } },
-  'j_devious': { strategies: { straight: 60 } },
-  'j_runner': { strategies: { straight: 75 } },
-  'j_order': { strategies: { straight: 90 } },
-  'j_the_order': { strategies: { straight: 90 } },
-  'j_shortcut': { strategies: { straight: 70 } },
-  'j_superposition': { strategies: { straight: 50 } },
-
-  // Even/Odd jokers (related strategies)
-  'j_even_steven': { strategies: { pairs: 30 }, ranks: ['2', '4', '6', '8', '10'] },
-  'j_odd_todd': { strategies: { pairs: 30 }, ranks: ['A', '3', '5', '7', '9'] },
-  'j_walkie_talkie': { strategies: { pairs: 20 }, ranks: ['4', '10'] },
-
-  // Economy jokers (no direct build affinity)
-  'j_golden': { strategies: {} },
-  'j_egg': { strategies: {} },
-  'j_credit_card': { strategies: {} },
-  'j_cloud_9': { strategies: {} },
-  'j_rocket': { strategies: {} },
-  'j_to_the_moon': { strategies: {} },
-  'j_delayed_grat': { strategies: {} },
-  'j_delayed_gratification': { strategies: {} },
-  'j_chaos': { strategies: {} },
-  'j_chaos_the_clown': { strategies: {} },
-};
+interface JokerAffinity {
+  strategies: Partial<Record<StrategyType, number>>;
+  suits?: Suit[];
+  ranks?: Rank[];
+}
 
 /**
  * Fibonacci ranks for detection
@@ -157,6 +42,76 @@ const FIBONACCI_RANKS: Rank[] = ['2', '3', '5', '8', 'A'];
  * Face card ranks for detection
  */
 const FACE_RANKS: Rank[] = ['J', 'Q', 'K'];
+
+/**
+ * Map of joker IDs to their suit affinities (for suit-specific jokers)
+ */
+const SUIT_AFFINITIES: Record<string, Suit[]> = {
+  greedy_joker: ['diamonds'],
+  lusty_joker: ['hearts'],
+  wrathful_joker: ['spades'],
+  gluttonous_joker: ['clubs'],
+  rough_gem: ['diamonds'],
+  bloodstone: ['hearts'],
+  arrowhead: ['spades'],
+  onyx_agate: ['clubs'],
+  blackboard: ['spades', 'clubs'],
+};
+
+/**
+ * Map of joker IDs to their rank affinities (for rank-specific jokers)
+ */
+const RANK_AFFINITIES: Record<string, Rank[]> = {
+  fibonacci: ['2', '3', '5', '8', 'A'],
+  hack: ['2', '3', '4', '5'],
+  wee_joker: ['2'],
+  scholar: ['A'],
+  even_steven: ['2', '4', '6', '8', '10'],
+  odd_todd: ['A', '3', '5', '7', '9'],
+  walkie_talkie: ['4', '10'],
+  triboulet: ['K', 'Q'],
+  shoot_the_moon: ['Q'],
+};
+
+/**
+ * Build joker affinity map from jokers-complete.json
+ * Maps joker IDs to their strategy affinities
+ */
+function buildJokerAffinities(): Record<string, JokerAffinity> {
+  const affinities: Record<string, JokerAffinity> = {};
+
+  for (const joker of (jokersData as { jokers: JokerDataEntry[] }).jokers) {
+    const builds = joker.builds;
+    if (!builds) continue;
+
+    const strategies: Partial<Record<StrategyType, number>> = {};
+
+    // Map from JSON field names to StrategyType values
+    if (builds.flush > 0) strategies.flush = builds.flush;
+    if (builds.pairs > 0) strategies.pairs = builds.pairs;
+    if (builds.straights > 0) strategies.straight = builds.straights; // Note: straights -> straight
+    if (builds.face_cards > 0) strategies.face_cards = builds.face_cards;
+    if (builds.xmult_scaling > 0) strategies.xmult_scaling = builds.xmult_scaling;
+    if (builds.retrigger > 0) strategies.retrigger = builds.retrigger;
+    if (builds.economy > 0) strategies.economy = builds.economy;
+
+    // Only add if there are any strategies
+    if (Object.keys(strategies).length > 0) {
+      affinities[joker.id] = {
+        strategies,
+        suits: SUIT_AFFINITIES[joker.id],
+        ranks: RANK_AFFINITIES[joker.id],
+      };
+    }
+  }
+
+  return affinities;
+}
+
+/**
+ * Computed joker affinities from the consolidated database
+ */
+const JOKER_AFFINITIES = buildJokerAffinities();
 
 @Injectable({ providedIn: 'root' })
 export class BuildDetectorService {
