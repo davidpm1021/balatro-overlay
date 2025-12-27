@@ -804,4 +804,219 @@ describe('BuildDetectorService', () => {
       expect(typeof signals.pairs).toBe('number');
     });
   });
+
+  // ===========================
+  // BUG-004: Build detection not updating on joker acquisition
+  // Signal reactivity tests
+  // ===========================
+
+  describe('BUG-004: Build Detection Signal Reactivity', () => {
+    it('should update detected strategies when jokers signal changes', () => {
+      // Start with no jokers
+      gameStateSignal.set(createMockGameState({
+        deck: createDeck(createStandardDeck()),
+        jokers: [],
+      }));
+
+      const initialStrategies = service.detectedStrategies();
+      const initialFlush = initialStrategies.find(s => s.type === 'flush');
+      const initialFlushConfidence = initialFlush?.confidence ?? 0;
+
+      // Add a flush joker
+      gameStateSignal.set(createMockGameState({
+        deck: createDeck(createStandardDeck()),
+        jokers: [
+          createJoker({ id: 'lusty_joker', name: 'Lusty Joker' }),
+        ],
+      }));
+
+      const updatedStrategies = service.detectedStrategies();
+      const updatedFlush = updatedStrategies.find(s => s.type === 'flush');
+      const updatedFlushConfidence = updatedFlush?.confidence ?? 0;
+
+      // Flush confidence should increase after acquiring a flush joker
+      expect(updatedFlushConfidence).toBeGreaterThan(initialFlushConfidence);
+    });
+
+    it('should immediately show flush build when acquiring flush joker', () => {
+      // Start with no jokers and a standard deck
+      gameStateSignal.set(createMockGameState({
+        deck: createDeck(createStandardDeck()),
+        jokers: [],
+      }));
+
+      // Get initial primary strategy (if any)
+      const initialPrimary = service.primaryStrategy();
+
+      // Add a strong flush joker like Lusty Joker
+      gameStateSignal.set(createMockGameState({
+        deck: createDeck(createFlushHeavyDeck('hearts', 0.5)),
+        jokers: [
+          createJoker({ id: 'lusty_joker', name: 'Lusty Joker' }),
+          createJoker({ id: 'bloodstone', name: 'Bloodstone' }),
+        ],
+      }));
+
+      const updatedBuild = service.detectedBuild();
+
+      // With flush jokers and concentrated deck, flush should be detected
+      expect(updatedBuild.primary).not.toBeNull();
+      expect(updatedBuild.primary?.type).toBe('flush');
+      expect(updatedBuild.primary?.confidence).toBeGreaterThan(0);
+    });
+
+    it('should update build detection in real-time as jokers change', () => {
+      const standardDeck = createStandardDeck();
+
+      // Start with pairs jokers
+      gameStateSignal.set(createMockGameState({
+        deck: createDeck(standardDeck),
+        jokers: [
+          createJoker({ id: 'zany_joker', name: 'Zany Joker' }),
+        ],
+      }));
+
+      const pairsStrategies = service.detectedStrategies();
+      const pairsStrategy = pairsStrategies.find(s => s.type === 'pairs');
+
+      // Switch to flush jokers
+      gameStateSignal.set(createMockGameState({
+        deck: createDeck(standardDeck),
+        jokers: [
+          createJoker({ id: 'lusty_joker', name: 'Lusty Joker' }),
+        ],
+      }));
+
+      const flushStrategies = service.detectedStrategies();
+      const flushStrategy = flushStrategies.find(s => s.type === 'flush');
+
+      // Both should have been detected when their jokers were present
+      // The key assertion is that strategies array changes reactively
+      expect(pairsStrategies).not.toEqual(flushStrategies);
+    });
+
+    it('should recalculate confidence when jokers added', () => {
+      // Start with a flush-oriented deck but no jokers
+      const flushDeck = createFlushHeavyDeck('hearts', 0.6);
+      gameStateSignal.set(createMockGameState({
+        deck: createDeck(flushDeck),
+        jokers: [],
+      }));
+
+      const confidenceBefore = service.detectedStrategies().find(s => s.type === 'flush')?.confidence ?? 0;
+
+      // Add multiple flush jokers
+      gameStateSignal.set(createMockGameState({
+        deck: createDeck(flushDeck),
+        jokers: [
+          createJoker({ id: 'lusty_joker', name: 'Lusty Joker' }),
+          createJoker({ id: 'bloodstone', name: 'Bloodstone' }),
+          createJoker({ id: 'rough_gem', name: 'Rough Gem' }),
+        ],
+      }));
+
+      const confidenceAfter = service.detectedStrategies().find(s => s.type === 'flush')?.confidence ?? 0;
+
+      // Confidence should be higher with more jokers
+      expect(confidenceAfter).toBeGreaterThan(confidenceBefore);
+    });
+  });
+
+  // ===========================
+  // BUG-002: Build detection shows confidence on empty state
+  // Minimum joker signal threshold tests
+  // ===========================
+
+  describe('BUG-002: Zero Jokers = Zero Build Confidence', () => {
+    it('should return zero confidence when no jokers present', () => {
+      // Fresh run with standard deck, no jokers
+      gameStateSignal.set(createMockGameState({
+        deck: createDeck(createStandardDeck()),
+        jokers: [],
+      }));
+
+      const strategies = service.detectedStrategies();
+
+      // All strategies should have 0 confidence (or be empty)
+      // Standard deck has pairs, but without jokers, no build should be detected
+      strategies.forEach(strategy => {
+        expect(strategy.confidence).toBe(0);
+      });
+    });
+
+    it('should show "No build detected" with fresh run and no jokers', () => {
+      gameStateSignal.set(createMockGameState({
+        deck: createDeck(createStandardDeck()),
+        jokers: [],
+      }));
+
+      const build = service.detectedBuild();
+      const primary = service.primaryStrategy();
+
+      // Either primary is null or has 0 confidence
+      if (primary !== null) {
+        expect(primary.confidence).toBe(0);
+      } else {
+        expect(build.primary).toBeNull();
+      }
+    });
+
+    it('should require minimum joker signal for any strategy detection', () => {
+      // Even with a flush-heavy deck, no jokers = no build
+      const flushDeck = createFlushHeavyDeck('hearts', 0.8);
+      gameStateSignal.set(createMockGameState({
+        deck: createDeck(flushDeck),
+        jokers: [],
+      }));
+
+      const strategies = service.detectedStrategies();
+      const flushStrategy = strategies.find(s => s.type === 'flush');
+
+      // Flush strategy should have 0 confidence without jokers
+      expect(flushStrategy?.confidence ?? 0).toBe(0);
+    });
+
+    it('should detect build only after acquiring relevant jokers', () => {
+      // Start with flush deck but no jokers
+      const flushDeck = createFlushHeavyDeck('hearts', 0.7);
+      gameStateSignal.set(createMockGameState({
+        deck: createDeck(flushDeck),
+        jokers: [],
+      }));
+
+      let strategies = service.detectedStrategies();
+      expect(strategies.every(s => s.confidence === 0)).toBeTrue();
+
+      // Add a flush joker - now build should be detected
+      gameStateSignal.set(createMockGameState({
+        deck: createDeck(flushDeck),
+        jokers: [createJoker({ id: 'lusty_joker', name: 'Lusty Joker' })],
+      }));
+
+      strategies = service.detectedStrategies();
+      const flushStrategy = strategies.find(s => s.type === 'flush');
+
+      // Now flush should have confidence > 0
+      expect(flushStrategy?.confidence).toBeGreaterThan(0);
+    });
+
+    it('should apply minimum joker signal threshold of 10', () => {
+      // With joker signal < 10, confidence should be 0
+      // Test by having a very weak joker affinity setup
+      const standardDeck = createStandardDeck();
+
+      // A joker with minimal affinity to any strategy
+      gameStateSignal.set(createMockGameState({
+        deck: createDeck(standardDeck),
+        jokers: [createJoker({ id: 'non_existent_joker', name: 'Unknown' })],
+      }));
+
+      const strategies = service.detectedStrategies();
+
+      // All strategies should still be 0 with unknown joker
+      strategies.forEach(strategy => {
+        expect(strategy.confidence).toBe(0);
+      });
+    });
+  });
 });

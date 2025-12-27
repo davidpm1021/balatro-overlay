@@ -74,6 +74,13 @@ const FIBONACCI_RANKS: Rank[] = ['2', '3', '5', '8', 'A'];
 const FACE_RANKS: Rank[] = ['J', 'Q', 'K'];
 
 /**
+ * Minimum joker signal threshold for build detection
+ * If joker signal is below this, confidence will be 0
+ * This prevents deck composition alone from triggering build detection
+ */
+const MIN_JOKER_SIGNAL_THRESHOLD = 10;
+
+/**
  * Map of joker IDs to their suit affinities (for suit-specific jokers)
  */
 const SUIT_AFFINITIES: Record<string, Suit[]> = {
@@ -381,7 +388,9 @@ export class BuildDetectorService {
     const deckScore = Math.min(100, Math.max(0, (suitConcentration - 0.25) * 200));
 
     // Combined score: 40% deck, 60% jokers
-    const confidence = Math.round(deckScore * 0.4 + jokerScore * 0.6);
+    // BUT: If joker signal is below threshold, confidence is 0
+    const rawConfidence = Math.round(deckScore * 0.4 + jokerScore * 0.6);
+    const confidence = jokerScore < MIN_JOKER_SIGNAL_THRESHOLD ? 0 : rawConfidence;
 
     // Build reasoning
     const reasons: string[] = [];
@@ -433,7 +442,10 @@ export class BuildDetectorService {
     // Base deck score from rank concentration
     const deckScore = Math.min(100, (quadCount * 30) + (tripCount * 20) + (pairCount * 10));
 
-    const confidence = Math.round(deckScore * 0.3 + jokerScore * 0.7);
+    // Combined score: 30% deck, 70% jokers
+    // BUT: If joker signal is below threshold, confidence is 0
+    const rawConfidence = Math.round(deckScore * 0.3 + jokerScore * 0.7);
+    const confidence = jokerScore < MIN_JOKER_SIGNAL_THRESHOLD ? 0 : rawConfidence;
 
     const reasons: string[] = [];
     if (quadCount > 0) reasons.push(`${quadCount} quad(s)`);
@@ -468,7 +480,8 @@ export class BuildDetectorService {
     }
 
     // Mult stacking is purely joker-driven
-    const confidence = jokerScore;
+    // If joker signal is below threshold, confidence is 0
+    const confidence = jokerScore < MIN_JOKER_SIGNAL_THRESHOLD ? 0 : jokerScore;
 
     return {
       type: 'mult_stacking',
@@ -493,7 +506,8 @@ export class BuildDetectorService {
     }
 
     // xMult is purely joker-driven
-    const confidence = jokerScore;
+    // If joker signal is below threshold, confidence is 0
+    const confidence = jokerScore < MIN_JOKER_SIGNAL_THRESHOLD ? 0 : jokerScore;
 
     return {
       type: 'xmult_scaling',
@@ -526,7 +540,10 @@ export class BuildDetectorService {
     // Deck score: fibonacci concentration
     const deckScore = Math.min(100, fibConcentration * 200); // 50% = 100
 
-    const confidence = Math.round(deckScore * 0.3 + jokerScore * 0.7);
+    // Combined score: 30% deck, 70% jokers
+    // BUT: If joker signal is below threshold, confidence is 0
+    const rawConfidence = Math.round(deckScore * 0.3 + jokerScore * 0.7);
+    const confidence = jokerScore < MIN_JOKER_SIGNAL_THRESHOLD ? 0 : rawConfidence;
 
     const reasons: string[] = [];
     if (fibConcentration >= 0.3) {
@@ -568,7 +585,10 @@ export class BuildDetectorService {
     // Standard deck has 12/52 = 23% face cards
     const deckScore = Math.min(100, (faceConcentration - 0.1) * 250);
 
-    const confidence = Math.round(Math.max(0, deckScore) * 0.3 + jokerScore * 0.7);
+    // Combined score: 30% deck, 70% jokers
+    // BUT: If joker signal is below threshold, confidence is 0
+    const rawConfidence = Math.round(Math.max(0, deckScore) * 0.3 + jokerScore * 0.7);
+    const confidence = jokerScore < MIN_JOKER_SIGNAL_THRESHOLD ? 0 : rawConfidence;
 
     const reasons: string[] = [];
     if (faceConcentration >= 0.25) {
