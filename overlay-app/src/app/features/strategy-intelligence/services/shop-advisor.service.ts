@@ -880,4 +880,14 @@ export class ShopAdvisorService {
     if (score >= 25) return 'D';
     return 'F';
   }
+
+  /**
+   * Check if purchase would drop money below interest threshold ($25)
+   * Returns penalty points if threshold would be broken
+   * TODO: Implement in Phase 3
+   */
+  checkInterestThreshold(cost: number, currentMoney: number): number {
+    // Stub - will be implemented in Phase 3
+    return 0;
+  }
 }
