@@ -29,6 +29,12 @@ export interface JokerSynergy {
   id: string;                    // e.g., "j_lusty_joker"
   name: string;
 
+  // Tier rating from strategy guide
+  tier?: 'S' | 'A' | 'B' | 'C' | 'D' | 'F';
+  basePriority?: number;         // Base shop priority (0-100)
+  earlyGameBonus?: number;       // Bonus priority at Ante 1-2
+  lateGamePenalty?: number;      // Penalty at Ante 6+
+
   // Direct synergies with other jokers
   synergiesWith: JokerSynergyRelation[];
 
