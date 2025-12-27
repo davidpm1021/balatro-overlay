@@ -258,6 +258,172 @@ A task is DONE when:
 
 ---
 
+## Orchestrator Modes
+
+The orchestrator (you) manages development through distinct operational modes. Each mode has specific rules and outputs.
+
+---
+
+### QA Mode
+
+**Purpose**: Test the application and log bugs without fixing them.
+
+**Entry**: `/qa-start` or "Switch to QA mode"
+
+**Rules**:
+1. DO NOT write any code fixes
+2. DO NOT modify any source files
+3. DO NOT analyze root causes beyond surface level
+4. Only observe, document, and log bugs
+5. Ask clarifying questions about observed behavior
+
+**Workflow**:
+```
+1. User describes observed bug
+2. Log bug to specs/BUGS.md with:
+   - ID: BUG-XXX (sequential)
+   - Severity: P0/P1/P2/P3
+   - Component: Where bug appears
+   - Observed: What happened
+   - Expected: What should happen
+   - Notes: Brief context
+3. Acknowledge and wait for next bug
+```
+
+**Exit**: `/qa-end` or "testing complete"
+
+**Severity Levels**:
+| Level | Meaning |
+|-------|---------|
+| P0 | Crash / data loss / completely broken |
+| P1 | Major feature broken, no workaround |
+| P2 | Feature broken, workaround exists |
+| P3 | Minor issue, cosmetic, edge case |
+
+---
+
+### Sprint Planning Mode
+
+**Purpose**: Batch bugs into specs and prioritize work.
+
+**Entry**: `/qa-end` or after QA mode completes
+
+**Workflow**:
+```
+1. Review all bugs in specs/BUGS.md
+2. Prioritize by:
+   - Severity (P0 > P1 > P2 > P3)
+   - Dependencies (signal flow issues before UI issues)
+   - Complexity (quick wins first if equal severity)
+3. Create specs/XXX-bug-fixes.md with:
+   - Prioritized bug list
+   - Root cause analysis for each
+   - Fix approach for each
+   - Files to modify
+   - Test requirements
+   - Quality gates
+4. Update BUGS.md status column
+```
+
+**Output**: Spec file ready for worker delegation
+
+---
+
+### Implementation Mode (Worker Delegation)
+
+**Purpose**: Delegate specs to worker agents for implementation.
+
+**Entry**: `/sprint-start <spec-file>` or "Delegate spec XXX to worker"
+
+**Rules**:
+1. Orchestrator NEVER writes implementation code
+2. All code work delegated to Task agent workers
+3. Provide complete context in worker prompt
+4. One worker per spec (no parallel workers on same spec)
+
+**Worker Prompt Template**:
+```
+Implement [spec-file] following these requirements:
+
+CONTEXT:
+- This is a [Angular/Lua/Electron] codebase
+- Follow patterns in CLAUDE.md
+- Current state: [describe relevant state]
+
+REQUIREMENTS:
+1. Write failing tests FIRST (TDD)
+2. Implement fixes to make tests pass
+3. Run `npm run build` and `npm run test`
+4. Commit with conventional format
+
+SPEC DETAILS:
+[Paste relevant spec content]
+
+QUALITY GATES:
+- [ ] All new tests pass
+- [ ] Existing tests still pass
+- [ ] Build succeeds
+- [ ] Lint passes
+
+Report back with:
+- Summary of changes
+- Test results
+- Any issues encountered
+```
+
+**Exit**: Worker reports completion
+
+---
+
+### Review Mode
+
+**Purpose**: Validate worker output meets spec requirements.
+
+**Entry**: `/sprint-review` or after worker completes
+
+**Checklist**:
+```
+1. VERIFY TEST RESULTS
+   - [ ] Worker reported test count
+   - [ ] All tests passing
+   - [ ] New tests cover spec requirements
+
+2. VERIFY BUILD STATUS
+   - [ ] npm run build succeeds
+   - [ ] No TypeScript errors
+   - [ ] No lint warnings
+
+3. VERIFY SPEC COMPLETION
+   - [ ] Each requirement addressed
+   - [ ] Acceptance criteria met
+   - [ ] Files modified match spec
+
+4. VERIFY CODE QUALITY
+   - [ ] Follows Angular patterns (signals, OnPush, inject)
+   - [ ] No hardcoded data (uses JSON sources)
+   - [ ] No leftover console.logs
+
+5. MERGE DECISION
+   - [ ] Ready to merge → proceed
+   - [ ] Issues found → create follow-up bugs
+```
+
+**Output**: Merge approval or new bugs logged
+
+---
+
+## Slash Commands Reference
+
+| Command | Mode | Description |
+|---------|------|-------------|
+| `/qa-start` | QA | Enter QA mode, create/update BUGS.md |
+| `/qa-bug` | QA | Log a bug from user description |
+| `/qa-end` | Sprint | End QA, prioritize bugs, create spec |
+| `/sprint-start` | Impl | Delegate spec to worker agent |
+| `/sprint-review` | Review | Validate worker output |
+
+---
+
 ## Quick Reference
 
 | Phase | Key Question |
@@ -273,3 +439,21 @@ A task is DONE when:
 | Complex debugging | Use extended thinking ("ultrathink") |
 | Need second opinion | Ask for cross-model review |
 | Going in circles | /clear and restart with Explore |
+
+---
+
+## Mode State Machine
+
+```
+[IDLE]
+   ↓ /qa-start
+[QA MODE] ←→ /qa-bug (logs bug, stays in QA)
+   ↓ /qa-end
+[SPRINT PLANNING] → creates spec
+   ↓ /sprint-start
+[IMPLEMENTATION] → worker executes
+   ↓ worker completes
+[REVIEW MODE]
+   ↓ /sprint-review (approve)
+[IDLE] or → new bugs logged → [QA MODE]
+```
