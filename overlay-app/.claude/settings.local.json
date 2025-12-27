@@ -5,7 +5,10 @@
       "Bash(npm run lint)",
       "Bash(npm test:*)",
       "Bash(git add:*)",
-      "Bash(git commit -m \"$\\(cat <<''EOF''\nfeat\\(deck-tracker\\): redesign with card modifications and responsive layout\n\n- Add debuffed and faceDown fields to Card interface\n- Redesign deck tracker to group cards by suit+rank preserving duplicates\n- Add expandable card details panel showing all card instances\n- Display enhancement, edition, and seal modifications with color coding\n- Add hover tooltips explaining what each modification does\n- Implement responsive layout using full overlay width\n- Add compact mode when details panel is open\n- Show count badges for duplicate cards \\(×2, ×3, etc.\\)\n- Add modification indicator dots on grid cells\n- Update all related tests for new API\n\n🤖 Generated with [Claude Code]\\(https://claude.com/claude-code\\)\n\nCo-Authored-By: Claude Opus 4.5 <noreply@anthropic.com>\nEOF\n\\)\")"
+      "Bash(git commit -m \"$\\(cat <<''EOF''\nfeat\\(deck-tracker\\): redesign with card modifications and responsive layout\n\n- Add debuffed and faceDown fields to Card interface\n- Redesign deck tracker to group cards by suit+rank preserving duplicates\n- Add expandable card details panel showing all card instances\n- Display enhancement, edition, and seal modifications with color coding\n- Add hover tooltips explaining what each modification does\n- Implement responsive layout using full overlay width\n- Add compact mode when details panel is open\n- Show count badges for duplicate cards \\(×2, ×3, etc.\\)\n- Add modification indicator dots on grid cells\n- Update all related tests for new API\n\n🤖 Generated with [Claude Code]\\(https://claude.com/claude-code\\)\n\nCo-Authored-By: Claude Opus 4.5 <noreply@anthropic.com>\nEOF\n\\)\")",
+      "Bash(git commit:*)",
+      "WebSearch",
+      "WebFetch(domain:balatrowiki.org)"
     ]
   }
 }
