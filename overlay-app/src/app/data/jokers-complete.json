@@ -1,0 +1,4174 @@
+{
+  "$schema": "./jokers-complete.schema.json",
+  "version": "1.0.0",
+  "jokers": [
+    {
+      "id": "blueprint",
+      "name": "Blueprint",
+      "rarity": "rare",
+      "cost": 10,
+      "effect": "Copies ability of Joker to the right",
+      "scoringType": "copy",
+      "values": {
+        "chips": 0,
+        "mult": 0,
+        "xmult": 0,
+        "money": 0,
+        "retriggers": 0
+      },
+      "trigger": {
+        "when": "scoring",
+        "condition": "has_joker_right",
+        "scaling": false,
+        "scalingRate": null
+      },
+      "position": {
+        "sensitive": true,
+        "requirement": "needs_joker_right",
+        "copyable": false
+      },
+      "tier": "S",
+      "tierByAnte": {
+        "early": "A",
+        "mid": "S",
+        "late": "S"
+      },
+      "builds": {
+        "flush": 50,
+        "pairs": 50,
+        "straights": 50,
+        "face_cards": 80,
+        "xmult_scaling": 100,
+        "retrigger": 100,
+        "economy": 0
+      },
+      "synergies": {
+        "strong": ["brainstorm", "triboulet", "baron", "cavendish"],
+        "medium": ["hack", "dusk", "the_idol"],
+        "antiSynergy": []
+      },
+      "bossCounters": [],
+      "bossWeaknesses": [],
+      "alwaysBuy": true,
+      "trapJoker": false
+    },
+    {
+      "id": "brainstorm",
+      "name": "Brainstorm",
+      "rarity": "rare",
+      "cost": 10,
+      "effect": "Copies ability of leftmost Joker",
+      "scoringType": "copy",
+      "values": {
+        "chips": 0,
+        "mult": 0,
+        "xmult": 0,
+        "money": 0,
+        "retriggers": 0
+      },
+      "trigger": {
+        "when": "scoring",
+        "condition": "has_joker_left",
+        "scaling": false,
+        "scalingRate": null
+      },
+      "position": {
+        "sensitive": true,
+        "requirement": "needs_joker_left",
+        "copyable": false
+      },
+      "tier": "S",
+      "tierByAnte": {
+        "early": "A",
+        "mid": "S",
+        "late": "S"
+      },
+      "builds": {
+        "flush": 50,
+        "pairs": 50,
+        "straights": 50,
+        "face_cards": 80,
+        "xmult_scaling": 100,
+        "retrigger": 100,
+        "economy": 0
+      },
+      "synergies": {
+        "strong": ["blueprint", "triboulet", "baron", "cavendish"],
+        "medium": ["hack", "dusk", "the_idol"],
+        "antiSynergy": []
+      },
+      "bossCounters": [],
+      "bossWeaknesses": [],
+      "alwaysBuy": true,
+      "trapJoker": false
+    },
+    {
+      "id": "triboulet",
+      "name": "Triboulet",
+      "rarity": "legendary",
+      "cost": 20,
+      "effect": "Played Kings and Queens each give X2 Mult when scored",
+      "scoringType": "xmult",
+      "values": {
+        "chips": 0,
+        "mult": 0,
+        "xmult": 2.0,
+        "money": 0,
+        "retriggers": 0
+      },
+      "trigger": {
+        "when": "scoring",
+        "condition": "card_is_king_or_queen",
+        "scaling": false,
+        "scalingRate": null
+      },
+      "position": {
+        "sensitive": false,
+        "requirement": "any",
+        "copyable": true
+      },
+      "tier": "S",
+      "tierByAnte": {
+        "early": "S",
+        "mid": "S",
+        "late": "S"
+      },
+      "builds": {
+        "flush": 40,
+        "pairs": 70,
+        "straights": 30,
+        "face_cards": 100,
+        "xmult_scaling": 100,
+        "retrigger": 90,
+        "economy": 0
+      },
+      "synergies": {
+        "strong": ["baron", "shoot_the_moon", "sock_and_buskin", "hanging_chad", "pareidolia"],
+        "medium": ["photograph", "smiley_face", "mime"],
+        "antiSynergy": []
+      },
+      "bossCounters": [],
+      "bossWeaknesses": ["the_club", "the_goad", "the_window", "the_head"],
+      "alwaysBuy": true,
+      "trapJoker": false
+    },
+    {
+      "id": "cavendish",
+      "name": "Cavendish",
+      "rarity": "common",
+      "cost": 4,
+      "effect": "X3 Mult. 1 in 1000 chance this is destroyed at end of round",
+      "scoringType": "xmult",
+      "values": {
+        "chips": 0,
+        "mult": 0,
+        "xmult": 3.0,
+        "money": 0,
+        "retriggers": 0
+      },
+      "trigger": {
+        "when": "scoring",
+        "condition": "always",
+        "scaling": false,
+        "scalingRate": null
+      },
+      "position": {
+        "sensitive": false,
+        "requirement": "any",
+        "copyable": true
+      },
+      "tier": "S",
+      "tierByAnte": {
+        "early": "S",
+        "mid": "S",
+        "late": "S"
+      },
+      "builds": {
+        "flush": 50,
+        "pairs": 50,
+        "straights": 50,
+        "face_cards": 50,
+        "xmult_scaling": 100,
+        "retrigger": 50,
+        "economy": 0
+      },
+      "synergies": {
+        "strong": ["blueprint", "brainstorm"],
+        "medium": [],
+        "antiSynergy": []
+      },
+      "bossCounters": [],
+      "bossWeaknesses": [],
+      "alwaysBuy": true,
+      "trapJoker": false
+    },
+    {
+      "id": "baron",
+      "name": "Baron",
+      "rarity": "rare",
+      "cost": 8,
+      "effect": "Each King held in hand gives X1.5 Mult",
+      "scoringType": "xmult",
+      "values": {
+        "chips": 0,
+        "mult": 0,
+        "xmult": 1.5,
+        "money": 0,
+        "retriggers": 0
+      },
+      "trigger": {
+        "when": "held",
+        "condition": "card_is_king",
+        "scaling": false,
+        "scalingRate": null
+      },
+      "position": {
+        "sensitive": false,
+        "requirement": "any",
+        "copyable": true
+      },
+      "tier": "S",
+      "tierByAnte": {
+        "early": "A",
+        "mid": "S",
+        "late": "S"
+      },
+      "builds": {
+        "flush": 30,
+        "pairs": 60,
+        "straights": 20,
+        "face_cards": 100,
+        "xmult_scaling": 95,
+        "retrigger": 80,
+        "economy": 0
+      },
+      "synergies": {
+        "strong": ["triboulet", "sock_and_buskin", "pareidolia", "mime", "dna"],
+        "medium": ["photograph", "smiley_face", "blueprint", "brainstorm"],
+        "antiSynergy": []
+      },
+      "bossCounters": [],
+      "bossWeaknesses": ["the_club", "the_goad", "the_window", "the_head"],
+      "alwaysBuy": true,
+      "trapJoker": false
+    },
+    {
+      "id": "vampire",
+      "name": "Vampire",
+      "rarity": "uncommon",
+      "cost": 7,
+      "effect": "This Joker gains X0.1 Mult per scoring Enhanced card played, removes card enhancement",
+      "scoringType": "xmult",
+      "values": {
+        "chips": 0,
+        "mult": 0,
+        "xmult": 1.0,
+        "money": 0,
+        "retriggers": 0
+      },
+      "trigger": {
+        "when": "scoring",
+        "condition": "card_is_enhanced",
+        "scaling": true,
+        "scalingRate": "+0.1 xmult per enhanced card scored"
+      },
+      "position": {
+        "sensitive": false,
+        "requirement": "any",
+        "copyable": true
+      },
+      "tier": "S",
+      "tierByAnte": {
+        "early": "B",
+        "mid": "A",
+        "late": "S"
+      },
+      "builds": {
+        "flush": 60,
+        "pairs": 60,
+        "straights": 60,
+        "face_cards": 70,
+        "xmult_scaling": 100,
+        "retrigger": 40,
+        "economy": 0
+      },
+      "synergies": {
+        "strong": ["midas_mask", "certificate"],
+        "medium": ["retrigger_jokers"],
+        "antiSynergy": ["drivers_license", "steel_joker", "glass_joker"]
+      },
+      "bossCounters": [],
+      "bossWeaknesses": [],
+      "alwaysBuy": false,
+      "trapJoker": false
+    },
+    {
+      "id": "hologram",
+      "name": "Hologram",
+      "rarity": "uncommon",
+      "cost": 7,
+      "effect": "This Joker gains X0.25 Mult per card added to your deck",
+      "scoringType": "xmult",
+      "values": {
+        "chips": 0,
+        "mult": 0,
+        "xmult": 1.0,
+        "money": 0,
+        "retriggers": 0
+      },
+      "trigger": {
+        "when": "passive",
+        "condition": "card_added_to_deck",
+        "scaling": true,
+        "scalingRate": "+0.25 xmult per card added to deck"
+      },
+      "position": {
+        "sensitive": false,
+        "requirement": "any",
+        "copyable": true
+      },
+      "tier": "S",
+      "tierByAnte": {
+        "early": "C",
+        "mid": "A",
+        "late": "S"
+      },
+      "builds": {
+        "flush": 70,
+        "pairs": 50,
+        "straights": 50,
+        "face_cards": 50,
+        "xmult_scaling": 100,
+        "retrigger": 30,
+        "economy": 0
+      },
+      "synergies": {
+        "strong": ["dna", "marble_joker", "certificate"],
+        "medium": ["sixth_sense", "seance"],
+        "antiSynergy": []
+      },
+      "bossCounters": [],
+      "bossWeaknesses": [],
+      "alwaysBuy": true,
+      "trapJoker": false
+    },
+    {
+      "id": "obelisk",
+      "name": "Obelisk",
+      "rarity": "rare",
+      "cost": 8,
+      "effect": "This Joker gains X0.2 Mult per consecutive hand played without playing your most played hand",
+      "scoringType": "xmult",
+      "values": {
+        "chips": 0,
+        "mult": 0,
+        "xmult": 1.0,
+        "money": 0,
+        "retriggers": 0
+      },
+      "trigger": {
+        "when": "end_of_round",
+        "condition": "different_hand_type",
+        "scaling": true,
+        "scalingRate": "+0.2 xmult per non-favorite hand"
+      },
+      "position": {
+        "sensitive": false,
+        "requirement": "any",
+        "copyable": true
+      },
+      "tier": "S",
+      "tierByAnte": {
+        "early": "B",
+        "mid": "A",
+        "late": "S"
+      },
+      "builds": {
+        "flush": 60,
+        "pairs": 40,
+        "straights": 60,
+        "face_cards": 50,
+        "xmult_scaling": 100,
+        "retrigger": 30,
+        "economy": 0
+      },
+      "synergies": {
+        "strong": [],
+        "medium": ["supernova"],
+        "antiSynergy": []
+      },
+      "bossCounters": [],
+      "bossWeaknesses": [],
+      "alwaysBuy": true,
+      "trapJoker": false
+    },
+    {
+      "id": "the_idol",
+      "name": "The Idol",
+      "rarity": "uncommon",
+      "cost": 6,
+      "effect": "Each played [specific card] gives X2 Mult when scored",
+      "scoringType": "xmult",
+      "values": {
+        "chips": 0,
+        "mult": 0,
+        "xmult": 2.0,
+        "money": 0,
+        "retriggers": 0
+      },
+      "trigger": {
+        "when": "scoring",
+        "condition": "specific_card_match",
+        "scaling": false,
+        "scalingRate": null
+      },
+      "position": {
+        "sensitive": false,
+        "requirement": "any",
+        "copyable": true
+      },
+      "tier": "S",
+      "tierByAnte": {
+        "early": "A",
+        "mid": "S",
+        "late": "S"
+      },
+      "builds": {
+        "flush": 50,
+        "pairs": 80,
+        "straights": 40,
+        "face_cards": 60,
+        "xmult_scaling": 100,
+        "retrigger": 85,
+        "economy": 0
+      },
+      "synergies": {
+        "strong": ["dna", "hanging_chad", "hack", "sock_and_buskin"],
+        "medium": ["blueprint", "brainstorm"],
+        "antiSynergy": []
+      },
+      "bossCounters": [],
+      "bossWeaknesses": ["the_club", "the_goad", "the_window", "the_head"],
+      "alwaysBuy": true,
+      "trapJoker": false
+    },
+    {
+      "id": "throwback",
+      "name": "Throwback",
+      "rarity": "uncommon",
+      "cost": 6,
+      "effect": "X0.25 Mult for each Blind skipped this run",
+      "scoringType": "xmult",
+      "values": {
+        "chips": 0,
+        "mult": 0,
+        "xmult": 1.0,
+        "money": 0,
+        "retriggers": 0
+      },
+      "trigger": {
+        "when": "scoring",
+        "condition": "always",
+        "scaling": true,
+        "scalingRate": "+0.25 xmult per blind skipped"
+      },
+      "position": {
+        "sensitive": false,
+        "requirement": "any",
+        "copyable": true
+      },
+      "tier": "S",
+      "tierByAnte": {
+        "early": "C",
+        "mid": "A",
+        "late": "S"
+      },
+      "builds": {
+        "flush": 50,
+        "pairs": 50,
+        "straights": 50,
+        "face_cards": 50,
+        "xmult_scaling": 100,
+        "retrigger": 30,
+        "economy": 50
+      },
+      "synergies": {
+        "strong": [],
+        "medium": [],
+        "antiSynergy": []
+      },
+      "bossCounters": [],
+      "bossWeaknesses": [],
+      "alwaysBuy": true,
+      "trapJoker": false
+    },
+    {
+      "id": "glass_joker",
+      "name": "Glass Joker",
+      "rarity": "uncommon",
+      "cost": 6,
+      "effect": "This Joker gains X0.75 Mult for every Glass Card that is destroyed",
+      "scoringType": "xmult",
+      "values": {
+        "chips": 0,
+        "mult": 0,
+        "xmult": 1.0,
+        "money": 0,
+        "retriggers": 0
+      },
+      "trigger": {
+        "when": "passive",
+        "condition": "glass_card_destroyed",
+        "scaling": true,
+        "scalingRate": "+0.75 xmult per glass card destroyed"
+      },
+      "position": {
+        "sensitive": false,
+        "requirement": "any",
+        "copyable": true
+      },
+      "tier": "S",
+      "tierByAnte": {
+        "early": "C",
+        "mid": "A",
+        "late": "S"
+      },
+      "builds": {
+        "flush": 60,
+        "pairs": 60,
+        "straights": 60,
+        "face_cards": 60,
+        "xmult_scaling": 100,
+        "retrigger": 50,
+        "economy": 0
+      },
+      "synergies": {
+        "strong": ["oops_all_6s"],
+        "medium": ["drivers_license"],
+        "antiSynergy": ["vampire"]
+      },
+      "bossCounters": [],
+      "bossWeaknesses": [],
+      "alwaysBuy": false,
+      "trapJoker": false
+    },
+    {
+      "id": "lucky_cat",
+      "name": "Lucky Cat",
+      "rarity": "uncommon",
+      "cost": 6,
+      "effect": "This Joker gains X0.25 Mult each time a Lucky card successfully triggers",
+      "scoringType": "xmult",
+      "values": {
+        "chips": 0,
+        "mult": 0,
+        "xmult": 1.0,
+        "money": 0,
+        "retriggers": 0
+      },
+      "trigger": {
+        "when": "passive",
+        "condition": "lucky_card_triggers",
+        "scaling": true,
+        "scalingRate": "+0.25 xmult per lucky trigger"
+      },
+      "position": {
+        "sensitive": false,
+        "requirement": "any",
+        "copyable": true
+      },
+      "tier": "S",
+      "tierByAnte": {
+        "early": "C",
+        "mid": "A",
+        "late": "S"
+      },
+      "builds": {
+        "flush": 60,
+        "pairs": 60,
+        "straights": 60,
+        "face_cards": 60,
+        "xmult_scaling": 100,
+        "retrigger": 70,
+        "economy": 30
+      },
+      "synergies": {
+        "strong": ["oops_all_6s"],
+        "medium": ["hack", "dusk", "hanging_chad"],
+        "antiSynergy": ["vampire"]
+      },
+      "bossCounters": [],
+      "bossWeaknesses": [],
+      "alwaysBuy": false,
+      "trapJoker": false
+    },
+    {
+      "id": "campfire",
+      "name": "Campfire",
+      "rarity": "rare",
+      "cost": 9,
+      "effect": "This Joker gains X0.25 Mult for each card sold, resets when Boss Blind is defeated",
+      "scoringType": "xmult",
+      "values": {
+        "chips": 0,
+        "mult": 0,
+        "xmult": 1.0,
+        "money": 0,
+        "retriggers": 0
+      },
+      "trigger": {
+        "when": "passive",
+        "condition": "card_sold",
+        "scaling": true,
+        "scalingRate": "+0.25 xmult per card sold"
+      },
+      "position": {
+        "sensitive": false,
+        "requirement": "any",
+        "copyable": true
+      },
+      "tier": "S",
+      "tierByAnte": {
+        "early": "B",
+        "mid": "A",
+        "late": "S"
+      },
+      "builds": {
+        "flush": 50,
+        "pairs": 50,
+        "straights": 50,
+        "face_cards": 50,
+        "xmult_scaling": 100,
+        "retrigger": 30,
+        "economy": 60
+      },
+      "synergies": {
+        "strong": ["perkeo", "egg"],
+        "medium": ["gift_card", "trading_card"],
+        "antiSynergy": []
+      },
+      "bossCounters": [],
+      "bossWeaknesses": [],
+      "alwaysBuy": true,
+      "trapJoker": false
+    },
+    {
+      "id": "the_duo",
+      "name": "The Duo",
+      "rarity": "rare",
+      "cost": 8,
+      "effect": "X2 Mult if played hand contains a Pair",
+      "scoringType": "xmult",
+      "values": {
+        "chips": 0,
+        "mult": 0,
+        "xmult": 2.0,
+        "money": 0,
+        "retriggers": 0
+      },
+      "trigger": {
+        "when": "scoring",
+        "condition": "hand_contains_pair",
+        "scaling": false,
+        "scalingRate": null
+      },
+      "position": {
+        "sensitive": false,
+        "requirement": "any",
+        "copyable": true
+      },
+      "tier": "S",
+      "tierByAnte": {
+        "early": "S",
+        "mid": "S",
+        "late": "A"
+      },
+      "builds": {
+        "flush": 30,
+        "pairs": 100,
+        "straights": 0,
+        "face_cards": 60,
+        "xmult_scaling": 90,
+        "retrigger": 40,
+        "economy": 0
+      },
+      "synergies": {
+        "strong": ["jolly_joker", "supernova", "sly_joker"],
+        "medium": ["blueprint", "brainstorm"],
+        "antiSynergy": ["the_order", "the_tribe"]
+      },
+      "bossCounters": [],
+      "bossWeaknesses": [],
+      "alwaysBuy": true,
+      "trapJoker": false
+    },
+    {
+      "id": "the_trio",
+      "name": "The Trio",
+      "rarity": "rare",
+      "cost": 8,
+      "effect": "X3 Mult if played hand contains a Three of a Kind",
+      "scoringType": "xmult",
+      "values": {
+        "chips": 0,
+        "mult": 0,
+        "xmult": 3.0,
+        "money": 0,
+        "retriggers": 0
+      },
+      "trigger": {
+        "when": "scoring",
+        "condition": "hand_contains_three_of_kind",
+        "scaling": false,
+        "scalingRate": null
+      },
+      "position": {
+        "sensitive": false,
+        "requirement": "any",
+        "copyable": true
+      },
+      "tier": "S",
+      "tierByAnte": {
+        "early": "A",
+        "mid": "S",
+        "late": "S"
+      },
+      "builds": {
+        "flush": 20,
+        "pairs": 100,
+        "straights": 0,
+        "face_cards": 60,
+        "xmult_scaling": 95,
+        "retrigger": 40,
+        "economy": 0
+      },
+      "synergies": {
+        "strong": ["zany_joker", "wily_joker", "dna"],
+        "medium": ["blueprint", "brainstorm"],
+        "antiSynergy": ["the_order", "the_tribe"]
+      },
+      "bossCounters": [],
+      "bossWeaknesses": [],
+      "alwaysBuy": true,
+      "trapJoker": false
+    },
+    {
+      "id": "the_family",
+      "name": "The Family",
+      "rarity": "rare",
+      "cost": 8,
+      "effect": "X4 Mult if played hand contains a Four of a Kind",
+      "scoringType": "xmult",
+      "values": {
+        "chips": 0,
+        "mult": 0,
+        "xmult": 4.0,
+        "money": 0,
+        "retriggers": 0
+      },
+      "trigger": {
+        "when": "scoring",
+        "condition": "hand_contains_four_of_kind",
+        "scaling": false,
+        "scalingRate": null
+      },
+      "position": {
+        "sensitive": false,
+        "requirement": "any",
+        "copyable": true
+      },
+      "tier": "S",
+      "tierByAnte": {
+        "early": "A",
+        "mid": "S",
+        "late": "S"
+      },
+      "builds": {
+        "flush": 10,
+        "pairs": 100,
+        "straights": 0,
+        "face_cards": 60,
+        "xmult_scaling": 100,
+        "retrigger": 40,
+        "economy": 0
+      },
+      "synergies": {
+        "strong": ["dna", "mad_joker", "clever_joker"],
+        "medium": ["blueprint", "brainstorm"],
+        "antiSynergy": ["the_order", "the_tribe"]
+      },
+      "bossCounters": [],
+      "bossWeaknesses": [],
+      "alwaysBuy": true,
+      "trapJoker": false
+    },
+    {
+      "id": "the_order",
+      "name": "The Order",
+      "rarity": "rare",
+      "cost": 8,
+      "effect": "X3 Mult if played hand contains a Straight",
+      "scoringType": "xmult",
+      "values": {
+        "chips": 0,
+        "mult": 0,
+        "xmult": 3.0,
+        "money": 0,
+        "retriggers": 0
+      },
+      "trigger": {
+        "when": "scoring",
+        "condition": "hand_contains_straight",
+        "scaling": false,
+        "scalingRate": null
+      },
+      "position": {
+        "sensitive": false,
+        "requirement": "any",
+        "copyable": true
+      },
+      "tier": "S",
+      "tierByAnte": {
+        "early": "A",
+        "mid": "S",
+        "late": "S"
+      },
+      "builds": {
+        "flush": 40,
+        "pairs": 0,
+        "straights": 100,
+        "face_cards": 40,
+        "xmult_scaling": 95,
+        "retrigger": 40,
+        "economy": 0
+      },
+      "synergies": {
+        "strong": ["shortcut", "four_fingers", "runner", "crazy_joker"],
+        "medium": ["blueprint", "brainstorm", "seance"],
+        "antiSynergy": ["the_duo", "the_trio", "the_family"]
+      },
+      "bossCounters": [],
+      "bossWeaknesses": ["the_needle"],
+      "alwaysBuy": true,
+      "trapJoker": false
+    },
+    {
+      "id": "the_tribe",
+      "name": "The Tribe",
+      "rarity": "rare",
+      "cost": 8,
+      "effect": "X2 Mult if played hand contains a Flush",
+      "scoringType": "xmult",
+      "values": {
+        "chips": 0,
+        "mult": 0,
+        "xmult": 2.0,
+        "money": 0,
+        "retriggers": 0
+      },
+      "trigger": {
+        "when": "scoring",
+        "condition": "hand_contains_flush",
+        "scaling": false,
+        "scalingRate": null
+      },
+      "position": {
+        "sensitive": false,
+        "requirement": "any",
+        "copyable": true
+      },
+      "tier": "S",
+      "tierByAnte": {
+        "early": "A",
+        "mid": "S",
+        "late": "S"
+      },
+      "builds": {
+        "flush": 100,
+        "pairs": 0,
+        "straights": 40,
+        "face_cards": 40,
+        "xmult_scaling": 90,
+        "retrigger": 40,
+        "economy": 0
+      },
+      "synergies": {
+        "strong": ["smeared_joker", "four_fingers", "lusty_joker", "greedy_joker", "wrathful_joker", "gluttonous_joker"],
+        "medium": ["blueprint", "brainstorm", "seance", "droll_joker"],
+        "antiSynergy": ["the_duo", "the_trio", "the_family"]
+      },
+      "bossCounters": [],
+      "bossWeaknesses": ["the_club", "the_goad", "the_window", "the_head"],
+      "alwaysBuy": true,
+      "trapJoker": false
+    },
+    {
+      "id": "mime",
+      "name": "Mime",
+      "rarity": "uncommon",
+      "cost": 5,
+      "effect": "Retrigger all card held in hand abilities",
+      "scoringType": "retrigger",
+      "values": {
+        "chips": 0,
+        "mult": 0,
+        "xmult": 0,
+        "money": 0,
+        "retriggers": 1
+      },
+      "trigger": {
+        "when": "held",
+        "condition": "card_in_hand",
+        "scaling": false,
+        "scalingRate": null
+      },
+      "position": {
+        "sensitive": false,
+        "requirement": "any",
+        "copyable": true
+      },
+      "tier": "S",
+      "tierByAnte": {
+        "early": "A",
+        "mid": "S",
+        "late": "S"
+      },
+      "builds": {
+        "flush": 40,
+        "pairs": 50,
+        "straights": 40,
+        "face_cards": 90,
+        "xmult_scaling": 85,
+        "retrigger": 100,
+        "economy": 0
+      },
+      "synergies": {
+        "strong": ["baron", "shoot_the_moon", "raised_fist", "steel_joker"],
+        "medium": ["blackboard"],
+        "antiSynergy": []
+      },
+      "bossCounters": [],
+      "bossWeaknesses": [],
+      "alwaysBuy": true,
+      "trapJoker": false
+    },
+    {
+      "id": "sock_and_buskin",
+      "name": "Sock and Buskin",
+      "rarity": "uncommon",
+      "cost": 6,
+      "effect": "Retrigger all played face cards",
+      "scoringType": "retrigger",
+      "values": {
+        "chips": 0,
+        "mult": 0,
+        "xmult": 0,
+        "money": 0,
+        "retriggers": 1
+      },
+      "trigger": {
+        "when": "scoring",
+        "condition": "card_is_face",
+        "scaling": false,
+        "scalingRate": null
+      },
+      "position": {
+        "sensitive": false,
+        "requirement": "any",
+        "copyable": true
+      },
+      "tier": "S",
+      "tierByAnte": {
+        "early": "A",
+        "mid": "S",
+        "late": "S"
+      },
+      "builds": {
+        "flush": 50,
+        "pairs": 70,
+        "straights": 40,
+        "face_cards": 100,
+        "xmult_scaling": 85,
+        "retrigger": 100,
+        "economy": 0
+      },
+      "synergies": {
+        "strong": ["triboulet", "baron", "photograph", "smiley_face", "pareidolia", "scary_face"],
+        "medium": ["dusk", "hanging_chad", "midas_mask"],
+        "antiSynergy": []
+      },
+      "bossCounters": [],
+      "bossWeaknesses": ["the_club", "the_goad", "the_window", "the_head"],
+      "alwaysBuy": true,
+      "trapJoker": false
+    },
+    {
+      "id": "hack",
+      "name": "Hack",
+      "rarity": "uncommon",
+      "cost": 6,
+      "effect": "Retrigger each played 2, 3, 4, or 5",
+      "scoringType": "retrigger",
+      "values": {
+        "chips": 0,
+        "mult": 0,
+        "xmult": 0,
+        "money": 0,
+        "retriggers": 1
+      },
+      "trigger": {
+        "when": "scoring",
+        "condition": "card_rank_2345",
+        "scaling": false,
+        "scalingRate": null
+      },
+      "position": {
+        "sensitive": false,
+        "requirement": "any",
+        "copyable": true
+      },
+      "tier": "A",
+      "tierByAnte": {
+        "early": "A",
+        "mid": "A",
+        "late": "A"
+      },
+      "builds": {
+        "flush": 60,
+        "pairs": 70,
+        "straights": 80,
+        "face_cards": 0,
+        "xmult_scaling": 70,
+        "retrigger": 100,
+        "economy": 0
+      },
+      "synergies": {
+        "strong": ["fibonacci", "wee_joker", "dusk", "the_idol"],
+        "medium": ["hanging_chad", "seltzer", "even_steven"],
+        "antiSynergy": []
+      },
+      "bossCounters": [],
+      "bossWeaknesses": [],
+      "alwaysBuy": true,
+      "trapJoker": false
+    },
+    {
+      "id": "dusk",
+      "name": "Dusk",
+      "rarity": "uncommon",
+      "cost": 5,
+      "effect": "Retrigger all played cards in final hand of round",
+      "scoringType": "retrigger",
+      "values": {
+        "chips": 0,
+        "mult": 0,
+        "xmult": 0,
+        "money": 0,
+        "retriggers": 1
+      },
+      "trigger": {
+        "when": "scoring",
+        "condition": "final_hand",
+        "scaling": false,
+        "scalingRate": null
+      },
+      "position": {
+        "sensitive": false,
+        "requirement": "any",
+        "copyable": true
+      },
+      "tier": "A",
+      "tierByAnte": {
+        "early": "B",
+        "mid": "A",
+        "late": "A"
+      },
+      "builds": {
+        "flush": 60,
+        "pairs": 60,
+        "straights": 60,
+        "face_cards": 70,
+        "xmult_scaling": 80,
+        "retrigger": 100,
+        "economy": 0
+      },
+      "synergies": {
+        "strong": ["hanging_chad", "sock_and_buskin", "hack", "seltzer"],
+        "medium": ["acrobat", "hiker"],
+        "antiSynergy": []
+      },
+      "bossCounters": [],
+      "bossWeaknesses": [],
+      "alwaysBuy": true,
+      "trapJoker": false
+    },
+    {
+      "id": "hanging_chad",
+      "name": "Hanging Chad",
+      "rarity": "common",
+      "cost": 4,
+      "effect": "Retrigger first played card used in scoring 2 additional times",
+      "scoringType": "retrigger",
+      "values": {
+        "chips": 0,
+        "mult": 0,
+        "xmult": 0,
+        "money": 0,
+        "retriggers": 2
+      },
+      "trigger": {
+        "when": "scoring",
+        "condition": "first_card",
+        "scaling": false,
+        "scalingRate": null
+      },
+      "position": {
+        "sensitive": false,
+        "requirement": "any",
+        "copyable": true
+      },
+      "tier": "A",
+      "tierByAnte": {
+        "early": "A",
+        "mid": "A",
+        "late": "A"
+      },
+      "builds": {
+        "flush": 60,
+        "pairs": 70,
+        "straights": 60,
+        "face_cards": 85,
+        "xmult_scaling": 80,
+        "retrigger": 100,
+        "economy": 0
+      },
+      "synergies": {
+        "strong": ["triboulet", "photograph", "the_idol", "fibonacci"],
+        "medium": ["dusk", "hack", "wee_joker", "hiker"],
+        "antiSynergy": []
+      },
+      "bossCounters": [],
+      "bossWeaknesses": [],
+      "alwaysBuy": true,
+      "trapJoker": false
+    },
+    {
+      "id": "hiker",
+      "name": "Hiker",
+      "rarity": "uncommon",
+      "cost": 5,
+      "effect": "Every played card permanently gains +5 Chips when scored",
+      "scoringType": "chips",
+      "values": {
+        "chips": 5,
+        "mult": 0,
+        "xmult": 0,
+        "money": 0,
+        "retriggers": 0
+      },
+      "trigger": {
+        "when": "scoring",
+        "condition": "always",
+        "scaling": true,
+        "scalingRate": "+5 chips permanently per card scored"
+      },
+      "position": {
+        "sensitive": false,
+        "requirement": "any",
+        "copyable": true
+      },
+      "tier": "A",
+      "tierByAnte": {
+        "early": "A",
+        "mid": "A",
+        "late": "B"
+      },
+      "builds": {
+        "flush": 70,
+        "pairs": 60,
+        "straights": 70,
+        "face_cards": 50,
+        "xmult_scaling": 40,
+        "retrigger": 80,
+        "economy": 0
+      },
+      "synergies": {
+        "strong": ["hanging_chad", "dusk", "hack", "dna"],
+        "medium": ["seltzer", "sock_and_buskin"],
+        "antiSynergy": []
+      },
+      "bossCounters": [],
+      "bossWeaknesses": [],
+      "alwaysBuy": true,
+      "trapJoker": false
+    },
+    {
+      "id": "dna",
+      "name": "DNA",
+      "rarity": "rare",
+      "cost": 8,
+      "effect": "If first hand of round has only 1 card, add a permanent copy to deck and draw it to hand",
+      "scoringType": "effect",
+      "values": {
+        "chips": 0,
+        "mult": 0,
+        "xmult": 0,
+        "money": 0,
+        "retriggers": 0
+      },
+      "trigger": {
+        "when": "scoring",
+        "condition": "first_hand_single_card",
+        "scaling": false,
+        "scalingRate": null
+      },
+      "position": {
+        "sensitive": false,
+        "requirement": "any",
+        "copyable": true
+      },
+      "tier": "A",
+      "tierByAnte": {
+        "early": "A",
+        "mid": "A",
+        "late": "A"
+      },
+      "builds": {
+        "flush": 85,
+        "pairs": 90,
+        "straights": 70,
+        "face_cards": 85,
+        "xmult_scaling": 70,
+        "retrigger": 60,
+        "economy": 0
+      },
+      "synergies": {
+        "strong": ["hologram", "triboulet", "steel_joker", "baron", "the_idol"],
+        "medium": ["hack", "hiker", "fibonacci"],
+        "antiSynergy": []
+      },
+      "bossCounters": [],
+      "bossWeaknesses": [],
+      "alwaysBuy": true,
+      "trapJoker": false
+    },
+    {
+      "id": "photograph",
+      "name": "Photograph",
+      "rarity": "common",
+      "cost": 5,
+      "effect": "First played face card gives X2 Mult when scored",
+      "scoringType": "xmult",
+      "values": {
+        "chips": 0,
+        "mult": 0,
+        "xmult": 2.0,
+        "money": 0,
+        "retriggers": 0
+      },
+      "trigger": {
+        "when": "scoring",
+        "condition": "first_face_card",
+        "scaling": false,
+        "scalingRate": null
+      },
+      "position": {
+        "sensitive": false,
+        "requirement": "any",
+        "copyable": true
+      },
+      "tier": "A",
+      "tierByAnte": {
+        "early": "A",
+        "mid": "A",
+        "late": "B"
+      },
+      "builds": {
+        "flush": 50,
+        "pairs": 70,
+        "straights": 40,
+        "face_cards": 100,
+        "xmult_scaling": 80,
+        "retrigger": 90,
+        "economy": 0
+      },
+      "synergies": {
+        "strong": ["hanging_chad", "sock_and_buskin", "triboulet"],
+        "medium": ["pareidolia", "smiley_face"],
+        "antiSynergy": []
+      },
+      "bossCounters": [],
+      "bossWeaknesses": ["the_club", "the_goad", "the_window", "the_head"],
+      "alwaysBuy": true,
+      "trapJoker": false
+    },
+    {
+      "id": "pareidolia",
+      "name": "Pareidolia",
+      "rarity": "uncommon",
+      "cost": 5,
+      "effect": "All cards are considered face cards",
+      "scoringType": "effect",
+      "values": {
+        "chips": 0,
+        "mult": 0,
+        "xmult": 0,
+        "money": 0,
+        "retriggers": 0
+      },
+      "trigger": {
+        "when": "passive",
+        "condition": "always",
+        "scaling": false,
+        "scalingRate": null
+      },
+      "position": {
+        "sensitive": false,
+        "requirement": "any",
+        "copyable": false
+      },
+      "tier": "A",
+      "tierByAnte": {
+        "early": "A",
+        "mid": "A",
+        "late": "A"
+      },
+      "builds": {
+        "flush": 60,
+        "pairs": 60,
+        "straights": 60,
+        "face_cards": 100,
+        "xmult_scaling": 80,
+        "retrigger": 90,
+        "economy": 30
+      },
+      "synergies": {
+        "strong": ["triboulet", "baron", "sock_and_buskin", "smiley_face", "scary_face", "shoot_the_moon"],
+        "medium": ["photograph", "midas_mask", "business_card"],
+        "antiSynergy": []
+      },
+      "bossCounters": ["the_club", "the_goad", "the_window", "the_head"],
+      "bossWeaknesses": [],
+      "alwaysBuy": true,
+      "trapJoker": false
+    },
+    {
+      "id": "steel_joker",
+      "name": "Steel Joker",
+      "rarity": "uncommon",
+      "cost": 7,
+      "effect": "This Joker gains X0.2 Mult for each Steel Card in your full deck",
+      "scoringType": "xmult",
+      "values": {
+        "chips": 0,
+        "mult": 0,
+        "xmult": 1.0,
+        "money": 0,
+        "retriggers": 0
+      },
+      "trigger": {
+        "when": "scoring",
+        "condition": "always",
+        "scaling": true,
+        "scalingRate": "+0.2 xmult per steel card in deck"
+      },
+      "position": {
+        "sensitive": false,
+        "requirement": "any",
+        "copyable": true
+      },
+      "tier": "A",
+      "tierByAnte": {
+        "early": "C",
+        "mid": "A",
+        "late": "S"
+      },
+      "builds": {
+        "flush": 50,
+        "pairs": 50,
+        "straights": 50,
+        "face_cards": 50,
+        "xmult_scaling": 100,
+        "retrigger": 70,
+        "economy": 0
+      },
+      "synergies": {
+        "strong": ["mime", "dna", "drivers_license"],
+        "medium": ["certificate"],
+        "antiSynergy": ["vampire"]
+      },
+      "bossCounters": [],
+      "bossWeaknesses": [],
+      "alwaysBuy": false,
+      "trapJoker": false
+    },
+    {
+      "id": "constellation",
+      "name": "Constellation",
+      "rarity": "uncommon",
+      "cost": 6,
+      "effect": "This Joker gains X0.1 Mult every time a Planet card is used",
+      "scoringType": "xmult",
+      "values": {
+        "chips": 0,
+        "mult": 0,
+        "xmult": 1.0,
+        "money": 0,
+        "retriggers": 0
+      },
+      "trigger": {
+        "when": "passive",
+        "condition": "planet_used",
+        "scaling": true,
+        "scalingRate": "+0.1 xmult per planet used"
+      },
+      "position": {
+        "sensitive": false,
+        "requirement": "any",
+        "copyable": true
+      },
+      "tier": "A",
+      "tierByAnte": {
+        "early": "B",
+        "mid": "A",
+        "late": "A"
+      },
+      "builds": {
+        "flush": 50,
+        "pairs": 50,
+        "straights": 50,
+        "face_cards": 50,
+        "xmult_scaling": 90,
+        "retrigger": 30,
+        "economy": 0
+      },
+      "synergies": {
+        "strong": ["astronomer", "perkeo"],
+        "medium": ["satellite"],
+        "antiSynergy": []
+      },
+      "bossCounters": [],
+      "bossWeaknesses": [],
+      "alwaysBuy": true,
+      "trapJoker": false
+    },
+    {
+      "id": "cloud_9",
+      "name": "Cloud 9",
+      "rarity": "uncommon",
+      "cost": 7,
+      "effect": "Earn $1 for each 9 in your full deck at end of round (Currently $X)",
+      "scoringType": "economy",
+      "values": {
+        "chips": 0,
+        "mult": 0,
+        "xmult": 0,
+        "money": 1,
+        "retriggers": 0
+      },
+      "trigger": {
+        "when": "end_of_round",
+        "condition": "has_9s_in_deck",
+        "scaling": false,
+        "scalingRate": null
+      },
+      "position": {
+        "sensitive": false,
+        "requirement": "any",
+        "copyable": true
+      },
+      "tier": "A",
+      "tierByAnte": {
+        "early": "A",
+        "mid": "A",
+        "late": "B"
+      },
+      "builds": {
+        "flush": 40,
+        "pairs": 40,
+        "straights": 40,
+        "face_cards": 30,
+        "xmult_scaling": 20,
+        "retrigger": 20,
+        "economy": 100
+      },
+      "synergies": {
+        "strong": ["to_the_moon", "bull", "bootstraps"],
+        "medium": ["dna"],
+        "antiSynergy": []
+      },
+      "bossCounters": [],
+      "bossWeaknesses": [],
+      "alwaysBuy": true,
+      "trapJoker": false
+    },
+    {
+      "id": "invisible_joker",
+      "name": "Invisible Joker",
+      "rarity": "rare",
+      "cost": 8,
+      "effect": "After 2 rounds, sell this card to Duplicate a random Joker (Removes Negative from copy)",
+      "scoringType": "effect",
+      "values": {
+        "chips": 0,
+        "mult": 0,
+        "xmult": 0,
+        "money": 0,
+        "retriggers": 0
+      },
+      "trigger": {
+        "when": "on_sell",
+        "condition": "after_2_rounds",
+        "scaling": false,
+        "scalingRate": null
+      },
+      "position": {
+        "sensitive": false,
+        "requirement": "any",
+        "copyable": false
+      },
+      "tier": "A",
+      "tierByAnte": {
+        "early": "A",
+        "mid": "A",
+        "late": "S"
+      },
+      "builds": {
+        "flush": 50,
+        "pairs": 50,
+        "straights": 50,
+        "face_cards": 50,
+        "xmult_scaling": 80,
+        "retrigger": 50,
+        "economy": 0
+      },
+      "synergies": {
+        "strong": ["showman", "blueprint", "triboulet"],
+        "medium": ["any_legendary"],
+        "antiSynergy": []
+      },
+      "bossCounters": [],
+      "bossWeaknesses": [],
+      "alwaysBuy": true,
+      "trapJoker": false
+    },
+    {
+      "id": "chicot",
+      "name": "Chicot",
+      "rarity": "legendary",
+      "cost": 20,
+      "effect": "Disables effect of every Boss Blind",
+      "scoringType": "effect",
+      "values": {
+        "chips": 0,
+        "mult": 0,
+        "xmult": 0,
+        "money": 0,
+        "retriggers": 0
+      },
+      "trigger": {
+        "when": "passive",
+        "condition": "boss_blind_active",
+        "scaling": false,
+        "scalingRate": null
+      },
+      "position": {
+        "sensitive": false,
+        "requirement": "any",
+        "copyable": false
+      },
+      "tier": "A",
+      "tierByAnte": {
+        "early": "B",
+        "mid": "A",
+        "late": "S"
+      },
+      "builds": {
+        "flush": 50,
+        "pairs": 50,
+        "straights": 50,
+        "face_cards": 50,
+        "xmult_scaling": 50,
+        "retrigger": 50,
+        "economy": 50
+      },
+      "synergies": {
+        "strong": [],
+        "medium": [],
+        "antiSynergy": []
+      },
+      "bossCounters": ["all"],
+      "bossWeaknesses": [],
+      "alwaysBuy": true,
+      "trapJoker": false
+    },
+    {
+      "id": "perkeo",
+      "name": "Perkeo",
+      "rarity": "legendary",
+      "cost": 20,
+      "effect": "Creates a Negative copy of 1 random consumable card in your possession at end of shop",
+      "scoringType": "effect",
+      "values": {
+        "chips": 0,
+        "mult": 0,
+        "xmult": 0,
+        "money": 0,
+        "retriggers": 0
+      },
+      "trigger": {
+        "when": "end_of_shop",
+        "condition": "has_consumable",
+        "scaling": false,
+        "scalingRate": null
+      },
+      "position": {
+        "sensitive": false,
+        "requirement": "any",
+        "copyable": false
+      },
+      "tier": "A",
+      "tierByAnte": {
+        "early": "A",
+        "mid": "S",
+        "late": "S"
+      },
+      "builds": {
+        "flush": 50,
+        "pairs": 50,
+        "straights": 50,
+        "face_cards": 50,
+        "xmult_scaling": 90,
+        "retrigger": 40,
+        "economy": 70
+      },
+      "synergies": {
+        "strong": ["constellation", "campfire", "fortune_teller"],
+        "medium": ["astronomer", "satellite"],
+        "antiSynergy": []
+      },
+      "bossCounters": [],
+      "bossWeaknesses": [],
+      "alwaysBuy": true,
+      "trapJoker": false
+    },
+    {
+      "id": "canio",
+      "name": "Canio",
+      "rarity": "legendary",
+      "cost": 20,
+      "effect": "This Joker gains X1 Mult when a face card is destroyed",
+      "scoringType": "xmult",
+      "values": {
+        "chips": 0,
+        "mult": 0,
+        "xmult": 1.0,
+        "money": 0,
+        "retriggers": 0
+      },
+      "trigger": {
+        "when": "passive",
+        "condition": "face_card_destroyed",
+        "scaling": true,
+        "scalingRate": "+1.0 xmult per face card destroyed"
+      },
+      "position": {
+        "sensitive": false,
+        "requirement": "any",
+        "copyable": true
+      },
+      "tier": "A",
+      "tierByAnte": {
+        "early": "C",
+        "mid": "A",
+        "late": "S"
+      },
+      "builds": {
+        "flush": 50,
+        "pairs": 60,
+        "straights": 40,
+        "face_cards": 100,
+        "xmult_scaling": 100,
+        "retrigger": 50,
+        "economy": 0
+      },
+      "synergies": {
+        "strong": ["pareidolia", "glass_joker", "sixth_sense"],
+        "medium": ["triboulet", "trading_card"],
+        "antiSynergy": []
+      },
+      "bossCounters": [],
+      "bossWeaknesses": [],
+      "alwaysBuy": true,
+      "trapJoker": false
+    },
+    {
+      "id": "yorick",
+      "name": "Yorick",
+      "rarity": "legendary",
+      "cost": 20,
+      "effect": "This Joker gains X1 Mult every 23 cards discarded. (Currently X1 Mult, 23 remaining)",
+      "scoringType": "xmult",
+      "values": {
+        "chips": 0,
+        "mult": 0,
+        "xmult": 1.0,
+        "money": 0,
+        "retriggers": 0
+      },
+      "trigger": {
+        "when": "on_discard",
+        "condition": "every_23_discards",
+        "scaling": true,
+        "scalingRate": "+1.0 xmult per 23 cards discarded"
+      },
+      "position": {
+        "sensitive": false,
+        "requirement": "any",
+        "copyable": true
+      },
+      "tier": "A",
+      "tierByAnte": {
+        "early": "C",
+        "mid": "B",
+        "late": "A"
+      },
+      "builds": {
+        "flush": 50,
+        "pairs": 50,
+        "straights": 50,
+        "face_cards": 50,
+        "xmult_scaling": 90,
+        "retrigger": 30,
+        "economy": 0
+      },
+      "synergies": {
+        "strong": ["drunkard", "green_joker"],
+        "medium": ["castle", "mail_in_rebate"],
+        "antiSynergy": []
+      },
+      "bossCounters": [],
+      "bossWeaknesses": ["the_hook"],
+      "alwaysBuy": false,
+      "trapJoker": false
+    },
+    {
+      "id": "bloodstone",
+      "name": "Bloodstone",
+      "rarity": "uncommon",
+      "cost": 6,
+      "effect": "1 in 3 chance for played cards with Heart suit to give X1.5 Mult when scored",
+      "scoringType": "xmult",
+      "values": {
+        "chips": 0,
+        "mult": 0,
+        "xmult": 1.5,
+        "money": 0,
+        "retriggers": 0
+      },
+      "trigger": {
+        "when": "scoring",
+        "condition": "card_is_heart",
+        "scaling": false,
+        "scalingRate": null
+      },
+      "position": {
+        "sensitive": false,
+        "requirement": "any",
+        "copyable": true
+      },
+      "tier": "A",
+      "tierByAnte": {
+        "early": "A",
+        "mid": "A",
+        "late": "A"
+      },
+      "builds": {
+        "flush": 100,
+        "pairs": 50,
+        "straights": 50,
+        "face_cards": 50,
+        "xmult_scaling": 85,
+        "retrigger": 60,
+        "economy": 0
+      },
+      "synergies": {
+        "strong": ["lusty_joker", "smeared_joker", "oops_all_6s"],
+        "medium": ["hack", "dusk"],
+        "antiSynergy": []
+      },
+      "bossCounters": [],
+      "bossWeaknesses": ["the_goad"],
+      "alwaysBuy": true,
+      "trapJoker": false
+    },
+    {
+      "id": "flower_pot",
+      "name": "Flower Pot",
+      "rarity": "uncommon",
+      "cost": 6,
+      "effect": "X3 Mult if poker hand contains a Diamond, Club, Heart, and Spade card",
+      "scoringType": "xmult",
+      "values": {
+        "chips": 0,
+        "mult": 0,
+        "xmult": 3.0,
+        "money": 0,
+        "retriggers": 0
+      },
+      "trigger": {
+        "when": "scoring",
+        "condition": "all_suits_in_hand",
+        "scaling": false,
+        "scalingRate": null
+      },
+      "position": {
+        "sensitive": false,
+        "requirement": "any",
+        "copyable": true
+      },
+      "tier": "A",
+      "tierByAnte": {
+        "early": "A",
+        "mid": "A",
+        "late": "B"
+      },
+      "builds": {
+        "flush": 0,
+        "pairs": 70,
+        "straights": 70,
+        "face_cards": 50,
+        "xmult_scaling": 80,
+        "retrigger": 40,
+        "economy": 0
+      },
+      "synergies": {
+        "strong": ["wild_card_enhancement"],
+        "medium": ["splash"],
+        "antiSynergy": ["smeared_joker", "the_tribe"]
+      },
+      "bossCounters": [],
+      "bossWeaknesses": ["the_club", "the_goad", "the_window", "the_head"],
+      "alwaysBuy": false,
+      "trapJoker": false
+    },
+    {
+      "id": "seeing_double",
+      "name": "Seeing Double",
+      "rarity": "uncommon",
+      "cost": 6,
+      "effect": "X2 Mult if played hand has a scoring Club card and a scoring card of any other suit",
+      "scoringType": "xmult",
+      "values": {
+        "chips": 0,
+        "mult": 0,
+        "xmult": 2.0,
+        "money": 0,
+        "retriggers": 0
+      },
+      "trigger": {
+        "when": "scoring",
+        "condition": "club_plus_other_suit",
+        "scaling": false,
+        "scalingRate": null
+      },
+      "position": {
+        "sensitive": false,
+        "requirement": "any",
+        "copyable": true
+      },
+      "tier": "A",
+      "tierByAnte": {
+        "early": "A",
+        "mid": "A",
+        "late": "A"
+      },
+      "builds": {
+        "flush": 20,
+        "pairs": 80,
+        "straights": 70,
+        "face_cards": 60,
+        "xmult_scaling": 85,
+        "retrigger": 40,
+        "economy": 0
+      },
+      "synergies": {
+        "strong": ["gluttonous_joker", "onyx_agate"],
+        "medium": ["wild_card_enhancement"],
+        "antiSynergy": ["the_tribe"]
+      },
+      "bossCounters": [],
+      "bossWeaknesses": ["the_window"],
+      "alwaysBuy": true,
+      "trapJoker": false
+    },
+    {
+      "id": "acrobat",
+      "name": "Acrobat",
+      "rarity": "uncommon",
+      "cost": 6,
+      "effect": "X3 Mult on final hand of round",
+      "scoringType": "xmult",
+      "values": {
+        "chips": 0,
+        "mult": 0,
+        "xmult": 3.0,
+        "money": 0,
+        "retriggers": 0
+      },
+      "trigger": {
+        "when": "scoring",
+        "condition": "final_hand",
+        "scaling": false,
+        "scalingRate": null
+      },
+      "position": {
+        "sensitive": false,
+        "requirement": "any",
+        "copyable": true
+      },
+      "tier": "A",
+      "tierByAnte": {
+        "early": "A",
+        "mid": "A",
+        "late": "A"
+      },
+      "builds": {
+        "flush": 50,
+        "pairs": 50,
+        "straights": 50,
+        "face_cards": 50,
+        "xmult_scaling": 85,
+        "retrigger": 60,
+        "economy": 0
+      },
+      "synergies": {
+        "strong": ["dusk", "blueprint", "brainstorm"],
+        "medium": ["mystic_summit"],
+        "antiSynergy": []
+      },
+      "bossCounters": [],
+      "bossWeaknesses": [],
+      "alwaysBuy": true,
+      "trapJoker": false
+    },
+    {
+      "id": "drivers_license",
+      "name": "Driver's License",
+      "rarity": "rare",
+      "cost": 7,
+      "effect": "X3 Mult if you have at least 16 Enhanced cards in your full deck",
+      "scoringType": "xmult",
+      "values": {
+        "chips": 0,
+        "mult": 0,
+        "xmult": 3.0,
+        "money": 0,
+        "retriggers": 0
+      },
+      "trigger": {
+        "when": "scoring",
+        "condition": "16_plus_enhanced",
+        "scaling": false,
+        "scalingRate": null
+      },
+      "position": {
+        "sensitive": false,
+        "requirement": "any",
+        "copyable": true
+      },
+      "tier": "A",
+      "tierByAnte": {
+        "early": "D",
+        "mid": "B",
+        "late": "A"
+      },
+      "builds": {
+        "flush": 60,
+        "pairs": 60,
+        "straights": 60,
+        "face_cards": 60,
+        "xmult_scaling": 85,
+        "retrigger": 50,
+        "economy": 0
+      },
+      "synergies": {
+        "strong": ["steel_joker", "glass_joker"],
+        "medium": ["stone_joker"],
+        "antiSynergy": ["vampire"]
+      },
+      "bossCounters": [],
+      "bossWeaknesses": [],
+      "alwaysBuy": false,
+      "trapJoker": false
+    },
+    {
+      "id": "four_fingers",
+      "name": "Four Fingers",
+      "rarity": "uncommon",
+      "cost": 7,
+      "effect": "All Flushes and Straights can be made with 4 cards",
+      "scoringType": "effect",
+      "values": {
+        "chips": 0,
+        "mult": 0,
+        "xmult": 0,
+        "money": 0,
+        "retriggers": 0
+      },
+      "trigger": {
+        "when": "passive",
+        "condition": "always",
+        "scaling": false,
+        "scalingRate": null
+      },
+      "position": {
+        "sensitive": false,
+        "requirement": "any",
+        "copyable": false
+      },
+      "tier": "A",
+      "tierByAnte": {
+        "early": "A",
+        "mid": "A",
+        "late": "A"
+      },
+      "builds": {
+        "flush": 100,
+        "pairs": 30,
+        "straights": 100,
+        "face_cards": 40,
+        "xmult_scaling": 60,
+        "retrigger": 40,
+        "economy": 0
+      },
+      "synergies": {
+        "strong": ["shortcut", "smeared_joker", "the_tribe", "the_order", "seance"],
+        "medium": ["square_joker", "runner"],
+        "antiSynergy": []
+      },
+      "bossCounters": [],
+      "bossWeaknesses": [],
+      "alwaysBuy": true,
+      "trapJoker": false
+    },
+    {
+      "id": "shortcut",
+      "name": "Shortcut",
+      "rarity": "uncommon",
+      "cost": 6,
+      "effect": "Allows Straights to be made with gaps of 1 rank (ex: 2 4 6 7 8)",
+      "scoringType": "effect",
+      "values": {
+        "chips": 0,
+        "mult": 0,
+        "xmult": 0,
+        "money": 0,
+        "retriggers": 0
+      },
+      "trigger": {
+        "when": "passive",
+        "condition": "always",
+        "scaling": false,
+        "scalingRate": null
+      },
+      "position": {
+        "sensitive": false,
+        "requirement": "any",
+        "copyable": false
+      },
+      "tier": "A",
+      "tierByAnte": {
+        "early": "A",
+        "mid": "A",
+        "late": "A"
+      },
+      "builds": {
+        "flush": 40,
+        "pairs": 20,
+        "straights": 100,
+        "face_cards": 40,
+        "xmult_scaling": 60,
+        "retrigger": 40,
+        "economy": 0
+      },
+      "synergies": {
+        "strong": ["four_fingers", "runner", "the_order", "seance"],
+        "medium": ["smeared_joker", "crazy_joker"],
+        "antiSynergy": []
+      },
+      "bossCounters": [],
+      "bossWeaknesses": [],
+      "alwaysBuy": true,
+      "trapJoker": false
+    },
+    {
+      "id": "smeared_joker",
+      "name": "Smeared Joker",
+      "rarity": "uncommon",
+      "cost": 6,
+      "effect": "Hearts and Diamonds count as the same suit. Spades and Clubs count as the same suit",
+      "scoringType": "effect",
+      "values": {
+        "chips": 0,
+        "mult": 0,
+        "xmult": 0,
+        "money": 0,
+        "retriggers": 0
+      },
+      "trigger": {
+        "when": "passive",
+        "condition": "always",
+        "scaling": false,
+        "scalingRate": null
+      },
+      "position": {
+        "sensitive": false,
+        "requirement": "any",
+        "copyable": false
+      },
+      "tier": "A",
+      "tierByAnte": {
+        "early": "A",
+        "mid": "A",
+        "late": "A"
+      },
+      "builds": {
+        "flush": 100,
+        "pairs": 30,
+        "straights": 60,
+        "face_cards": 40,
+        "xmult_scaling": 60,
+        "retrigger": 40,
+        "economy": 0
+      },
+      "synergies": {
+        "strong": ["lusty_joker", "greedy_joker", "wrathful_joker", "gluttonous_joker", "four_fingers", "the_tribe", "blackboard"],
+        "medium": ["bloodstone", "arrowhead", "onyx_agate", "rough_gem"],
+        "antiSynergy": ["flower_pot", "seeing_double"]
+      },
+      "bossCounters": ["the_club", "the_goad", "the_window", "the_head"],
+      "bossWeaknesses": [],
+      "alwaysBuy": true,
+      "trapJoker": false
+    },
+    {
+      "id": "astronomer",
+      "name": "Astronomer",
+      "rarity": "uncommon",
+      "cost": 8,
+      "effect": "All Planet cards and Celestial Packs in the shop are free",
+      "scoringType": "economy",
+      "values": {
+        "chips": 0,
+        "mult": 0,
+        "xmult": 0,
+        "money": 0,
+        "retriggers": 0
+      },
+      "trigger": {
+        "when": "passive",
+        "condition": "in_shop",
+        "scaling": false,
+        "scalingRate": null
+      },
+      "position": {
+        "sensitive": false,
+        "requirement": "any",
+        "copyable": false
+      },
+      "tier": "A",
+      "tierByAnte": {
+        "early": "A",
+        "mid": "A",
+        "late": "A"
+      },
+      "builds": {
+        "flush": 50,
+        "pairs": 50,
+        "straights": 50,
+        "face_cards": 50,
+        "xmult_scaling": 70,
+        "retrigger": 30,
+        "economy": 100
+      },
+      "synergies": {
+        "strong": ["constellation", "satellite", "perkeo"],
+        "medium": [],
+        "antiSynergy": []
+      },
+      "bossCounters": [],
+      "bossWeaknesses": [],
+      "alwaysBuy": true,
+      "trapJoker": false
+    },
+    {
+      "id": "burnt_joker",
+      "name": "Burnt Joker",
+      "rarity": "uncommon",
+      "cost": 6,
+      "effect": "Upgrade the level of the first discarded poker hand each round",
+      "scoringType": "effect",
+      "values": {
+        "chips": 0,
+        "mult": 0,
+        "xmult": 0,
+        "money": 0,
+        "retriggers": 0
+      },
+      "trigger": {
+        "when": "on_discard",
+        "condition": "first_discard",
+        "scaling": false,
+        "scalingRate": null
+      },
+      "position": {
+        "sensitive": false,
+        "requirement": "any",
+        "copyable": false
+      },
+      "tier": "A",
+      "tierByAnte": {
+        "early": "S",
+        "mid": "A",
+        "late": "B"
+      },
+      "builds": {
+        "flush": 60,
+        "pairs": 60,
+        "straights": 60,
+        "face_cards": 50,
+        "xmult_scaling": 70,
+        "retrigger": 30,
+        "economy": 0
+      },
+      "synergies": {
+        "strong": ["drunkard"],
+        "medium": ["space_joker", "supernova"],
+        "antiSynergy": ["burglar"]
+      },
+      "bossCounters": [],
+      "bossWeaknesses": [],
+      "alwaysBuy": true,
+      "trapJoker": false
+    },
+    {
+      "id": "cartomancer",
+      "name": "Cartomancer",
+      "rarity": "uncommon",
+      "cost": 6,
+      "effect": "Create a Tarot card when Blind is selected (Must have room)",
+      "scoringType": "effect",
+      "values": {
+        "chips": 0,
+        "mult": 0,
+        "xmult": 0,
+        "money": 0,
+        "retriggers": 0
+      },
+      "trigger": {
+        "when": "on_blind_select",
+        "condition": "has_consumable_slot",
+        "scaling": false,
+        "scalingRate": null
+      },
+      "position": {
+        "sensitive": false,
+        "requirement": "any",
+        "copyable": false
+      },
+      "tier": "A",
+      "tierByAnte": {
+        "early": "A",
+        "mid": "A",
+        "late": "A"
+      },
+      "builds": {
+        "flush": 50,
+        "pairs": 50,
+        "straights": 50,
+        "face_cards": 50,
+        "xmult_scaling": 60,
+        "retrigger": 40,
+        "economy": 60
+      },
+      "synergies": {
+        "strong": ["fortune_teller", "perkeo"],
+        "medium": ["vagabond", "hallucination"],
+        "antiSynergy": []
+      },
+      "bossCounters": [],
+      "bossWeaknesses": [],
+      "alwaysBuy": true,
+      "trapJoker": false
+    },
+    {
+      "id": "shoot_the_moon",
+      "name": "Shoot the Moon",
+      "rarity": "common",
+      "cost": 5,
+      "effect": "Each Queen held in hand gives +13 Mult",
+      "scoringType": "mult",
+      "values": {
+        "chips": 0,
+        "mult": 13,
+        "xmult": 0,
+        "money": 0,
+        "retriggers": 0
+      },
+      "trigger": {
+        "when": "held",
+        "condition": "card_is_queen",
+        "scaling": false,
+        "scalingRate": null
+      },
+      "position": {
+        "sensitive": false,
+        "requirement": "any",
+        "copyable": true
+      },
+      "tier": "A",
+      "tierByAnte": {
+        "early": "A",
+        "mid": "A",
+        "late": "B"
+      },
+      "builds": {
+        "flush": 30,
+        "pairs": 50,
+        "straights": 20,
+        "face_cards": 100,
+        "xmult_scaling": 50,
+        "retrigger": 80,
+        "economy": 0
+      },
+      "synergies": {
+        "strong": ["triboulet", "mime", "pareidolia"],
+        "medium": ["sock_and_buskin", "smiley_face"],
+        "antiSynergy": []
+      },
+      "bossCounters": [],
+      "bossWeaknesses": ["the_club", "the_goad", "the_window", "the_head"],
+      "alwaysBuy": false,
+      "trapJoker": false
+    },
+    {
+      "id": "raised_fist",
+      "name": "Raised Fist",
+      "rarity": "common",
+      "cost": 5,
+      "effect": "Adds double the rank of lowest ranked card held in hand to Mult",
+      "scoringType": "mult",
+      "values": {
+        "chips": 0,
+        "mult": 0,
+        "xmult": 0,
+        "money": 0,
+        "retriggers": 0
+      },
+      "trigger": {
+        "when": "held",
+        "condition": "lowest_card",
+        "scaling": false,
+        "scalingRate": null
+      },
+      "position": {
+        "sensitive": false,
+        "requirement": "any",
+        "copyable": true
+      },
+      "tier": "A",
+      "tierByAnte": {
+        "early": "A",
+        "mid": "B",
+        "late": "C"
+      },
+      "builds": {
+        "flush": 40,
+        "pairs": 50,
+        "straights": 60,
+        "face_cards": 20,
+        "xmult_scaling": 40,
+        "retrigger": 70,
+        "economy": 0
+      },
+      "synergies": {
+        "strong": ["mime", "hack"],
+        "medium": ["wee_joker", "fibonacci"],
+        "antiSynergy": []
+      },
+      "bossCounters": [],
+      "bossWeaknesses": [],
+      "alwaysBuy": false,
+      "trapJoker": false
+    },
+    {
+      "id": "blackboard",
+      "name": "Blackboard",
+      "rarity": "uncommon",
+      "cost": 6,
+      "effect": "X3 Mult if all cards held in hand are Spades or Clubs",
+      "scoringType": "xmult",
+      "values": {
+        "chips": 0,
+        "mult": 0,
+        "xmult": 3.0,
+        "money": 0,
+        "retriggers": 0
+      },
+      "trigger": {
+        "when": "held",
+        "condition": "all_black_suits",
+        "scaling": false,
+        "scalingRate": null
+      },
+      "position": {
+        "sensitive": false,
+        "requirement": "any",
+        "copyable": true
+      },
+      "tier": "A",
+      "tierByAnte": {
+        "early": "A",
+        "mid": "A",
+        "late": "A"
+      },
+      "builds": {
+        "flush": 70,
+        "pairs": 50,
+        "straights": 50,
+        "face_cards": 50,
+        "xmult_scaling": 85,
+        "retrigger": 40,
+        "economy": 0
+      },
+      "synergies": {
+        "strong": ["smeared_joker", "wrathful_joker", "gluttonous_joker"],
+        "medium": ["arrowhead", "onyx_agate"],
+        "antiSynergy": []
+      },
+      "bossCounters": [],
+      "bossWeaknesses": ["the_club", "the_window"],
+      "alwaysBuy": true,
+      "trapJoker": false
+    },
+    {
+      "id": "joker",
+      "name": "Joker",
+      "rarity": "common",
+      "cost": 2,
+      "effect": "+4 Mult",
+      "scoringType": "mult",
+      "values": { "chips": 0, "mult": 4, "xmult": 0, "money": 0, "retriggers": 0 },
+      "trigger": { "when": "scoring", "condition": "always", "scaling": false, "scalingRate": null },
+      "position": { "sensitive": false, "requirement": "any", "copyable": true },
+      "tier": "B",
+      "tierByAnte": { "early": "B", "mid": "C", "late": "D" },
+      "builds": { "flush": 50, "pairs": 50, "straights": 50, "face_cards": 50, "xmult_scaling": 30, "retrigger": 30, "economy": 0 },
+      "synergies": { "strong": [], "medium": ["blueprint", "brainstorm"], "antiSynergy": [] },
+      "bossCounters": [], "bossWeaknesses": [],
+      "alwaysBuy": false, "trapJoker": false
+    },
+    {
+      "id": "greedy_joker",
+      "name": "Greedy Joker",
+      "rarity": "common",
+      "cost": 5,
+      "effect": "Played cards with Diamond suit give +3 Mult when scored",
+      "scoringType": "mult",
+      "values": { "chips": 0, "mult": 3, "xmult": 0, "money": 0, "retriggers": 0 },
+      "trigger": { "when": "scoring", "condition": "card_is_diamond", "scaling": false, "scalingRate": null },
+      "position": { "sensitive": false, "requirement": "any", "copyable": true },
+      "tier": "B",
+      "tierByAnte": { "early": "B", "mid": "B", "late": "C" },
+      "builds": { "flush": 100, "pairs": 40, "straights": 40, "face_cards": 40, "xmult_scaling": 40, "retrigger": 50, "economy": 0 },
+      "synergies": { "strong": ["rough_gem", "smeared_joker", "the_tribe"], "medium": ["droll_joker"], "antiSynergy": [] },
+      "bossCounters": [], "bossWeaknesses": ["the_head"],
+      "alwaysBuy": false, "trapJoker": false
+    },
+    {
+      "id": "lusty_joker",
+      "name": "Lusty Joker",
+      "rarity": "common",
+      "cost": 5,
+      "effect": "Played cards with Heart suit give +3 Mult when scored",
+      "scoringType": "mult",
+      "values": { "chips": 0, "mult": 3, "xmult": 0, "money": 0, "retriggers": 0 },
+      "trigger": { "when": "scoring", "condition": "card_is_heart", "scaling": false, "scalingRate": null },
+      "position": { "sensitive": false, "requirement": "any", "copyable": true },
+      "tier": "B",
+      "tierByAnte": { "early": "B", "mid": "B", "late": "C" },
+      "builds": { "flush": 100, "pairs": 40, "straights": 40, "face_cards": 40, "xmult_scaling": 40, "retrigger": 50, "economy": 0 },
+      "synergies": { "strong": ["bloodstone", "smeared_joker", "the_tribe"], "medium": ["droll_joker"], "antiSynergy": [] },
+      "bossCounters": [], "bossWeaknesses": ["the_goad"],
+      "alwaysBuy": false, "trapJoker": false
+    },
+    {
+      "id": "wrathful_joker",
+      "name": "Wrathful Joker",
+      "rarity": "common",
+      "cost": 5,
+      "effect": "Played cards with Spade suit give +3 Mult when scored",
+      "scoringType": "mult",
+      "values": { "chips": 0, "mult": 3, "xmult": 0, "money": 0, "retriggers": 0 },
+      "trigger": { "when": "scoring", "condition": "card_is_spade", "scaling": false, "scalingRate": null },
+      "position": { "sensitive": false, "requirement": "any", "copyable": true },
+      "tier": "B",
+      "tierByAnte": { "early": "B", "mid": "B", "late": "C" },
+      "builds": { "flush": 100, "pairs": 40, "straights": 40, "face_cards": 40, "xmult_scaling": 40, "retrigger": 50, "economy": 0 },
+      "synergies": { "strong": ["arrowhead", "smeared_joker", "blackboard", "the_tribe"], "medium": [], "antiSynergy": [] },
+      "bossCounters": [], "bossWeaknesses": ["the_club"],
+      "alwaysBuy": false, "trapJoker": false
+    },
+    {
+      "id": "gluttonous_joker",
+      "name": "Gluttonous Joker",
+      "rarity": "common",
+      "cost": 5,
+      "effect": "Played cards with Club suit give +3 Mult when scored",
+      "scoringType": "mult",
+      "values": { "chips": 0, "mult": 3, "xmult": 0, "money": 0, "retriggers": 0 },
+      "trigger": { "when": "scoring", "condition": "card_is_club", "scaling": false, "scalingRate": null },
+      "position": { "sensitive": false, "requirement": "any", "copyable": true },
+      "tier": "B",
+      "tierByAnte": { "early": "B", "mid": "B", "late": "C" },
+      "builds": { "flush": 100, "pairs": 40, "straights": 40, "face_cards": 40, "xmult_scaling": 40, "retrigger": 50, "economy": 0 },
+      "synergies": { "strong": ["onyx_agate", "smeared_joker", "blackboard", "the_tribe", "seeing_double"], "medium": [], "antiSynergy": [] },
+      "bossCounters": [], "bossWeaknesses": ["the_window"],
+      "alwaysBuy": false, "trapJoker": false
+    },
+    {
+      "id": "fibonacci",
+      "name": "Fibonacci",
+      "rarity": "uncommon",
+      "cost": 8,
+      "effect": "Each played Ace, 2, 3, 5, or 8 gives +8 Mult when scored",
+      "scoringType": "mult",
+      "values": { "chips": 0, "mult": 8, "xmult": 0, "money": 0, "retriggers": 0 },
+      "trigger": { "when": "scoring", "condition": "card_is_fibonacci", "scaling": false, "scalingRate": null },
+      "position": { "sensitive": false, "requirement": "any", "copyable": true },
+      "tier": "B",
+      "tierByAnte": { "early": "B", "mid": "B", "late": "B" },
+      "builds": { "flush": 60, "pairs": 70, "straights": 70, "face_cards": 0, "xmult_scaling": 50, "retrigger": 80, "economy": 0 },
+      "synergies": { "strong": ["hack", "scholar", "wee_joker", "hanging_chad"], "medium": ["odd_todd"], "antiSynergy": [] },
+      "bossCounters": [], "bossWeaknesses": [],
+      "alwaysBuy": true, "trapJoker": false
+    },
+    {
+      "id": "even_steven",
+      "name": "Even Steven",
+      "rarity": "common",
+      "cost": 4,
+      "effect": "Played cards with even rank give +4 Mult when scored (10, 8, 6, 4, 2)",
+      "scoringType": "mult",
+      "values": { "chips": 0, "mult": 4, "xmult": 0, "money": 0, "retriggers": 0 },
+      "trigger": { "when": "scoring", "condition": "card_is_even", "scaling": false, "scalingRate": null },
+      "position": { "sensitive": false, "requirement": "any", "copyable": true },
+      "tier": "B",
+      "tierByAnte": { "early": "B", "mid": "B", "late": "C" },
+      "builds": { "flush": 60, "pairs": 70, "straights": 60, "face_cards": 0, "xmult_scaling": 40, "retrigger": 60, "economy": 0 },
+      "synergies": { "strong": ["walkie_talkie", "8_ball", "hack"], "medium": [], "antiSynergy": ["scholar", "odd_todd"] },
+      "bossCounters": [], "bossWeaknesses": [],
+      "alwaysBuy": false, "trapJoker": false
+    },
+    {
+      "id": "odd_todd",
+      "name": "Odd Todd",
+      "rarity": "common",
+      "cost": 4,
+      "effect": "Played cards with odd rank give +31 Chips when scored (A, 9, 7, 5, 3)",
+      "scoringType": "chips",
+      "values": { "chips": 31, "mult": 0, "xmult": 0, "money": 0, "retriggers": 0 },
+      "trigger": { "when": "scoring", "condition": "card_is_odd", "scaling": false, "scalingRate": null },
+      "position": { "sensitive": false, "requirement": "any", "copyable": true },
+      "tier": "B",
+      "tierByAnte": { "early": "B", "mid": "C", "late": "C" },
+      "builds": { "flush": 60, "pairs": 70, "straights": 60, "face_cards": 0, "xmult_scaling": 30, "retrigger": 60, "economy": 0 },
+      "synergies": { "strong": ["scholar", "fibonacci", "hack"], "medium": [], "antiSynergy": ["even_steven"] },
+      "bossCounters": [], "bossWeaknesses": [],
+      "alwaysBuy": false, "trapJoker": false
+    },
+    {
+      "id": "scholar",
+      "name": "Scholar",
+      "rarity": "common",
+      "cost": 4,
+      "effect": "Played Aces give +20 Chips and +4 Mult when scored",
+      "scoringType": "mult",
+      "values": { "chips": 20, "mult": 4, "xmult": 0, "money": 0, "retriggers": 0 },
+      "trigger": { "when": "scoring", "condition": "card_is_ace", "scaling": false, "scalingRate": null },
+      "position": { "sensitive": false, "requirement": "any", "copyable": true },
+      "tier": "B",
+      "tierByAnte": { "early": "B", "mid": "B", "late": "C" },
+      "builds": { "flush": 60, "pairs": 80, "straights": 70, "face_cards": 0, "xmult_scaling": 40, "retrigger": 70, "economy": 0 },
+      "synergies": { "strong": ["fibonacci", "odd_todd"], "medium": ["hanging_chad", "hack"], "antiSynergy": ["even_steven"] },
+      "bossCounters": [], "bossWeaknesses": [],
+      "alwaysBuy": false, "trapJoker": false
+    },
+    {
+      "id": "gros_michel",
+      "name": "Gros Michel",
+      "rarity": "common",
+      "cost": 5,
+      "effect": "+15 Mult. 1 in 6 chance this is destroyed at end of round",
+      "scoringType": "mult",
+      "values": { "chips": 0, "mult": 15, "xmult": 0, "money": 0, "retriggers": 0 },
+      "trigger": { "when": "scoring", "condition": "always", "scaling": false, "scalingRate": null },
+      "position": { "sensitive": false, "requirement": "any", "copyable": true },
+      "tier": "B",
+      "tierByAnte": { "early": "A", "mid": "B", "late": "C" },
+      "builds": { "flush": 50, "pairs": 50, "straights": 50, "face_cards": 50, "xmult_scaling": 50, "retrigger": 40, "economy": 0 },
+      "synergies": { "strong": ["blueprint", "brainstorm"], "medium": [], "antiSynergy": [] },
+      "bossCounters": [], "bossWeaknesses": [],
+      "alwaysBuy": true, "trapJoker": false
+    },
+    {
+      "id": "supernova",
+      "name": "Supernova",
+      "rarity": "common",
+      "cost": 5,
+      "effect": "Adds the number of times poker hand has been played this run to Mult",
+      "scoringType": "mult",
+      "values": { "chips": 0, "mult": 0, "xmult": 0, "money": 0, "retriggers": 0 },
+      "trigger": { "when": "scoring", "condition": "always", "scaling": true, "scalingRate": "+1 mult per hand type played" },
+      "position": { "sensitive": false, "requirement": "any", "copyable": true },
+      "tier": "B",
+      "tierByAnte": { "early": "C", "mid": "B", "late": "B" },
+      "builds": { "flush": 70, "pairs": 90, "straights": 70, "face_cards": 50, "xmult_scaling": 60, "retrigger": 40, "economy": 0 },
+      "synergies": { "strong": ["jolly_joker", "the_duo", "shortcut", "smeared_joker"], "medium": ["space_joker"], "antiSynergy": [] },
+      "bossCounters": [], "bossWeaknesses": [],
+      "alwaysBuy": false, "trapJoker": false
+    },
+    {
+      "id": "ride_the_bus",
+      "name": "Ride the Bus",
+      "rarity": "common",
+      "cost": 6,
+      "effect": "This Joker gains +1 Mult per consecutive hand played without a scoring face card. Resets on face card scored",
+      "scoringType": "mult",
+      "values": { "chips": 0, "mult": 0, "xmult": 0, "money": 0, "retriggers": 0 },
+      "trigger": { "when": "scoring", "condition": "no_face_cards", "scaling": true, "scalingRate": "+1 mult per hand without face card" },
+      "position": { "sensitive": false, "requirement": "any", "copyable": true },
+      "tier": "B",
+      "tierByAnte": { "early": "B", "mid": "B", "late": "C" },
+      "builds": { "flush": 70, "pairs": 60, "straights": 80, "face_cards": 0, "xmult_scaling": 60, "retrigger": 30, "economy": 0 },
+      "synergies": { "strong": ["fibonacci", "even_steven", "odd_todd"], "medium": [], "antiSynergy": ["pareidolia", "triboulet", "baron"] },
+      "bossCounters": [], "bossWeaknesses": [],
+      "alwaysBuy": false, "trapJoker": false
+    },
+    {
+      "id": "runner",
+      "name": "Runner",
+      "rarity": "common",
+      "cost": 5,
+      "effect": "This Joker gains +15 Chips if played hand contains a Straight",
+      "scoringType": "chips",
+      "values": { "chips": 0, "mult": 0, "xmult": 0, "money": 0, "retriggers": 0 },
+      "trigger": { "when": "scoring", "condition": "hand_contains_straight", "scaling": true, "scalingRate": "+15 chips per straight played" },
+      "position": { "sensitive": false, "requirement": "any", "copyable": true },
+      "tier": "B",
+      "tierByAnte": { "early": "B", "mid": "B", "late": "C" },
+      "builds": { "flush": 30, "pairs": 0, "straights": 100, "face_cards": 40, "xmult_scaling": 40, "retrigger": 40, "economy": 0 },
+      "synergies": { "strong": ["shortcut", "four_fingers", "the_order"], "medium": ["crazy_joker"], "antiSynergy": [] },
+      "bossCounters": [], "bossWeaknesses": ["the_needle"],
+      "alwaysBuy": false, "trapJoker": false
+    },
+    {
+      "id": "ice_cream",
+      "name": "Ice Cream",
+      "rarity": "common",
+      "cost": 5,
+      "effect": "+100 Chips. -5 Chips for every hand played",
+      "scoringType": "chips",
+      "values": { "chips": 100, "mult": 0, "xmult": 0, "money": 0, "retriggers": 0 },
+      "trigger": { "when": "scoring", "condition": "always", "scaling": true, "scalingRate": "-5 chips per hand played" },
+      "position": { "sensitive": false, "requirement": "any", "copyable": true },
+      "tier": "B",
+      "tierByAnte": { "early": "A", "mid": "C", "late": "D" },
+      "builds": { "flush": 50, "pairs": 50, "straights": 50, "face_cards": 50, "xmult_scaling": 30, "retrigger": 30, "economy": 0 },
+      "synergies": { "strong": [], "medium": [], "antiSynergy": [] },
+      "bossCounters": [], "bossWeaknesses": [],
+      "alwaysBuy": false, "trapJoker": false
+    },
+    {
+      "id": "blue_joker",
+      "name": "Blue Joker",
+      "rarity": "common",
+      "cost": 5,
+      "effect": "+2 Chips for each remaining card in deck",
+      "scoringType": "chips",
+      "values": { "chips": 2, "mult": 0, "xmult": 0, "money": 0, "retriggers": 0 },
+      "trigger": { "when": "scoring", "condition": "always", "scaling": false, "scalingRate": null },
+      "position": { "sensitive": false, "requirement": "any", "copyable": true },
+      "tier": "B",
+      "tierByAnte": { "early": "B", "mid": "C", "late": "C" },
+      "builds": { "flush": 50, "pairs": 50, "straights": 50, "face_cards": 50, "xmult_scaling": 30, "retrigger": 30, "economy": 0 },
+      "synergies": { "strong": ["dna", "marble_joker"], "medium": [], "antiSynergy": [] },
+      "bossCounters": [], "bossWeaknesses": [],
+      "alwaysBuy": false, "trapJoker": false
+    },
+    {
+      "id": "stone_joker",
+      "name": "Stone Joker",
+      "rarity": "uncommon",
+      "cost": 6,
+      "effect": "Gives +25 Chips for each Stone Card in your full deck",
+      "scoringType": "chips",
+      "values": { "chips": 25, "mult": 0, "xmult": 0, "money": 0, "retriggers": 0 },
+      "trigger": { "when": "scoring", "condition": "always", "scaling": false, "scalingRate": null },
+      "position": { "sensitive": false, "requirement": "any", "copyable": true },
+      "tier": "B",
+      "tierByAnte": { "early": "C", "mid": "B", "late": "B" },
+      "builds": { "flush": 40, "pairs": 40, "straights": 40, "face_cards": 40, "xmult_scaling": 40, "retrigger": 40, "economy": 0 },
+      "synergies": { "strong": ["marble_joker", "drivers_license"], "medium": [], "antiSynergy": [] },
+      "bossCounters": [], "bossWeaknesses": [],
+      "alwaysBuy": false, "trapJoker": false
+    },
+    {
+      "id": "golden_joker",
+      "name": "Golden Joker",
+      "rarity": "common",
+      "cost": 6,
+      "effect": "Earn $4 at end of round",
+      "scoringType": "economy",
+      "values": { "chips": 0, "mult": 0, "xmult": 0, "money": 4, "retriggers": 0 },
+      "trigger": { "when": "end_of_round", "condition": "always", "scaling": false, "scalingRate": null },
+      "position": { "sensitive": false, "requirement": "any", "copyable": true },
+      "tier": "B",
+      "tierByAnte": { "early": "A", "mid": "B", "late": "C" },
+      "builds": { "flush": 30, "pairs": 30, "straights": 30, "face_cards": 30, "xmult_scaling": 20, "retrigger": 20, "economy": 100 },
+      "synergies": { "strong": ["to_the_moon", "bull", "bootstraps"], "medium": [], "antiSynergy": [] },
+      "bossCounters": [], "bossWeaknesses": [],
+      "alwaysBuy": true, "trapJoker": false
+    },
+    {
+      "id": "rocket",
+      "name": "Rocket",
+      "rarity": "uncommon",
+      "cost": 6,
+      "effect": "Earn $1 at end of round. Payout increases by $2 when Boss Blind is defeated",
+      "scoringType": "economy",
+      "values": { "chips": 0, "mult": 0, "xmult": 0, "money": 1, "retriggers": 0 },
+      "trigger": { "when": "end_of_round", "condition": "always", "scaling": true, "scalingRate": "+$2 per boss defeated" },
+      "position": { "sensitive": false, "requirement": "any", "copyable": true },
+      "tier": "B",
+      "tierByAnte": { "early": "A", "mid": "B", "late": "B" },
+      "builds": { "flush": 30, "pairs": 30, "straights": 30, "face_cards": 30, "xmult_scaling": 20, "retrigger": 20, "economy": 100 },
+      "synergies": { "strong": ["to_the_moon"], "medium": ["bull", "bootstraps"], "antiSynergy": [] },
+      "bossCounters": [], "bossWeaknesses": [],
+      "alwaysBuy": true, "trapJoker": false
+    },
+    {
+      "id": "to_the_moon",
+      "name": "To the Moon",
+      "rarity": "uncommon",
+      "cost": 5,
+      "effect": "Earn an extra $1 of interest for every $5 you have at end of round",
+      "scoringType": "economy",
+      "values": { "chips": 0, "mult": 0, "xmult": 0, "money": 1, "retriggers": 0 },
+      "trigger": { "when": "end_of_round", "condition": "always", "scaling": false, "scalingRate": null },
+      "position": { "sensitive": false, "requirement": "any", "copyable": true },
+      "tier": "B",
+      "tierByAnte": { "early": "A", "mid": "A", "late": "B" },
+      "builds": { "flush": 30, "pairs": 30, "straights": 30, "face_cards": 30, "xmult_scaling": 20, "retrigger": 20, "economy": 100 },
+      "synergies": { "strong": ["golden_joker", "rocket", "cloud_9", "bull", "bootstraps"], "medium": [], "antiSynergy": [] },
+      "bossCounters": [], "bossWeaknesses": [],
+      "alwaysBuy": true, "trapJoker": false
+    },
+    {
+      "id": "egg",
+      "name": "Egg",
+      "rarity": "common",
+      "cost": 4,
+      "effect": "Gains $3 of sell value at end of round",
+      "scoringType": "economy",
+      "values": { "chips": 0, "mult": 0, "xmult": 0, "money": 3, "retriggers": 0 },
+      "trigger": { "when": "end_of_round", "condition": "always", "scaling": true, "scalingRate": "+$3 sell value per round" },
+      "position": { "sensitive": false, "requirement": "any", "copyable": true },
+      "tier": "B",
+      "tierByAnte": { "early": "A", "mid": "B", "late": "D" },
+      "builds": { "flush": 30, "pairs": 30, "straights": 30, "face_cards": 30, "xmult_scaling": 20, "retrigger": 20, "economy": 90 },
+      "synergies": { "strong": ["campfire"], "medium": [], "antiSynergy": [] },
+      "bossCounters": [], "bossWeaknesses": [],
+      "alwaysBuy": false, "trapJoker": false
+    },
+    {
+      "id": "bull",
+      "name": "Bull",
+      "rarity": "uncommon",
+      "cost": 6,
+      "effect": "+2 Chips for each dollar you have",
+      "scoringType": "chips",
+      "values": { "chips": 2, "mult": 0, "xmult": 0, "money": 0, "retriggers": 0 },
+      "trigger": { "when": "scoring", "condition": "always", "scaling": false, "scalingRate": null },
+      "position": { "sensitive": false, "requirement": "any", "copyable": true },
+      "tier": "B",
+      "tierByAnte": { "early": "B", "mid": "B", "late": "C" },
+      "builds": { "flush": 40, "pairs": 40, "straights": 40, "face_cards": 40, "xmult_scaling": 30, "retrigger": 30, "economy": 90 },
+      "synergies": { "strong": ["to_the_moon", "golden_joker", "cloud_9"], "medium": ["bootstraps"], "antiSynergy": [] },
+      "bossCounters": [], "bossWeaknesses": [],
+      "alwaysBuy": false, "trapJoker": false
+    },
+    {
+      "id": "bootstraps",
+      "name": "Bootstraps",
+      "rarity": "uncommon",
+      "cost": 6,
+      "effect": "+2 Mult for every $5 you have",
+      "scoringType": "mult",
+      "values": { "chips": 0, "mult": 2, "xmult": 0, "money": 0, "retriggers": 0 },
+      "trigger": { "when": "scoring", "condition": "always", "scaling": false, "scalingRate": null },
+      "position": { "sensitive": false, "requirement": "any", "copyable": true },
+      "tier": "B",
+      "tierByAnte": { "early": "B", "mid": "B", "late": "B" },
+      "builds": { "flush": 40, "pairs": 40, "straights": 40, "face_cards": 40, "xmult_scaling": 50, "retrigger": 30, "economy": 90 },
+      "synergies": { "strong": ["to_the_moon", "golden_joker", "cloud_9"], "medium": ["bull"], "antiSynergy": [] },
+      "bossCounters": [], "bossWeaknesses": [],
+      "alwaysBuy": false, "trapJoker": false
+    },
+    {
+      "id": "satellite",
+      "name": "Satellite",
+      "rarity": "uncommon",
+      "cost": 6,
+      "effect": "Earn $1 at end of round per unique Planet card used this run",
+      "scoringType": "economy",
+      "values": { "chips": 0, "mult": 0, "xmult": 0, "money": 1, "retriggers": 0 },
+      "trigger": { "when": "end_of_round", "condition": "always", "scaling": false, "scalingRate": null },
+      "position": { "sensitive": false, "requirement": "any", "copyable": true },
+      "tier": "B",
+      "tierByAnte": { "early": "C", "mid": "B", "late": "B" },
+      "builds": { "flush": 40, "pairs": 40, "straights": 40, "face_cards": 40, "xmult_scaling": 40, "retrigger": 30, "economy": 90 },
+      "synergies": { "strong": ["astronomer", "constellation"], "medium": ["perkeo"], "antiSynergy": [] },
+      "bossCounters": [], "bossWeaknesses": [],
+      "alwaysBuy": false, "trapJoker": false
+    },
+    {
+      "id": "space_joker",
+      "name": "Space Joker",
+      "rarity": "uncommon",
+      "cost": 5,
+      "effect": "1 in 4 chance to upgrade level of played poker hand",
+      "scoringType": "effect",
+      "values": { "chips": 0, "mult": 0, "xmult": 0, "money": 0, "retriggers": 0 },
+      "trigger": { "when": "scoring", "condition": "random", "scaling": false, "scalingRate": null },
+      "position": { "sensitive": false, "requirement": "any", "copyable": true },
+      "tier": "B",
+      "tierByAnte": { "early": "A", "mid": "B", "late": "C" },
+      "builds": { "flush": 60, "pairs": 60, "straights": 60, "face_cards": 50, "xmult_scaling": 50, "retrigger": 30, "economy": 0 },
+      "synergies": { "strong": ["oops_all_6s"], "medium": ["supernova", "burnt_joker"], "antiSynergy": [] },
+      "bossCounters": [], "bossWeaknesses": [],
+      "alwaysBuy": false, "trapJoker": false
+    },
+    {
+      "id": "8_ball",
+      "name": "8 Ball",
+      "rarity": "common",
+      "cost": 5,
+      "effect": "1 in 4 chance for each played 8 to create a Tarot card when scored (Must have room)",
+      "scoringType": "effect",
+      "values": { "chips": 0, "mult": 0, "xmult": 0, "money": 0, "retriggers": 0 },
+      "trigger": { "when": "scoring", "condition": "card_is_8", "scaling": false, "scalingRate": null },
+      "position": { "sensitive": false, "requirement": "any", "copyable": true },
+      "tier": "B",
+      "tierByAnte": { "early": "B", "mid": "B", "late": "C" },
+      "builds": { "flush": 50, "pairs": 60, "straights": 50, "face_cards": 0, "xmult_scaling": 40, "retrigger": 50, "economy": 40 },
+      "synergies": { "strong": ["oops_all_6s", "even_steven"], "medium": ["fortune_teller", "dna"], "antiSynergy": [] },
+      "bossCounters": [], "bossWeaknesses": [],
+      "alwaysBuy": false, "trapJoker": false
+    },
+    {
+      "id": "fortune_teller",
+      "name": "Fortune Teller",
+      "rarity": "common",
+      "cost": 6,
+      "effect": "+1 Mult per Tarot card used this run",
+      "scoringType": "mult",
+      "values": { "chips": 0, "mult": 1, "xmult": 0, "money": 0, "retriggers": 0 },
+      "trigger": { "when": "scoring", "condition": "always", "scaling": true, "scalingRate": "+1 mult per tarot used" },
+      "position": { "sensitive": false, "requirement": "any", "copyable": true },
+      "tier": "B",
+      "tierByAnte": { "early": "C", "mid": "B", "late": "B" },
+      "builds": { "flush": 50, "pairs": 50, "straights": 50, "face_cards": 50, "xmult_scaling": 60, "retrigger": 30, "economy": 0 },
+      "synergies": { "strong": ["perkeo", "cartomancer"], "medium": ["hallucination", "vagabond", "8_ball"], "antiSynergy": [] },
+      "bossCounters": [], "bossWeaknesses": [],
+      "alwaysBuy": false, "trapJoker": false
+    },
+    {
+      "id": "loyalty_card",
+      "name": "Loyalty Card",
+      "rarity": "uncommon",
+      "cost": 5,
+      "effect": "X4 Mult every 6 hands played",
+      "scoringType": "xmult",
+      "values": { "chips": 0, "mult": 0, "xmult": 4.0, "money": 0, "retriggers": 0 },
+      "trigger": { "when": "scoring", "condition": "every_6_hands", "scaling": false, "scalingRate": null },
+      "position": { "sensitive": false, "requirement": "any", "copyable": true },
+      "tier": "B",
+      "tierByAnte": { "early": "B", "mid": "B", "late": "C" },
+      "builds": { "flush": 50, "pairs": 50, "straights": 50, "face_cards": 50, "xmult_scaling": 70, "retrigger": 30, "economy": 0 },
+      "synergies": { "strong": ["blueprint", "brainstorm"], "medium": [], "antiSynergy": [] },
+      "bossCounters": [], "bossWeaknesses": [],
+      "alwaysBuy": false, "trapJoker": false
+    },
+    {
+      "id": "seance",
+      "name": "Seance",
+      "rarity": "uncommon",
+      "cost": 6,
+      "effect": "If poker hand is a Straight Flush, create a random Spectral card (Must have room)",
+      "scoringType": "effect",
+      "values": { "chips": 0, "mult": 0, "xmult": 0, "money": 0, "retriggers": 0 },
+      "trigger": { "when": "scoring", "condition": "hand_is_straight_flush", "scaling": false, "scalingRate": null },
+      "position": { "sensitive": false, "requirement": "any", "copyable": true },
+      "tier": "B",
+      "tierByAnte": { "early": "C", "mid": "B", "late": "B" },
+      "builds": { "flush": 100, "pairs": 0, "straights": 100, "face_cards": 40, "xmult_scaling": 50, "retrigger": 30, "economy": 0 },
+      "synergies": { "strong": ["four_fingers", "shortcut", "smeared_joker"], "medium": ["the_order", "the_tribe"], "antiSynergy": [] },
+      "bossCounters": [], "bossWeaknesses": [],
+      "alwaysBuy": false, "trapJoker": false
+    },
+    {
+      "id": "seltzer",
+      "name": "Seltzer",
+      "rarity": "uncommon",
+      "cost": 6,
+      "effect": "Retrigger all played cards for the next 10 hands",
+      "scoringType": "retrigger",
+      "values": { "chips": 0, "mult": 0, "xmult": 0, "money": 0, "retriggers": 1 },
+      "trigger": { "when": "scoring", "condition": "next_10_hands", "scaling": false, "scalingRate": null },
+      "position": { "sensitive": false, "requirement": "any", "copyable": true },
+      "tier": "B",
+      "tierByAnte": { "early": "B", "mid": "B", "late": "C" },
+      "builds": { "flush": 60, "pairs": 60, "straights": 60, "face_cards": 70, "xmult_scaling": 70, "retrigger": 100, "economy": 0 },
+      "synergies": { "strong": ["dusk", "hanging_chad", "hack", "sock_and_buskin"], "medium": ["hiker"], "antiSynergy": [] },
+      "bossCounters": [], "bossWeaknesses": [],
+      "alwaysBuy": false, "trapJoker": false
+    },
+    {
+      "id": "wee_joker",
+      "name": "Wee Joker",
+      "rarity": "rare",
+      "cost": 8,
+      "effect": "This Joker gains +8 Chips when each played 2 is scored",
+      "scoringType": "chips",
+      "values": { "chips": 0, "mult": 0, "xmult": 0, "money": 0, "retriggers": 0 },
+      "trigger": { "when": "scoring", "condition": "card_is_2", "scaling": true, "scalingRate": "+8 chips per 2 scored" },
+      "position": { "sensitive": false, "requirement": "any", "copyable": true },
+      "tier": "B",
+      "tierByAnte": { "early": "B", "mid": "A", "late": "A" },
+      "builds": { "flush": 60, "pairs": 80, "straights": 70, "face_cards": 0, "xmult_scaling": 50, "retrigger": 80, "economy": 0 },
+      "synergies": { "strong": ["hack", "fibonacci", "hanging_chad", "dna"], "medium": ["even_steven"], "antiSynergy": [] },
+      "bossCounters": [], "bossWeaknesses": [],
+      "alwaysBuy": true, "trapJoker": false
+    },
+    {
+      "id": "square_joker",
+      "name": "Square Joker",
+      "rarity": "common",
+      "cost": 4,
+      "effect": "This Joker gains +4 Chips if played hand has exactly 4 cards",
+      "scoringType": "chips",
+      "values": { "chips": 0, "mult": 0, "xmult": 0, "money": 0, "retriggers": 0 },
+      "trigger": { "when": "scoring", "condition": "hand_has_4_cards", "scaling": true, "scalingRate": "+4 chips per 4-card hand" },
+      "position": { "sensitive": false, "requirement": "any", "copyable": true },
+      "tier": "B",
+      "tierByAnte": { "early": "B", "mid": "B", "late": "C" },
+      "builds": { "flush": 60, "pairs": 70, "straights": 60, "face_cards": 50, "xmult_scaling": 40, "retrigger": 40, "economy": 0 },
+      "synergies": { "strong": ["four_fingers", "spare_trousers"], "medium": [], "antiSynergy": [] },
+      "bossCounters": [], "bossWeaknesses": [],
+      "alwaysBuy": false, "trapJoker": false
+    },
+    {
+      "id": "ramen",
+      "name": "Ramen",
+      "rarity": "uncommon",
+      "cost": 6,
+      "effect": "X2 Mult, loses X0.01 Mult per card discarded",
+      "scoringType": "xmult",
+      "values": { "chips": 0, "mult": 0, "xmult": 2.0, "money": 0, "retriggers": 0 },
+      "trigger": { "when": "scoring", "condition": "always", "scaling": true, "scalingRate": "-0.01 xmult per card discarded" },
+      "position": { "sensitive": false, "requirement": "any", "copyable": true },
+      "tier": "B",
+      "tierByAnte": { "early": "A", "mid": "B", "late": "C" },
+      "builds": { "flush": 50, "pairs": 50, "straights": 50, "face_cards": 50, "xmult_scaling": 70, "retrigger": 30, "economy": 0 },
+      "synergies": { "strong": ["burglar"], "medium": [], "antiSynergy": ["drunkard", "yorick"] },
+      "bossCounters": [], "bossWeaknesses": ["the_hook"],
+      "alwaysBuy": false, "trapJoker": false
+    },
+    {
+      "id": "ancient_joker",
+      "name": "Ancient Joker",
+      "rarity": "rare",
+      "cost": 8,
+      "effect": "Each played card with [suit] gives X1.5 Mult when scored. Suit changes at end of round",
+      "scoringType": "xmult",
+      "values": { "chips": 0, "mult": 0, "xmult": 1.5, "money": 0, "retriggers": 0 },
+      "trigger": { "when": "scoring", "condition": "card_matches_ancient_suit", "scaling": false, "scalingRate": null },
+      "position": { "sensitive": false, "requirement": "any", "copyable": true },
+      "tier": "B",
+      "tierByAnte": { "early": "B", "mid": "B", "late": "B" },
+      "builds": { "flush": 80, "pairs": 50, "straights": 50, "face_cards": 50, "xmult_scaling": 75, "retrigger": 60, "economy": 0 },
+      "synergies": { "strong": ["smeared_joker"], "medium": ["wild_card"], "antiSynergy": [] },
+      "bossCounters": [], "bossWeaknesses": ["the_club", "the_goad", "the_window", "the_head"],
+      "alwaysBuy": false, "trapJoker": false
+    },
+    {
+      "id": "walkie_talkie",
+      "name": "Walkie Talkie",
+      "rarity": "common",
+      "cost": 4,
+      "effect": "Each played 10 or 4 gives +10 Chips and +4 Mult when scored",
+      "scoringType": "mult",
+      "values": { "chips": 10, "mult": 4, "xmult": 0, "money": 0, "retriggers": 0 },
+      "trigger": { "when": "scoring", "condition": "card_is_10_or_4", "scaling": false, "scalingRate": null },
+      "position": { "sensitive": false, "requirement": "any", "copyable": true },
+      "tier": "B",
+      "tierByAnte": { "early": "B", "mid": "B", "late": "C" },
+      "builds": { "flush": 60, "pairs": 70, "straights": 70, "face_cards": 0, "xmult_scaling": 40, "retrigger": 60, "economy": 0 },
+      "synergies": { "strong": ["even_steven", "hack"], "medium": ["hanging_chad", "dusk"], "antiSynergy": [] },
+      "bossCounters": [], "bossWeaknesses": [],
+      "alwaysBuy": false, "trapJoker": false
+    },
+    {
+      "id": "midas_mask",
+      "name": "Midas Mask",
+      "rarity": "uncommon",
+      "cost": 5,
+      "effect": "All played face cards become Gold cards when scored",
+      "scoringType": "effect",
+      "values": { "chips": 0, "mult": 0, "xmult": 0, "money": 0, "retriggers": 0 },
+      "trigger": { "when": "scoring", "condition": "card_is_face", "scaling": false, "scalingRate": null },
+      "position": { "sensitive": false, "requirement": "any", "copyable": false },
+      "tier": "B",
+      "tierByAnte": { "early": "B", "mid": "B", "late": "C" },
+      "builds": { "flush": 40, "pairs": 50, "straights": 30, "face_cards": 100, "xmult_scaling": 40, "retrigger": 40, "economy": 80 },
+      "synergies": { "strong": ["vampire", "pareidolia", "golden_ticket"], "medium": ["sock_and_buskin"], "antiSynergy": [] },
+      "bossCounters": [], "bossWeaknesses": [],
+      "alwaysBuy": false, "trapJoker": false
+    },
+    {
+      "id": "golden_ticket",
+      "name": "Golden Ticket",
+      "rarity": "common",
+      "cost": 5,
+      "effect": "Played Gold cards earn $4 when scored",
+      "scoringType": "economy",
+      "values": { "chips": 0, "mult": 0, "xmult": 0, "money": 4, "retriggers": 0 },
+      "trigger": { "when": "scoring", "condition": "card_is_gold", "scaling": false, "scalingRate": null },
+      "position": { "sensitive": false, "requirement": "any", "copyable": true },
+      "tier": "B",
+      "tierByAnte": { "early": "C", "mid": "B", "late": "B" },
+      "builds": { "flush": 50, "pairs": 50, "straights": 50, "face_cards": 80, "xmult_scaling": 30, "retrigger": 50, "economy": 100 },
+      "synergies": { "strong": ["midas_mask", "pareidolia"], "medium": [], "antiSynergy": ["vampire"] },
+      "bossCounters": [], "bossWeaknesses": [],
+      "alwaysBuy": false, "trapJoker": false
+    },
+    {
+      "id": "showman",
+      "name": "Showman",
+      "rarity": "uncommon",
+      "cost": 5,
+      "effect": "Joker, Tarot, Planet, and Spectral cards may appear multiple times",
+      "scoringType": "effect",
+      "values": { "chips": 0, "mult": 0, "xmult": 0, "money": 0, "retriggers": 0 },
+      "trigger": { "when": "passive", "condition": "in_shop", "scaling": false, "scalingRate": null },
+      "position": { "sensitive": false, "requirement": "any", "copyable": false },
+      "tier": "B",
+      "tierByAnte": { "early": "B", "mid": "B", "late": "B" },
+      "builds": { "flush": 50, "pairs": 50, "straights": 50, "face_cards": 50, "xmult_scaling": 60, "retrigger": 40, "economy": 50 },
+      "synergies": { "strong": ["invisible_joker"], "medium": ["perkeo"], "antiSynergy": [] },
+      "bossCounters": [], "bossWeaknesses": [],
+      "alwaysBuy": false, "trapJoker": false
+    },
+    {
+      "id": "arrowhead",
+      "name": "Arrowhead",
+      "rarity": "uncommon",
+      "cost": 6,
+      "effect": "Played cards with Spade suit give +50 Chips when scored",
+      "scoringType": "chips",
+      "values": { "chips": 50, "mult": 0, "xmult": 0, "money": 0, "retriggers": 0 },
+      "trigger": { "when": "scoring", "condition": "card_is_spade", "scaling": false, "scalingRate": null },
+      "position": { "sensitive": false, "requirement": "any", "copyable": true },
+      "tier": "B",
+      "tierByAnte": { "early": "B", "mid": "B", "late": "C" },
+      "builds": { "flush": 100, "pairs": 40, "straights": 40, "face_cards": 40, "xmult_scaling": 40, "retrigger": 50, "economy": 0 },
+      "synergies": { "strong": ["wrathful_joker", "smeared_joker", "blackboard"], "medium": [], "antiSynergy": [] },
+      "bossCounters": [], "bossWeaknesses": ["the_club"],
+      "alwaysBuy": false, "trapJoker": false
+    },
+    {
+      "id": "onyx_agate",
+      "name": "Onyx Agate",
+      "rarity": "uncommon",
+      "cost": 6,
+      "effect": "Played cards with Club suit give +7 Mult when scored",
+      "scoringType": "mult",
+      "values": { "chips": 0, "mult": 7, "xmult": 0, "money": 0, "retriggers": 0 },
+      "trigger": { "when": "scoring", "condition": "card_is_club", "scaling": false, "scalingRate": null },
+      "position": { "sensitive": false, "requirement": "any", "copyable": true },
+      "tier": "B",
+      "tierByAnte": { "early": "B", "mid": "B", "late": "B" },
+      "builds": { "flush": 100, "pairs": 40, "straights": 40, "face_cards": 40, "xmult_scaling": 50, "retrigger": 50, "economy": 0 },
+      "synergies": { "strong": ["gluttonous_joker", "smeared_joker", "blackboard", "seeing_double"], "medium": [], "antiSynergy": [] },
+      "bossCounters": [], "bossWeaknesses": ["the_window"],
+      "alwaysBuy": false, "trapJoker": false
+    },
+    {
+      "id": "rough_gem",
+      "name": "Rough Gem",
+      "rarity": "uncommon",
+      "cost": 6,
+      "effect": "Played cards with Diamond suit earn $1 when scored",
+      "scoringType": "economy",
+      "values": { "chips": 0, "mult": 0, "xmult": 0, "money": 1, "retriggers": 0 },
+      "trigger": { "when": "scoring", "condition": "card_is_diamond", "scaling": false, "scalingRate": null },
+      "position": { "sensitive": false, "requirement": "any", "copyable": true },
+      "tier": "B",
+      "tierByAnte": { "early": "B", "mid": "B", "late": "C" },
+      "builds": { "flush": 100, "pairs": 40, "straights": 40, "face_cards": 40, "xmult_scaling": 30, "retrigger": 50, "economy": 90 },
+      "synergies": { "strong": ["greedy_joker", "smeared_joker"], "medium": [], "antiSynergy": [] },
+      "bossCounters": [], "bossWeaknesses": ["the_head"],
+      "alwaysBuy": false, "trapJoker": false
+    },
+    {
+      "id": "oops_all_6s",
+      "name": "Oops! All 6s",
+      "rarity": "uncommon",
+      "cost": 4,
+      "effect": "Doubles all listed probabilities (ex: 1 in 3 becomes 2 in 3)",
+      "scoringType": "effect",
+      "values": { "chips": 0, "mult": 0, "xmult": 0, "money": 0, "retriggers": 0 },
+      "trigger": { "when": "passive", "condition": "always", "scaling": false, "scalingRate": null },
+      "position": { "sensitive": false, "requirement": "any", "copyable": false },
+      "tier": "B",
+      "tierByAnte": { "early": "B", "mid": "A", "late": "A" },
+      "builds": { "flush": 60, "pairs": 60, "straights": 60, "face_cards": 60, "xmult_scaling": 80, "retrigger": 60, "economy": 40 },
+      "synergies": { "strong": ["lucky_cat", "bloodstone", "space_joker", "8_ball", "glass_joker"], "medium": ["business_card", "reserved_parking"], "antiSynergy": [] },
+      "bossCounters": [], "bossWeaknesses": [],
+      "alwaysBuy": true, "trapJoker": false
+    },
+    {
+      "id": "green_joker",
+      "name": "Green Joker",
+      "rarity": "common",
+      "cost": 4,
+      "effect": "+1 Mult per hand played. -1 Mult per discard",
+      "scoringType": "mult",
+      "values": { "chips": 0, "mult": 0, "xmult": 0, "money": 0, "retriggers": 0 },
+      "trigger": { "when": "scoring", "condition": "always", "scaling": true, "scalingRate": "+1 mult per hand, -1 per discard" },
+      "position": { "sensitive": false, "requirement": "any", "copyable": true },
+      "tier": "B",
+      "tierByAnte": { "early": "B", "mid": "B", "late": "C" },
+      "builds": { "flush": 50, "pairs": 50, "straights": 50, "face_cards": 50, "xmult_scaling": 50, "retrigger": 30, "economy": 0 },
+      "synergies": { "strong": ["burglar"], "medium": [], "antiSynergy": ["drunkard", "yorick"] },
+      "bossCounters": [], "bossWeaknesses": [],
+      "alwaysBuy": false, "trapJoker": false
+    },
+    {
+      "id": "spare_trousers",
+      "name": "Spare Trousers",
+      "rarity": "uncommon",
+      "cost": 6,
+      "effect": "This Joker gains +2 Mult if played hand contains a Two Pair",
+      "scoringType": "mult",
+      "values": { "chips": 0, "mult": 0, "xmult": 0, "money": 0, "retriggers": 0 },
+      "trigger": { "when": "scoring", "condition": "hand_contains_two_pair", "scaling": true, "scalingRate": "+2 mult per two pair" },
+      "position": { "sensitive": false, "requirement": "any", "copyable": true },
+      "tier": "B",
+      "tierByAnte": { "early": "B", "mid": "B", "late": "B" },
+      "builds": { "flush": 20, "pairs": 100, "straights": 20, "face_cards": 50, "xmult_scaling": 60, "retrigger": 40, "economy": 0 },
+      "synergies": { "strong": ["square_joker", "mad_joker", "clever_joker"], "medium": [], "antiSynergy": [] },
+      "bossCounters": [], "bossWeaknesses": [],
+      "alwaysBuy": false, "trapJoker": false
+    },
+    {
+      "id": "castle",
+      "name": "Castle",
+      "rarity": "uncommon",
+      "cost": 6,
+      "effect": "This Joker gains +3 Chips per discarded [suit] card. Suit changes every round",
+      "scoringType": "chips",
+      "values": { "chips": 0, "mult": 0, "xmult": 0, "money": 0, "retriggers": 0 },
+      "trigger": { "when": "on_discard", "condition": "card_matches_castle_suit", "scaling": true, "scalingRate": "+3 chips per matching discard" },
+      "position": { "sensitive": false, "requirement": "any", "copyable": true },
+      "tier": "B",
+      "tierByAnte": { "early": "B", "mid": "B", "late": "C" },
+      "builds": { "flush": 60, "pairs": 50, "straights": 50, "face_cards": 50, "xmult_scaling": 40, "retrigger": 30, "economy": 0 },
+      "synergies": { "strong": ["drunkard"], "medium": ["yorick"], "antiSynergy": ["burglar"] },
+      "bossCounters": [], "bossWeaknesses": [],
+      "alwaysBuy": false, "trapJoker": false
+    },
+    {
+      "id": "flash_card",
+      "name": "Flash Card",
+      "rarity": "uncommon",
+      "cost": 5,
+      "effect": "This Joker gains +2 Mult per reroll in the shop",
+      "scoringType": "mult",
+      "values": { "chips": 0, "mult": 0, "xmult": 0, "money": 0, "retriggers": 0 },
+      "trigger": { "when": "passive", "condition": "on_reroll", "scaling": true, "scalingRate": "+2 mult per reroll" },
+      "position": { "sensitive": false, "requirement": "any", "copyable": true },
+      "tier": "B",
+      "tierByAnte": { "early": "B", "mid": "B", "late": "B" },
+      "builds": { "flush": 50, "pairs": 50, "straights": 50, "face_cards": 50, "xmult_scaling": 60, "retrigger": 30, "economy": 0 },
+      "synergies": { "strong": ["chaos_the_clown"], "medium": [], "antiSynergy": [] },
+      "bossCounters": [], "bossWeaknesses": [],
+      "alwaysBuy": false, "trapJoker": false
+    },
+    {
+      "id": "popcorn",
+      "name": "Popcorn",
+      "rarity": "common",
+      "cost": 5,
+      "effect": "+20 Mult. -4 Mult per round played",
+      "scoringType": "mult",
+      "values": { "chips": 0, "mult": 20, "xmult": 0, "money": 0, "retriggers": 0 },
+      "trigger": { "when": "scoring", "condition": "always", "scaling": true, "scalingRate": "-4 mult per round" },
+      "position": { "sensitive": false, "requirement": "any", "copyable": true },
+      "tier": "B",
+      "tierByAnte": { "early": "A", "mid": "C", "late": "D" },
+      "builds": { "flush": 50, "pairs": 50, "straights": 50, "face_cards": 50, "xmult_scaling": 40, "retrigger": 30, "economy": 0 },
+      "synergies": { "strong": [], "medium": [], "antiSynergy": [] },
+      "bossCounters": [], "bossWeaknesses": [],
+      "alwaysBuy": false, "trapJoker": false
+    },
+    {
+      "id": "mr_bones",
+      "name": "Mr. Bones",
+      "rarity": "uncommon",
+      "cost": 5,
+      "effect": "Prevents death if chips scored are at least 25% of required chips. Self destructs",
+      "scoringType": "effect",
+      "values": { "chips": 0, "mult": 0, "xmult": 0, "money": 0, "retriggers": 0 },
+      "trigger": { "when": "passive", "condition": "on_death", "scaling": false, "scalingRate": null },
+      "position": { "sensitive": false, "requirement": "any", "copyable": false },
+      "tier": "B",
+      "tierByAnte": { "early": "C", "mid": "B", "late": "A" },
+      "builds": { "flush": 50, "pairs": 50, "straights": 50, "face_cards": 50, "xmult_scaling": 40, "retrigger": 30, "economy": 0 },
+      "synergies": { "strong": [], "medium": [], "antiSynergy": [] },
+      "bossCounters": [], "bossWeaknesses": [],
+      "alwaysBuy": false, "trapJoker": false
+    },
+    {
+      "id": "certificate",
+      "name": "Certificate",
+      "rarity": "uncommon",
+      "cost": 6,
+      "effect": "When round begins, add a random playing card with a random seal to your hand",
+      "scoringType": "effect",
+      "values": { "chips": 0, "mult": 0, "xmult": 0, "money": 0, "retriggers": 0 },
+      "trigger": { "when": "on_round_start", "condition": "always", "scaling": false, "scalingRate": null },
+      "position": { "sensitive": false, "requirement": "any", "copyable": false },
+      "tier": "B",
+      "tierByAnte": { "early": "B", "mid": "B", "late": "B" },
+      "builds": { "flush": 50, "pairs": 50, "straights": 50, "face_cards": 50, "xmult_scaling": 50, "retrigger": 40, "economy": 0 },
+      "synergies": { "strong": ["hologram", "vampire"], "medium": ["steel_joker"], "antiSynergy": [] },
+      "bossCounters": [], "bossWeaknesses": [],
+      "alwaysBuy": false, "trapJoker": false
+    },
+    {
+      "id": "hit_the_road",
+      "name": "Hit the Road",
+      "rarity": "rare",
+      "cost": 8,
+      "effect": "This Joker gains X0.5 Mult for every Jack discarded this round",
+      "scoringType": "xmult",
+      "values": { "chips": 0, "mult": 0, "xmult": 1.0, "money": 0, "retriggers": 0 },
+      "trigger": { "when": "on_discard", "condition": "card_is_jack", "scaling": true, "scalingRate": "+0.5 xmult per jack discarded this round" },
+      "position": { "sensitive": false, "requirement": "any", "copyable": true },
+      "tier": "B",
+      "tierByAnte": { "early": "C", "mid": "B", "late": "B" },
+      "builds": { "flush": 40, "pairs": 60, "straights": 40, "face_cards": 100, "xmult_scaling": 80, "retrigger": 30, "economy": 0 },
+      "synergies": { "strong": ["drunkard", "dna"], "medium": [], "antiSynergy": ["burglar"] },
+      "bossCounters": [], "bossWeaknesses": ["the_hook"],
+      "alwaysBuy": false, "trapJoker": false
+    },
+    {
+      "id": "stuntman",
+      "name": "Stuntman",
+      "rarity": "uncommon",
+      "cost": 7,
+      "effect": "+250 Chips, -2 hand size",
+      "scoringType": "chips",
+      "values": { "chips": 250, "mult": 0, "xmult": 0, "money": 0, "retriggers": 0 },
+      "trigger": { "when": "scoring", "condition": "always", "scaling": false, "scalingRate": null },
+      "position": { "sensitive": false, "requirement": "any", "copyable": true },
+      "tier": "B",
+      "tierByAnte": { "early": "B", "mid": "B", "late": "C" },
+      "builds": { "flush": 30, "pairs": 60, "straights": 20, "face_cards": 50, "xmult_scaling": 40, "retrigger": 40, "economy": 0 },
+      "synergies": { "strong": ["juggler", "troubadour"], "medium": [], "antiSynergy": ["turtle_bean"] },
+      "bossCounters": [], "bossWeaknesses": ["the_serpent"],
+      "alwaysBuy": false, "trapJoker": false
+    },
+    {
+      "id": "matador",
+      "name": "Matador",
+      "rarity": "uncommon",
+      "cost": 7,
+      "effect": "Earn $8 if played hand triggers the Boss Blind ability",
+      "scoringType": "economy",
+      "values": { "chips": 0, "mult": 0, "xmult": 0, "money": 8, "retriggers": 0 },
+      "trigger": { "when": "scoring", "condition": "boss_ability_triggers", "scaling": false, "scalingRate": null },
+      "position": { "sensitive": false, "requirement": "any", "copyable": true },
+      "tier": "B",
+      "tierByAnte": { "early": "C", "mid": "B", "late": "B" },
+      "builds": { "flush": 50, "pairs": 50, "straights": 50, "face_cards": 50, "xmult_scaling": 30, "retrigger": 30, "economy": 90 },
+      "synergies": { "strong": [], "medium": [], "antiSynergy": ["chicot"] },
+      "bossCounters": [], "bossWeaknesses": [],
+      "alwaysBuy": false, "trapJoker": false
+    },
+    {
+      "id": "luchador",
+      "name": "Luchador",
+      "rarity": "uncommon",
+      "cost": 5,
+      "effect": "Sell this card to disable the current Boss Blind",
+      "scoringType": "effect",
+      "values": { "chips": 0, "mult": 0, "xmult": 0, "money": 0, "retriggers": 0 },
+      "trigger": { "when": "on_sell", "condition": "boss_blind_active", "scaling": false, "scalingRate": null },
+      "position": { "sensitive": false, "requirement": "any", "copyable": false },
+      "tier": "B",
+      "tierByAnte": { "early": "B", "mid": "A", "late": "A" },
+      "builds": { "flush": 50, "pairs": 50, "straights": 50, "face_cards": 50, "xmult_scaling": 30, "retrigger": 30, "economy": 0 },
+      "synergies": { "strong": [], "medium": [], "antiSynergy": [] },
+      "bossCounters": ["all"],
+      "bossWeaknesses": [],
+      "alwaysBuy": true, "trapJoker": false
+    },
+    {
+      "id": "gift_card",
+      "name": "Gift Card",
+      "rarity": "uncommon",
+      "cost": 6,
+      "effect": "Add $1 of sell value to every Joker and Consumable card at end of round",
+      "scoringType": "economy",
+      "values": { "chips": 0, "mult": 0, "xmult": 0, "money": 1, "retriggers": 0 },
+      "trigger": { "when": "end_of_round", "condition": "always", "scaling": false, "scalingRate": null },
+      "position": { "sensitive": false, "requirement": "any", "copyable": false },
+      "tier": "B",
+      "tierByAnte": { "early": "B", "mid": "B", "late": "C" },
+      "builds": { "flush": 30, "pairs": 30, "straights": 30, "face_cards": 30, "xmult_scaling": 30, "retrigger": 30, "economy": 80 },
+      "synergies": { "strong": ["campfire"], "medium": [], "antiSynergy": [] },
+      "bossCounters": [], "bossWeaknesses": [],
+      "alwaysBuy": false, "trapJoker": false
+    },
+    {
+      "id": "vagabond",
+      "name": "Vagabond",
+      "rarity": "uncommon",
+      "cost": 6,
+      "effect": "Create a Tarot card if hand is played with $4 or less",
+      "scoringType": "effect",
+      "values": { "chips": 0, "mult": 0, "xmult": 0, "money": 0, "retriggers": 0 },
+      "trigger": { "when": "scoring", "condition": "money_4_or_less", "scaling": false, "scalingRate": null },
+      "position": { "sensitive": false, "requirement": "any", "copyable": true },
+      "tier": "B",
+      "tierByAnte": { "early": "B", "mid": "B", "late": "C" },
+      "builds": { "flush": 50, "pairs": 50, "straights": 50, "face_cards": 50, "xmult_scaling": 40, "retrigger": 30, "economy": 0 },
+      "synergies": { "strong": ["fortune_teller"], "medium": ["cartomancer", "hallucination"], "antiSynergy": ["to_the_moon", "golden_joker"] },
+      "bossCounters": [], "bossWeaknesses": [],
+      "alwaysBuy": false, "trapJoker": false
+    },
+    {
+      "id": "hallucination",
+      "name": "Hallucination",
+      "rarity": "common",
+      "cost": 4,
+      "effect": "1 in 2 chance to create a Tarot card when any Booster Pack is opened (Must have room)",
+      "scoringType": "effect",
+      "values": { "chips": 0, "mult": 0, "xmult": 0, "money": 0, "retriggers": 0 },
+      "trigger": { "when": "passive", "condition": "booster_opened", "scaling": false, "scalingRate": null },
+      "position": { "sensitive": false, "requirement": "any", "copyable": false },
+      "tier": "B",
+      "tierByAnte": { "early": "B", "mid": "B", "late": "C" },
+      "builds": { "flush": 50, "pairs": 50, "straights": 50, "face_cards": 50, "xmult_scaling": 40, "retrigger": 30, "economy": 40 },
+      "synergies": { "strong": ["fortune_teller", "oops_all_6s"], "medium": ["cartomancer"], "antiSynergy": [] },
+      "bossCounters": [], "bossWeaknesses": [],
+      "alwaysBuy": false, "trapJoker": false
+    },
+    {
+      "id": "baseball_card",
+      "name": "Baseball Card",
+      "rarity": "rare",
+      "cost": 8,
+      "effect": "Uncommon Jokers each give X1.5 Mult",
+      "scoringType": "xmult",
+      "values": { "chips": 0, "mult": 0, "xmult": 1.5, "money": 0, "retriggers": 0 },
+      "trigger": { "when": "scoring", "condition": "has_uncommon_jokers", "scaling": false, "scalingRate": null },
+      "position": { "sensitive": false, "requirement": "any", "copyable": true },
+      "tier": "B",
+      "tierByAnte": { "early": "B", "mid": "B", "late": "B" },
+      "builds": { "flush": 50, "pairs": 50, "straights": 50, "face_cards": 50, "xmult_scaling": 80, "retrigger": 30, "economy": 0 },
+      "synergies": { "strong": [], "medium": [], "antiSynergy": [] },
+      "bossCounters": [], "bossWeaknesses": [],
+      "alwaysBuy": false, "trapJoker": false
+    },
+    {
+      "id": "trading_card",
+      "name": "Trading Card",
+      "rarity": "uncommon",
+      "cost": 6,
+      "effect": "If first hand of round has only 1 card, destroy it and create a random Spectral card",
+      "scoringType": "effect",
+      "values": { "chips": 0, "mult": 0, "xmult": 0, "money": 0, "retriggers": 0 },
+      "trigger": { "when": "scoring", "condition": "first_hand_single_card", "scaling": false, "scalingRate": null },
+      "position": { "sensitive": false, "requirement": "any", "copyable": false },
+      "tier": "B",
+      "tierByAnte": { "early": "B", "mid": "B", "late": "B" },
+      "builds": { "flush": 40, "pairs": 40, "straights": 40, "face_cards": 60, "xmult_scaling": 50, "retrigger": 30, "economy": 0 },
+      "synergies": { "strong": ["canio", "glass_joker"], "medium": ["campfire"], "antiSynergy": ["dna"] },
+      "bossCounters": [], "bossWeaknesses": [],
+      "alwaysBuy": false, "trapJoker": false
+    },
+    {
+      "id": "card_sharp",
+      "name": "Card Sharp",
+      "rarity": "uncommon",
+      "cost": 6,
+      "effect": "X3 Mult if played poker hand has already been played this round",
+      "scoringType": "xmult",
+      "values": { "chips": 0, "mult": 0, "xmult": 3.0, "money": 0, "retriggers": 0 },
+      "trigger": { "when": "scoring", "condition": "repeated_hand_type", "scaling": false, "scalingRate": null },
+      "position": { "sensitive": false, "requirement": "any", "copyable": true },
+      "tier": "B",
+      "tierByAnte": { "early": "B", "mid": "B", "late": "B" },
+      "builds": { "flush": 60, "pairs": 80, "straights": 60, "face_cards": 50, "xmult_scaling": 80, "retrigger": 40, "economy": 0 },
+      "synergies": { "strong": ["supernova"], "medium": [], "antiSynergy": ["obelisk"] },
+      "bossCounters": [], "bossWeaknesses": [],
+      "alwaysBuy": false, "trapJoker": false
+    },
+    {
+      "id": "madness",
+      "name": "Madness",
+      "rarity": "uncommon",
+      "cost": 7,
+      "effect": "When Small Blind or Big Blind is selected, gain X0.5 Mult and destroy a random Joker",
+      "scoringType": "xmult",
+      "values": { "chips": 0, "mult": 0, "xmult": 1.0, "money": 0, "retriggers": 0 },
+      "trigger": { "when": "on_blind_select", "condition": "small_or_big_blind", "scaling": true, "scalingRate": "+0.5 xmult, destroys random joker" },
+      "position": { "sensitive": false, "requirement": "any", "copyable": true },
+      "tier": "B",
+      "tierByAnte": { "early": "C", "mid": "B", "late": "B" },
+      "builds": { "flush": 50, "pairs": 50, "straights": 50, "face_cards": 50, "xmult_scaling": 80, "retrigger": 30, "economy": 0 },
+      "synergies": { "strong": [], "medium": [], "antiSynergy": [] },
+      "bossCounters": [], "bossWeaknesses": [],
+      "alwaysBuy": false, "trapJoker": true
+    },
+    {
+      "id": "sixth_sense",
+      "name": "Sixth Sense",
+      "rarity": "uncommon",
+      "cost": 6,
+      "effect": "If first hand of round is a single 6, destroy it and create a Spectral card",
+      "scoringType": "effect",
+      "values": { "chips": 0, "mult": 0, "xmult": 0, "money": 0, "retriggers": 0 },
+      "trigger": { "when": "scoring", "condition": "first_hand_single_6", "scaling": false, "scalingRate": null },
+      "position": { "sensitive": false, "requirement": "any", "copyable": false },
+      "tier": "B",
+      "tierByAnte": { "early": "B", "mid": "B", "late": "B" },
+      "builds": { "flush": 50, "pairs": 50, "straights": 50, "face_cards": 0, "xmult_scaling": 50, "retrigger": 30, "economy": 0 },
+      "synergies": { "strong": ["hologram", "canio"], "medium": ["even_steven", "dna"], "antiSynergy": [] },
+      "bossCounters": [], "bossWeaknesses": [],
+      "alwaysBuy": false, "trapJoker": false
+    },
+    {
+      "id": "superposition",
+      "name": "Superposition",
+      "rarity": "common",
+      "cost": 4,
+      "effect": "Create a Tarot card if poker hand contains an Ace and a Straight (Must have room)",
+      "scoringType": "effect",
+      "values": { "chips": 0, "mult": 0, "xmult": 0, "money": 0, "retriggers": 0 },
+      "trigger": { "when": "scoring", "condition": "ace_and_straight", "scaling": false, "scalingRate": null },
+      "position": { "sensitive": false, "requirement": "any", "copyable": true },
+      "tier": "B",
+      "tierByAnte": { "early": "B", "mid": "B", "late": "C" },
+      "builds": { "flush": 30, "pairs": 0, "straights": 100, "face_cards": 40, "xmult_scaling": 40, "retrigger": 30, "economy": 40 },
+      "synergies": { "strong": ["shortcut", "four_fingers", "fortune_teller"], "medium": ["the_order"], "antiSynergy": [] },
+      "bossCounters": [], "bossWeaknesses": [],
+      "alwaysBuy": false, "trapJoker": false
+    },
+    {
+      "id": "marble_joker",
+      "name": "Marble Joker",
+      "rarity": "uncommon",
+      "cost": 6,
+      "effect": "Adds one Stone card to deck when Blind is selected",
+      "scoringType": "effect",
+      "values": { "chips": 0, "mult": 0, "xmult": 0, "money": 0, "retriggers": 0 },
+      "trigger": { "when": "on_blind_select", "condition": "always", "scaling": false, "scalingRate": null },
+      "position": { "sensitive": false, "requirement": "any", "copyable": false },
+      "tier": "B",
+      "tierByAnte": { "early": "B", "mid": "B", "late": "B" },
+      "builds": { "flush": 40, "pairs": 40, "straights": 30, "face_cards": 40, "xmult_scaling": 50, "retrigger": 30, "economy": 0 },
+      "synergies": { "strong": ["hologram", "stone_joker"], "medium": ["blue_joker"], "antiSynergy": [] },
+      "bossCounters": [], "bossWeaknesses": [],
+      "alwaysBuy": false, "trapJoker": false
+    },
+    {
+      "id": "erosion",
+      "name": "Erosion",
+      "rarity": "uncommon",
+      "cost": 6,
+      "effect": "+4 Mult for each card below 52 in your full deck",
+      "scoringType": "mult",
+      "values": { "chips": 0, "mult": 4, "xmult": 0, "money": 0, "retriggers": 0 },
+      "trigger": { "when": "scoring", "condition": "deck_below_52", "scaling": false, "scalingRate": null },
+      "position": { "sensitive": false, "requirement": "any", "copyable": true },
+      "tier": "B",
+      "tierByAnte": { "early": "D", "mid": "B", "late": "B" },
+      "builds": { "flush": 50, "pairs": 50, "straights": 50, "face_cards": 50, "xmult_scaling": 60, "retrigger": 30, "economy": 0 },
+      "synergies": { "strong": ["glass_joker", "trading_card"], "medium": [], "antiSynergy": ["dna", "hologram", "marble_joker"] },
+      "bossCounters": [], "bossWeaknesses": [],
+      "alwaysBuy": false, "trapJoker": false
+    },
+    {
+      "id": "jolly_joker",
+      "name": "Jolly Joker",
+      "rarity": "common",
+      "cost": 3,
+      "effect": "+8 Mult if played hand contains a Pair",
+      "scoringType": "mult",
+      "values": { "chips": 0, "mult": 8, "xmult": 0, "money": 0, "retriggers": 0 },
+      "trigger": { "when": "scoring", "condition": "hand_contains_pair", "scaling": false, "scalingRate": null },
+      "position": { "sensitive": false, "requirement": "any", "copyable": true },
+      "tier": "C",
+      "tierByAnte": { "early": "B", "mid": "C", "late": "D" },
+      "builds": { "flush": 20, "pairs": 100, "straights": 20, "face_cards": 50, "xmult_scaling": 40, "retrigger": 40, "economy": 0 },
+      "synergies": { "strong": ["supernova", "the_duo", "sly_joker"], "medium": [], "antiSynergy": [] },
+      "bossCounters": [], "bossWeaknesses": [],
+      "alwaysBuy": false, "trapJoker": false
+    },
+    {
+      "id": "zany_joker",
+      "name": "Zany Joker",
+      "rarity": "common",
+      "cost": 4,
+      "effect": "+12 Mult if played hand contains a Three of a Kind",
+      "scoringType": "mult",
+      "values": { "chips": 0, "mult": 12, "xmult": 0, "money": 0, "retriggers": 0 },
+      "trigger": { "when": "scoring", "condition": "hand_contains_three_of_kind", "scaling": false, "scalingRate": null },
+      "position": { "sensitive": false, "requirement": "any", "copyable": true },
+      "tier": "C",
+      "tierByAnte": { "early": "B", "mid": "C", "late": "D" },
+      "builds": { "flush": 10, "pairs": 100, "straights": 10, "face_cards": 50, "xmult_scaling": 40, "retrigger": 40, "economy": 0 },
+      "synergies": { "strong": ["the_trio", "wily_joker"], "medium": [], "antiSynergy": [] },
+      "bossCounters": [], "bossWeaknesses": [],
+      "alwaysBuy": false, "trapJoker": false
+    },
+    {
+      "id": "mad_joker",
+      "name": "Mad Joker",
+      "rarity": "common",
+      "cost": 4,
+      "effect": "+10 Mult if played hand contains a Two Pair",
+      "scoringType": "mult",
+      "values": { "chips": 0, "mult": 10, "xmult": 0, "money": 0, "retriggers": 0 },
+      "trigger": { "when": "scoring", "condition": "hand_contains_two_pair", "scaling": false, "scalingRate": null },
+      "position": { "sensitive": false, "requirement": "any", "copyable": true },
+      "tier": "C",
+      "tierByAnte": { "early": "B", "mid": "C", "late": "D" },
+      "builds": { "flush": 10, "pairs": 100, "straights": 10, "face_cards": 50, "xmult_scaling": 40, "retrigger": 40, "economy": 0 },
+      "synergies": { "strong": ["spare_trousers", "clever_joker"], "medium": ["the_family"], "antiSynergy": [] },
+      "bossCounters": [], "bossWeaknesses": [],
+      "alwaysBuy": false, "trapJoker": false
+    },
+    {
+      "id": "crazy_joker",
+      "name": "Crazy Joker",
+      "rarity": "common",
+      "cost": 4,
+      "effect": "+12 Mult if played hand contains a Straight",
+      "scoringType": "mult",
+      "values": { "chips": 0, "mult": 12, "xmult": 0, "money": 0, "retriggers": 0 },
+      "trigger": { "when": "scoring", "condition": "hand_contains_straight", "scaling": false, "scalingRate": null },
+      "position": { "sensitive": false, "requirement": "any", "copyable": true },
+      "tier": "C",
+      "tierByAnte": { "early": "B", "mid": "C", "late": "D" },
+      "builds": { "flush": 30, "pairs": 0, "straights": 100, "face_cards": 40, "xmult_scaling": 40, "retrigger": 40, "economy": 0 },
+      "synergies": { "strong": ["shortcut", "four_fingers", "the_order", "runner"], "medium": ["devious_joker"], "antiSynergy": [] },
+      "bossCounters": [], "bossWeaknesses": ["the_needle"],
+      "alwaysBuy": false, "trapJoker": false
+    },
+    {
+      "id": "droll_joker",
+      "name": "Droll Joker",
+      "rarity": "common",
+      "cost": 4,
+      "effect": "+10 Mult if played hand contains a Flush",
+      "scoringType": "mult",
+      "values": { "chips": 0, "mult": 10, "xmult": 0, "money": 0, "retriggers": 0 },
+      "trigger": { "when": "scoring", "condition": "hand_contains_flush", "scaling": false, "scalingRate": null },
+      "position": { "sensitive": false, "requirement": "any", "copyable": true },
+      "tier": "C",
+      "tierByAnte": { "early": "B", "mid": "C", "late": "D" },
+      "builds": { "flush": 100, "pairs": 0, "straights": 30, "face_cards": 40, "xmult_scaling": 40, "retrigger": 40, "economy": 0 },
+      "synergies": { "strong": ["smeared_joker", "four_fingers", "the_tribe"], "medium": ["crafty_joker", "lusty_joker", "greedy_joker"], "antiSynergy": [] },
+      "bossCounters": [], "bossWeaknesses": ["the_club", "the_goad", "the_window", "the_head"],
+      "alwaysBuy": false, "trapJoker": false
+    },
+    {
+      "id": "sly_joker",
+      "name": "Sly Joker",
+      "rarity": "common",
+      "cost": 3,
+      "effect": "+50 Chips if played hand contains a Pair",
+      "scoringType": "chips",
+      "values": { "chips": 50, "mult": 0, "xmult": 0, "money": 0, "retriggers": 0 },
+      "trigger": { "when": "scoring", "condition": "hand_contains_pair", "scaling": false, "scalingRate": null },
+      "position": { "sensitive": false, "requirement": "any", "copyable": true },
+      "tier": "C",
+      "tierByAnte": { "early": "B", "mid": "C", "late": "D" },
+      "builds": { "flush": 20, "pairs": 100, "straights": 20, "face_cards": 50, "xmult_scaling": 30, "retrigger": 40, "economy": 0 },
+      "synergies": { "strong": ["jolly_joker", "the_duo"], "medium": [], "antiSynergy": [] },
+      "bossCounters": [], "bossWeaknesses": [],
+      "alwaysBuy": false, "trapJoker": false
+    },
+    {
+      "id": "wily_joker",
+      "name": "Wily Joker",
+      "rarity": "common",
+      "cost": 4,
+      "effect": "+100 Chips if played hand contains a Three of a Kind",
+      "scoringType": "chips",
+      "values": { "chips": 100, "mult": 0, "xmult": 0, "money": 0, "retriggers": 0 },
+      "trigger": { "when": "scoring", "condition": "hand_contains_three_of_kind", "scaling": false, "scalingRate": null },
+      "position": { "sensitive": false, "requirement": "any", "copyable": true },
+      "tier": "C",
+      "tierByAnte": { "early": "B", "mid": "C", "late": "D" },
+      "builds": { "flush": 10, "pairs": 100, "straights": 10, "face_cards": 50, "xmult_scaling": 30, "retrigger": 40, "economy": 0 },
+      "synergies": { "strong": ["zany_joker", "the_trio"], "medium": [], "antiSynergy": [] },
+      "bossCounters": [], "bossWeaknesses": [],
+      "alwaysBuy": false, "trapJoker": false
+    },
+    {
+      "id": "clever_joker",
+      "name": "Clever Joker",
+      "rarity": "common",
+      "cost": 4,
+      "effect": "+80 Chips if played hand contains a Two Pair",
+      "scoringType": "chips",
+      "values": { "chips": 80, "mult": 0, "xmult": 0, "money": 0, "retriggers": 0 },
+      "trigger": { "when": "scoring", "condition": "hand_contains_two_pair", "scaling": false, "scalingRate": null },
+      "position": { "sensitive": false, "requirement": "any", "copyable": true },
+      "tier": "C",
+      "tierByAnte": { "early": "B", "mid": "C", "late": "D" },
+      "builds": { "flush": 10, "pairs": 100, "straights": 10, "face_cards": 50, "xmult_scaling": 30, "retrigger": 40, "economy": 0 },
+      "synergies": { "strong": ["mad_joker", "spare_trousers", "the_family"], "medium": [], "antiSynergy": [] },
+      "bossCounters": [], "bossWeaknesses": [],
+      "alwaysBuy": false, "trapJoker": false
+    },
+    {
+      "id": "devious_joker",
+      "name": "Devious Joker",
+      "rarity": "common",
+      "cost": 4,
+      "effect": "+100 Chips if played hand contains a Straight",
+      "scoringType": "chips",
+      "values": { "chips": 100, "mult": 0, "xmult": 0, "money": 0, "retriggers": 0 },
+      "trigger": { "when": "scoring", "condition": "hand_contains_straight", "scaling": false, "scalingRate": null },
+      "position": { "sensitive": false, "requirement": "any", "copyable": true },
+      "tier": "C",
+      "tierByAnte": { "early": "B", "mid": "C", "late": "D" },
+      "builds": { "flush": 30, "pairs": 0, "straights": 100, "face_cards": 40, "xmult_scaling": 30, "retrigger": 40, "economy": 0 },
+      "synergies": { "strong": ["crazy_joker", "shortcut", "four_fingers", "the_order"], "medium": ["runner"], "antiSynergy": [] },
+      "bossCounters": [], "bossWeaknesses": ["the_needle"],
+      "alwaysBuy": false, "trapJoker": false
+    },
+    {
+      "id": "crafty_joker",
+      "name": "Crafty Joker",
+      "rarity": "common",
+      "cost": 4,
+      "effect": "+80 Chips if played hand contains a Flush",
+      "scoringType": "chips",
+      "values": { "chips": 80, "mult": 0, "xmult": 0, "money": 0, "retriggers": 0 },
+      "trigger": { "when": "scoring", "condition": "hand_contains_flush", "scaling": false, "scalingRate": null },
+      "position": { "sensitive": false, "requirement": "any", "copyable": true },
+      "tier": "C",
+      "tierByAnte": { "early": "B", "mid": "C", "late": "D" },
+      "builds": { "flush": 100, "pairs": 0, "straights": 30, "face_cards": 40, "xmult_scaling": 30, "retrigger": 40, "economy": 0 },
+      "synergies": { "strong": ["droll_joker", "smeared_joker", "four_fingers", "the_tribe"], "medium": [], "antiSynergy": [] },
+      "bossCounters": [], "bossWeaknesses": ["the_club", "the_goad", "the_window", "the_head"],
+      "alwaysBuy": false, "trapJoker": false
+    },
+    {
+      "id": "half_joker",
+      "name": "Half Joker",
+      "rarity": "common",
+      "cost": 5,
+      "effect": "+20 Mult if played hand contains 3 or fewer cards",
+      "scoringType": "mult",
+      "values": { "chips": 0, "mult": 20, "xmult": 0, "money": 0, "retriggers": 0 },
+      "trigger": { "when": "scoring", "condition": "hand_3_or_fewer_cards", "scaling": false, "scalingRate": null },
+      "position": { "sensitive": false, "requirement": "any", "copyable": true },
+      "tier": "C",
+      "tierByAnte": { "early": "B", "mid": "C", "late": "D" },
+      "builds": { "flush": 0, "pairs": 90, "straights": 0, "face_cards": 50, "xmult_scaling": 40, "retrigger": 50, "economy": 0 },
+      "synergies": { "strong": ["the_duo", "the_trio"], "medium": [], "antiSynergy": ["four_fingers"] },
+      "bossCounters": [], "bossWeaknesses": [],
+      "alwaysBuy": false, "trapJoker": false
+    },
+    {
+      "id": "joker_stencil",
+      "name": "Joker Stencil",
+      "rarity": "uncommon",
+      "cost": 8,
+      "effect": "X1 Mult for each empty Joker slot. Joker Stencil included",
+      "scoringType": "xmult",
+      "values": { "chips": 0, "mult": 0, "xmult": 1.0, "money": 0, "retriggers": 0 },
+      "trigger": { "when": "scoring", "condition": "always", "scaling": false, "scalingRate": null },
+      "position": { "sensitive": false, "requirement": "any", "copyable": true },
+      "tier": "C",
+      "tierByAnte": { "early": "C", "mid": "C", "late": "C" },
+      "builds": { "flush": 50, "pairs": 50, "straights": 50, "face_cards": 50, "xmult_scaling": 60, "retrigger": 30, "economy": 0 },
+      "synergies": { "strong": [], "medium": [], "antiSynergy": [] },
+      "bossCounters": [], "bossWeaknesses": [],
+      "alwaysBuy": false, "trapJoker": false
+    },
+    {
+      "id": "banner",
+      "name": "Banner",
+      "rarity": "common",
+      "cost": 5,
+      "effect": "+30 Chips for each remaining discard",
+      "scoringType": "chips",
+      "values": { "chips": 30, "mult": 0, "xmult": 0, "money": 0, "retriggers": 0 },
+      "trigger": { "when": "scoring", "condition": "always", "scaling": false, "scalingRate": null },
+      "position": { "sensitive": false, "requirement": "any", "copyable": true },
+      "tier": "C",
+      "tierByAnte": { "early": "B", "mid": "C", "late": "D" },
+      "builds": { "flush": 50, "pairs": 50, "straights": 50, "face_cards": 50, "xmult_scaling": 30, "retrigger": 30, "economy": 0 },
+      "synergies": { "strong": ["drunkard"], "medium": [], "antiSynergy": ["burglar"] },
+      "bossCounters": [], "bossWeaknesses": [],
+      "alwaysBuy": false, "trapJoker": false
+    },
+    {
+      "id": "mystic_summit",
+      "name": "Mystic Summit",
+      "rarity": "common",
+      "cost": 5,
+      "effect": "+15 Mult when 0 discards remaining",
+      "scoringType": "mult",
+      "values": { "chips": 0, "mult": 15, "xmult": 0, "money": 0, "retriggers": 0 },
+      "trigger": { "when": "scoring", "condition": "zero_discards", "scaling": false, "scalingRate": null },
+      "position": { "sensitive": false, "requirement": "any", "copyable": true },
+      "tier": "C",
+      "tierByAnte": { "early": "C", "mid": "C", "late": "D" },
+      "builds": { "flush": 50, "pairs": 50, "straights": 50, "face_cards": 50, "xmult_scaling": 40, "retrigger": 30, "economy": 0 },
+      "synergies": { "strong": ["burglar"], "medium": ["acrobat"], "antiSynergy": ["drunkard"] },
+      "bossCounters": [], "bossWeaknesses": [],
+      "alwaysBuy": false, "trapJoker": false
+    },
+    {
+      "id": "misprint",
+      "name": "Misprint",
+      "rarity": "common",
+      "cost": 4,
+      "effect": "+? Mult (0 to 23)",
+      "scoringType": "mult",
+      "values": { "chips": 0, "mult": 0, "xmult": 0, "money": 0, "retriggers": 0 },
+      "trigger": { "when": "scoring", "condition": "always", "scaling": false, "scalingRate": null },
+      "position": { "sensitive": false, "requirement": "any", "copyable": true },
+      "tier": "C",
+      "tierByAnte": { "early": "C", "mid": "C", "late": "D" },
+      "builds": { "flush": 50, "pairs": 50, "straights": 50, "face_cards": 50, "xmult_scaling": 30, "retrigger": 30, "economy": 0 },
+      "synergies": { "strong": [], "medium": [], "antiSynergy": [] },
+      "bossCounters": [], "bossWeaknesses": [],
+      "alwaysBuy": false, "trapJoker": false
+    },
+    {
+      "id": "delayed_gratification",
+      "name": "Delayed Gratification",
+      "rarity": "common",
+      "cost": 4,
+      "effect": "Earn $2 per discard if no discards are used by end of round",
+      "scoringType": "economy",
+      "values": { "chips": 0, "mult": 0, "xmult": 0, "money": 2, "retriggers": 0 },
+      "trigger": { "when": "end_of_round", "condition": "no_discards_used", "scaling": false, "scalingRate": null },
+      "position": { "sensitive": false, "requirement": "any", "copyable": true },
+      "tier": "C",
+      "tierByAnte": { "early": "B", "mid": "C", "late": "D" },
+      "builds": { "flush": 40, "pairs": 40, "straights": 40, "face_cards": 40, "xmult_scaling": 20, "retrigger": 20, "economy": 80 },
+      "synergies": { "strong": ["drunkard", "banner"], "medium": [], "antiSynergy": ["burglar", "yorick", "castle"] },
+      "bossCounters": [], "bossWeaknesses": [],
+      "alwaysBuy": false, "trapJoker": false
+    },
+    {
+      "id": "business_card",
+      "name": "Business Card",
+      "rarity": "common",
+      "cost": 4,
+      "effect": "Played face cards have a 1 in 2 chance to give $2 when scored",
+      "scoringType": "economy",
+      "values": { "chips": 0, "mult": 0, "xmult": 0, "money": 2, "retriggers": 0 },
+      "trigger": { "when": "scoring", "condition": "card_is_face", "scaling": false, "scalingRate": null },
+      "position": { "sensitive": false, "requirement": "any", "copyable": true },
+      "tier": "C",
+      "tierByAnte": { "early": "B", "mid": "C", "late": "D" },
+      "builds": { "flush": 40, "pairs": 50, "straights": 30, "face_cards": 100, "xmult_scaling": 20, "retrigger": 40, "economy": 80 },
+      "synergies": { "strong": ["pareidolia", "oops_all_6s"], "medium": ["sock_and_buskin"], "antiSynergy": [] },
+      "bossCounters": [], "bossWeaknesses": ["the_club", "the_goad", "the_window", "the_head"],
+      "alwaysBuy": false, "trapJoker": false
+    },
+    {
+      "id": "faceless_joker",
+      "name": "Faceless Joker",
+      "rarity": "common",
+      "cost": 4,
+      "effect": "Earn $5 if 3 or more face cards are discarded at the same time",
+      "scoringType": "economy",
+      "values": { "chips": 0, "mult": 0, "xmult": 0, "money": 5, "retriggers": 0 },
+      "trigger": { "when": "on_discard", "condition": "3_plus_face_cards", "scaling": false, "scalingRate": null },
+      "position": { "sensitive": false, "requirement": "any", "copyable": true },
+      "tier": "C",
+      "tierByAnte": { "early": "C", "mid": "C", "late": "D" },
+      "builds": { "flush": 30, "pairs": 50, "straights": 30, "face_cards": 80, "xmult_scaling": 20, "retrigger": 20, "economy": 70 },
+      "synergies": { "strong": ["pareidolia", "drunkard"], "medium": [], "antiSynergy": ["triboulet", "baron", "burglar"] },
+      "bossCounters": [], "bossWeaknesses": [],
+      "alwaysBuy": false, "trapJoker": false
+    },
+    {
+      "id": "splash",
+      "name": "Splash",
+      "rarity": "common",
+      "cost": 3,
+      "effect": "Every played card counts in scoring",
+      "scoringType": "effect",
+      "values": { "chips": 0, "mult": 0, "xmult": 0, "money": 0, "retriggers": 0 },
+      "trigger": { "when": "passive", "condition": "always", "scaling": false, "scalingRate": null },
+      "position": { "sensitive": false, "requirement": "any", "copyable": false },
+      "tier": "C",
+      "tierByAnte": { "early": "C", "mid": "C", "late": "C" },
+      "builds": { "flush": 60, "pairs": 60, "straights": 60, "face_cards": 60, "xmult_scaling": 50, "retrigger": 60, "economy": 0 },
+      "synergies": { "strong": ["flower_pot", "hiker"], "medium": ["fibonacci", "even_steven", "odd_todd"], "antiSynergy": [] },
+      "bossCounters": [], "bossWeaknesses": [],
+      "alwaysBuy": false, "trapJoker": false
+    },
+    {
+      "id": "ceremonial_dagger",
+      "name": "Ceremonial Dagger",
+      "rarity": "uncommon",
+      "cost": 6,
+      "effect": "When Boss Blind is defeated, destroy Joker to the right and permanently add double its sell value to this Mult",
+      "scoringType": "mult",
+      "values": { "chips": 0, "mult": 0, "xmult": 0, "money": 0, "retriggers": 0 },
+      "trigger": { "when": "on_boss_defeat", "condition": "has_joker_right", "scaling": true, "scalingRate": "+2x sell value of destroyed joker to mult" },
+      "position": { "sensitive": true, "requirement": "needs_joker_right", "copyable": true },
+      "tier": "C",
+      "tierByAnte": { "early": "D", "mid": "C", "late": "C" },
+      "builds": { "flush": 50, "pairs": 50, "straights": 50, "face_cards": 50, "xmult_scaling": 50, "retrigger": 30, "economy": 0 },
+      "synergies": { "strong": ["riff_raff"], "medium": [], "antiSynergy": [] },
+      "bossCounters": [], "bossWeaknesses": [],
+      "alwaysBuy": false, "trapJoker": true
+    },
+    {
+      "id": "credit_card",
+      "name": "Credit Card",
+      "rarity": "common",
+      "cost": 1,
+      "effect": "Go up to -$20 in debt",
+      "scoringType": "economy",
+      "values": { "chips": 0, "mult": 0, "xmult": 0, "money": 0, "retriggers": 0 },
+      "trigger": { "when": "passive", "condition": "always", "scaling": false, "scalingRate": null },
+      "position": { "sensitive": false, "requirement": "any", "copyable": false },
+      "tier": "C",
+      "tierByAnte": { "early": "B", "mid": "C", "late": "D" },
+      "builds": { "flush": 30, "pairs": 30, "straights": 30, "face_cards": 30, "xmult_scaling": 20, "retrigger": 20, "economy": 70 },
+      "synergies": { "strong": [], "medium": ["vagabond"], "antiSynergy": ["to_the_moon", "bull", "bootstraps"] },
+      "bossCounters": [], "bossWeaknesses": [],
+      "alwaysBuy": false, "trapJoker": false
+    },
+    {
+      "id": "chaos_the_clown",
+      "name": "Chaos the Clown",
+      "rarity": "common",
+      "cost": 4,
+      "effect": "1 free reroll per shop",
+      "scoringType": "economy",
+      "values": { "chips": 0, "mult": 0, "xmult": 0, "money": 0, "retriggers": 0 },
+      "trigger": { "when": "passive", "condition": "in_shop", "scaling": false, "scalingRate": null },
+      "position": { "sensitive": false, "requirement": "any", "copyable": false },
+      "tier": "C",
+      "tierByAnte": { "early": "B", "mid": "C", "late": "C" },
+      "builds": { "flush": 40, "pairs": 40, "straights": 40, "face_cards": 40, "xmult_scaling": 30, "retrigger": 30, "economy": 60 },
+      "synergies": { "strong": ["flash_card"], "medium": [], "antiSynergy": [] },
+      "bossCounters": [], "bossWeaknesses": [],
+      "alwaysBuy": false, "trapJoker": false
+    },
+    {
+      "id": "riff_raff",
+      "name": "Riff-Raff",
+      "rarity": "common",
+      "cost": 5,
+      "effect": "When Blind is selected, create 2 Common Jokers (Must have room)",
+      "scoringType": "effect",
+      "values": { "chips": 0, "mult": 0, "xmult": 0, "money": 0, "retriggers": 0 },
+      "trigger": { "when": "on_blind_select", "condition": "has_joker_slot", "scaling": false, "scalingRate": null },
+      "position": { "sensitive": false, "requirement": "any", "copyable": false },
+      "tier": "C",
+      "tierByAnte": { "early": "B", "mid": "C", "late": "D" },
+      "builds": { "flush": 40, "pairs": 40, "straights": 40, "face_cards": 40, "xmult_scaling": 40, "retrigger": 30, "economy": 0 },
+      "synergies": { "strong": ["abstract_joker", "ceremonial_dagger"], "medium": [], "antiSynergy": [] },
+      "bossCounters": [], "bossWeaknesses": [],
+      "alwaysBuy": false, "trapJoker": false
+    },
+    {
+      "id": "drunkard",
+      "name": "Drunkard",
+      "rarity": "common",
+      "cost": 4,
+      "effect": "+1 discard each round",
+      "scoringType": "effect",
+      "values": { "chips": 0, "mult": 0, "xmult": 0, "money": 0, "retriggers": 0 },
+      "trigger": { "when": "passive", "condition": "always", "scaling": false, "scalingRate": null },
+      "position": { "sensitive": false, "requirement": "any", "copyable": false },
+      "tier": "C",
+      "tierByAnte": { "early": "B", "mid": "C", "late": "C" },
+      "builds": { "flush": 60, "pairs": 50, "straights": 60, "face_cards": 50, "xmult_scaling": 40, "retrigger": 30, "economy": 0 },
+      "synergies": { "strong": ["yorick", "burnt_joker", "castle", "banner", "delayed_gratification"], "medium": ["hit_the_road", "faceless_joker"], "antiSynergy": ["ramen", "green_joker"] },
+      "bossCounters": [], "bossWeaknesses": [],
+      "alwaysBuy": false, "trapJoker": false
+    },
+    {
+      "id": "juggler",
+      "name": "Juggler",
+      "rarity": "common",
+      "cost": 4,
+      "effect": "+1 hand size",
+      "scoringType": "effect",
+      "values": { "chips": 0, "mult": 0, "xmult": 0, "money": 0, "retriggers": 0 },
+      "trigger": { "when": "passive", "condition": "always", "scaling": false, "scalingRate": null },
+      "position": { "sensitive": false, "requirement": "any", "copyable": false },
+      "tier": "C",
+      "tierByAnte": { "early": "B", "mid": "C", "late": "C" },
+      "builds": { "flush": 70, "pairs": 50, "straights": 70, "face_cards": 60, "xmult_scaling": 40, "retrigger": 40, "economy": 0 },
+      "synergies": { "strong": ["stuntman", "troubadour", "merry_andy"], "medium": ["baron", "shoot_the_moon"], "antiSynergy": [] },
+      "bossCounters": ["the_serpent"], "bossWeaknesses": [],
+      "alwaysBuy": false, "trapJoker": false
+    },
+    {
+      "id": "turtle_bean",
+      "name": "Turtle Bean",
+      "rarity": "uncommon",
+      "cost": 6,
+      "effect": "+5 hand size, -1 hand size per round played",
+      "scoringType": "effect",
+      "values": { "chips": 0, "mult": 0, "xmult": 0, "money": 0, "retriggers": 0 },
+      "trigger": { "when": "passive", "condition": "always", "scaling": true, "scalingRate": "-1 hand size per round" },
+      "position": { "sensitive": false, "requirement": "any", "copyable": false },
+      "tier": "C",
+      "tierByAnte": { "early": "A", "mid": "C", "late": "D" },
+      "builds": { "flush": 80, "pairs": 60, "straights": 80, "face_cards": 70, "xmult_scaling": 50, "retrigger": 50, "economy": 0 },
+      "synergies": { "strong": [], "medium": ["baron", "shoot_the_moon"], "antiSynergy": ["stuntman", "merry_andy"] },
+      "bossCounters": ["the_serpent"], "bossWeaknesses": [],
+      "alwaysBuy": false, "trapJoker": false
+    },
+    {
+      "id": "troubadour",
+      "name": "Troubadour",
+      "rarity": "uncommon",
+      "cost": 6,
+      "effect": "+2 hand size, -1 hand per round",
+      "scoringType": "effect",
+      "values": { "chips": 0, "mult": 0, "xmult": 0, "money": 0, "retriggers": 0 },
+      "trigger": { "when": "passive", "condition": "always", "scaling": false, "scalingRate": null },
+      "position": { "sensitive": false, "requirement": "any", "copyable": false },
+      "tier": "C",
+      "tierByAnte": { "early": "C", "mid": "C", "late": "D" },
+      "builds": { "flush": 70, "pairs": 50, "straights": 70, "face_cards": 60, "xmult_scaling": 40, "retrigger": 40, "economy": 0 },
+      "synergies": { "strong": ["juggler", "stuntman"], "medium": ["baron", "shoot_the_moon"], "antiSynergy": [] },
+      "bossCounters": ["the_serpent"], "bossWeaknesses": [],
+      "alwaysBuy": false, "trapJoker": false
+    },
+    {
+      "id": "reserved_parking",
+      "name": "Reserved Parking",
+      "rarity": "common",
+      "cost": 6,
+      "effect": "Each face card held in hand has a 1 in 2 chance to give $1",
+      "scoringType": "economy",
+      "values": { "chips": 0, "mult": 0, "xmult": 0, "money": 1, "retriggers": 0 },
+      "trigger": { "when": "held", "condition": "card_is_face", "scaling": false, "scalingRate": null },
+      "position": { "sensitive": false, "requirement": "any", "copyable": true },
+      "tier": "C",
+      "tierByAnte": { "early": "C", "mid": "C", "late": "D" },
+      "builds": { "flush": 30, "pairs": 50, "straights": 20, "face_cards": 90, "xmult_scaling": 20, "retrigger": 30, "economy": 70 },
+      "synergies": { "strong": ["pareidolia", "oops_all_6s"], "medium": ["baron", "mime"], "antiSynergy": [] },
+      "bossCounters": [], "bossWeaknesses": [],
+      "alwaysBuy": false, "trapJoker": false
+    },
+    {
+      "id": "mail_in_rebate",
+      "name": "Mail-In Rebate",
+      "rarity": "common",
+      "cost": 4,
+      "effect": "Earn $5 for each discarded card with [rank]. Rank changes each round",
+      "scoringType": "economy",
+      "values": { "chips": 0, "mult": 0, "xmult": 0, "money": 5, "retriggers": 0 },
+      "trigger": { "when": "on_discard", "condition": "card_matches_mail_rank", "scaling": false, "scalingRate": null },
+      "position": { "sensitive": false, "requirement": "any", "copyable": true },
+      "tier": "C",
+      "tierByAnte": { "early": "C", "mid": "C", "late": "D" },
+      "builds": { "flush": 40, "pairs": 40, "straights": 40, "face_cards": 40, "xmult_scaling": 20, "retrigger": 20, "economy": 70 },
+      "synergies": { "strong": ["drunkard"], "medium": ["yorick"], "antiSynergy": ["burglar"] },
+      "bossCounters": [], "bossWeaknesses": [],
+      "alwaysBuy": false, "trapJoker": false
+    },
+    {
+      "id": "diet_cola",
+      "name": "Diet Cola",
+      "rarity": "uncommon",
+      "cost": 6,
+      "effect": "Sell this card to create a free Double Tag",
+      "scoringType": "effect",
+      "values": { "chips": 0, "mult": 0, "xmult": 0, "money": 0, "retriggers": 0 },
+      "trigger": { "when": "on_sell", "condition": "always", "scaling": false, "scalingRate": null },
+      "position": { "sensitive": false, "requirement": "any", "copyable": false },
+      "tier": "C",
+      "tierByAnte": { "early": "B", "mid": "C", "late": "C" },
+      "builds": { "flush": 50, "pairs": 50, "straights": 50, "face_cards": 50, "xmult_scaling": 50, "retrigger": 30, "economy": 60 },
+      "synergies": { "strong": [], "medium": [], "antiSynergy": [] },
+      "bossCounters": [], "bossWeaknesses": [],
+      "alwaysBuy": false, "trapJoker": false
+    },
+    {
+      "id": "smiley_face",
+      "name": "Smiley Face",
+      "rarity": "common",
+      "cost": 4,
+      "effect": "Played face cards give +5 Mult when scored",
+      "scoringType": "mult",
+      "values": { "chips": 0, "mult": 5, "xmult": 0, "money": 0, "retriggers": 0 },
+      "trigger": { "when": "scoring", "condition": "card_is_face", "scaling": false, "scalingRate": null },
+      "position": { "sensitive": false, "requirement": "any", "copyable": true },
+      "tier": "C",
+      "tierByAnte": { "early": "B", "mid": "C", "late": "D" },
+      "builds": { "flush": 50, "pairs": 60, "straights": 40, "face_cards": 100, "xmult_scaling": 40, "retrigger": 60, "economy": 0 },
+      "synergies": { "strong": ["sock_and_buskin", "pareidolia"], "medium": ["triboulet", "photograph"], "antiSynergy": [] },
+      "bossCounters": [], "bossWeaknesses": ["the_club", "the_goad", "the_window", "the_head"],
+      "alwaysBuy": false, "trapJoker": false
+    },
+    {
+      "id": "scary_face",
+      "name": "Scary Face",
+      "rarity": "common",
+      "cost": 4,
+      "effect": "Played face cards give +30 Chips when scored",
+      "scoringType": "chips",
+      "values": { "chips": 30, "mult": 0, "xmult": 0, "money": 0, "retriggers": 0 },
+      "trigger": { "when": "scoring", "condition": "card_is_face", "scaling": false, "scalingRate": null },
+      "position": { "sensitive": false, "requirement": "any", "copyable": true },
+      "tier": "C",
+      "tierByAnte": { "early": "B", "mid": "C", "late": "D" },
+      "builds": { "flush": 50, "pairs": 60, "straights": 40, "face_cards": 100, "xmult_scaling": 30, "retrigger": 60, "economy": 0 },
+      "synergies": { "strong": ["sock_and_buskin", "pareidolia"], "medium": ["triboulet"], "antiSynergy": [] },
+      "bossCounters": [], "bossWeaknesses": ["the_club", "the_goad", "the_window", "the_head"],
+      "alwaysBuy": false, "trapJoker": false
+    },
+    {
+      "id": "swashbuckler",
+      "name": "Swashbuckler",
+      "rarity": "common",
+      "cost": 4,
+      "effect": "Adds the sell value of all other owned Jokers to Mult",
+      "scoringType": "mult",
+      "values": { "chips": 0, "mult": 0, "xmult": 0, "money": 0, "retriggers": 0 },
+      "trigger": { "when": "scoring", "condition": "always", "scaling": false, "scalingRate": null },
+      "position": { "sensitive": false, "requirement": "any", "copyable": true },
+      "tier": "C",
+      "tierByAnte": { "early": "D", "mid": "C", "late": "C" },
+      "builds": { "flush": 50, "pairs": 50, "straights": 50, "face_cards": 50, "xmult_scaling": 50, "retrigger": 30, "economy": 0 },
+      "synergies": { "strong": ["gift_card"], "medium": [], "antiSynergy": [] },
+      "bossCounters": [], "bossWeaknesses": [],
+      "alwaysBuy": false, "trapJoker": false
+    },
+    {
+      "id": "red_card",
+      "name": "Red Card",
+      "rarity": "common",
+      "cost": 5,
+      "effect": "This Joker gains +3 Mult when any Booster Pack is skipped",
+      "scoringType": "mult",
+      "values": { "chips": 0, "mult": 0, "xmult": 0, "money": 0, "retriggers": 0 },
+      "trigger": { "when": "passive", "condition": "booster_skipped", "scaling": true, "scalingRate": "+3 mult per booster skipped" },
+      "position": { "sensitive": false, "requirement": "any", "copyable": true },
+      "tier": "C",
+      "tierByAnte": { "early": "C", "mid": "C", "late": "C" },
+      "builds": { "flush": 50, "pairs": 50, "straights": 50, "face_cards": 50, "xmult_scaling": 50, "retrigger": 30, "economy": 0 },
+      "synergies": { "strong": [], "medium": [], "antiSynergy": [] },
+      "bossCounters": [], "bossWeaknesses": [],
+      "alwaysBuy": false, "trapJoker": false
+    },
+    {
+      "id": "burglar",
+      "name": "Burglar",
+      "rarity": "uncommon",
+      "cost": 6,
+      "effect": "When Blind is selected, gain +3 Hands and lose all discards",
+      "scoringType": "effect",
+      "values": { "chips": 0, "mult": 0, "xmult": 0, "money": 0, "retriggers": 0 },
+      "trigger": { "when": "on_blind_select", "condition": "always", "scaling": false, "scalingRate": null },
+      "position": { "sensitive": false, "requirement": "any", "copyable": false },
+      "tier": "C",
+      "tierByAnte": { "early": "C", "mid": "C", "late": "C" },
+      "builds": { "flush": 50, "pairs": 50, "straights": 50, "face_cards": 50, "xmult_scaling": 40, "retrigger": 30, "economy": 0 },
+      "synergies": { "strong": ["mystic_summit", "ramen", "green_joker"], "medium": [], "antiSynergy": ["yorick", "castle", "banner", "drunkard", "delayed_gratification", "burnt_joker", "hit_the_road", "faceless_joker", "mail_in_rebate"] },
+      "bossCounters": [], "bossWeaknesses": [],
+      "alwaysBuy": false, "trapJoker": true
+    },
+    {
+      "id": "abstract_joker",
+      "name": "Abstract Joker",
+      "rarity": "common",
+      "cost": 4,
+      "effect": "+3 Mult for each Joker you have",
+      "scoringType": "mult",
+      "values": { "chips": 0, "mult": 3, "xmult": 0, "money": 0, "retriggers": 0 },
+      "trigger": { "when": "scoring", "condition": "always", "scaling": false, "scalingRate": null },
+      "position": { "sensitive": false, "requirement": "any", "copyable": true },
+      "tier": "C",
+      "tierByAnte": { "early": "C", "mid": "C", "late": "C" },
+      "builds": { "flush": 50, "pairs": 50, "straights": 50, "face_cards": 50, "xmult_scaling": 50, "retrigger": 30, "economy": 0 },
+      "synergies": { "strong": ["riff_raff", "invisible_joker"], "medium": [], "antiSynergy": ["madness"] },
+      "bossCounters": [], "bossWeaknesses": [],
+      "alwaysBuy": false, "trapJoker": false
+    },
+    {
+      "id": "to_do_list",
+      "name": "To Do List",
+      "rarity": "common",
+      "cost": 4,
+      "effect": "Earn $4 if poker hand is a [hand type]. Hand type changes at end of round",
+      "scoringType": "economy",
+      "values": { "chips": 0, "mult": 0, "xmult": 0, "money": 4, "retriggers": 0 },
+      "trigger": { "when": "scoring", "condition": "hand_matches_todo", "scaling": false, "scalingRate": null },
+      "position": { "sensitive": false, "requirement": "any", "copyable": true },
+      "tier": "C",
+      "tierByAnte": { "early": "B", "mid": "C", "late": "D" },
+      "builds": { "flush": 50, "pairs": 50, "straights": 50, "face_cards": 50, "xmult_scaling": 20, "retrigger": 20, "economy": 70 },
+      "synergies": { "strong": [], "medium": [], "antiSynergy": [] },
+      "bossCounters": [], "bossWeaknesses": [],
+      "alwaysBuy": false, "trapJoker": false
+    },
+    {
+      "id": "merry_andy",
+      "name": "Merry Andy",
+      "rarity": "uncommon",
+      "cost": 7,
+      "effect": "+3 discards each round, -1 hand size",
+      "scoringType": "effect",
+      "values": { "chips": 0, "mult": 0, "xmult": 0, "money": 0, "retriggers": 0 },
+      "trigger": { "when": "passive", "condition": "always", "scaling": false, "scalingRate": null },
+      "position": { "sensitive": false, "requirement": "any", "copyable": false },
+      "tier": "C",
+      "tierByAnte": { "early": "C", "mid": "C", "late": "C" },
+      "builds": { "flush": 40, "pairs": 60, "straights": 40, "face_cards": 50, "xmult_scaling": 40, "retrigger": 30, "economy": 0 },
+      "synergies": { "strong": ["yorick", "castle", "burnt_joker", "hit_the_road"], "medium": ["juggler"], "antiSynergy": ["ramen", "green_joker", "turtle_bean", "stuntman"] },
+      "bossCounters": [], "bossWeaknesses": ["the_serpent"],
+      "alwaysBuy": false, "trapJoker": false
+    }
+  ]
+}

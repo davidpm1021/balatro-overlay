@@ -1,0 +1,1076 @@
+{
+  "version": "1.0.0",
+  "lastUpdated": "2025-01-01",
+  "bossBlinds": [
+    {
+      "id": "the_hook",
+      "name": "The Hook",
+      "ante": 2,
+      "effect": "Discards 2 random cards per hand played",
+      "category": "card_manipulation",
+      "difficulty": "medium",
+      "difficultyByBuild": {
+        "flush": "hard",
+        "straight": "hard",
+        "pairs": "medium",
+        "high_card": "easy",
+        "versatile": "medium"
+      },
+      "hardCounters": ["chicot", "luchador"],
+      "softCounters": ["large_hand_size", "card_draw", "quick_wins"],
+      "synergisticJokers": ["midas_mask", "photograph", "trading_card"],
+      "vouchers": ["directors_cut", "retcon"],
+      "debuffs": {
+        "suits": [],
+        "ranks": [],
+        "cardTypes": []
+      },
+      "devastates": ["straight_flush"],
+      "struggles": ["flush", "straight"],
+      "tips": [
+        "Win quickly before too many cards are discarded",
+        "Hold key cards in your play area when possible",
+        "Trading Card can profit from forced discards"
+      ]
+    },
+    {
+      "id": "the_ox",
+      "name": "The Ox",
+      "ante": 2,
+      "effect": "Playing a #1 most played hand sets money to $0",
+      "category": "money_penalty",
+      "difficulty": "medium",
+      "difficultyByBuild": {
+        "flush": "hard",
+        "straight": "medium",
+        "pairs": "hard",
+        "high_card": "easy",
+        "versatile": "easy"
+      },
+      "hardCounters": ["chicot", "luchador"],
+      "softCounters": ["versatile_hands", "secondary_hand_type", "money_generation"],
+      "synergisticJokers": ["to_the_moon", "golden_joker", "rocket"],
+      "vouchers": ["seed_money", "money_tree"],
+      "debuffs": {
+        "suits": [],
+        "ranks": [],
+        "cardTypes": []
+      },
+      "devastates": ["single_hand_builds"],
+      "struggles": ["flush", "pairs"],
+      "tips": [
+        "Use your secondary hand type to avoid money loss",
+        "Check your run statistics to see your #1 played hand",
+        "Consider the money loss if you must play your top hand to survive"
+      ]
+    },
+    {
+      "id": "the_house",
+      "name": "The House",
+      "ante": 2,
+      "effect": "All cards are drawn face down",
+      "category": "visibility",
+      "difficulty": "hard",
+      "difficultyByBuild": {
+        "flush": "hard",
+        "straight": "extreme",
+        "pairs": "medium",
+        "high_card": "medium",
+        "versatile": "hard"
+      },
+      "hardCounters": ["chicot", "luchador"],
+      "softCounters": ["card_counting", "large_hands", "flexible_plays"],
+      "synergisticJokers": ["sixth_sense", "vagabond", "cartomancer"],
+      "vouchers": [],
+      "debuffs": {
+        "suits": [],
+        "ranks": [],
+        "cardTypes": []
+      },
+      "devastates": ["straight", "straight_flush"],
+      "struggles": ["flush", "specific_combos"],
+      "tips": [
+        "Pairs are more reliable when cards are hidden",
+        "Count cards from previous hands to narrow possibilities",
+        "Consider your deck composition when guessing"
+      ]
+    },
+    {
+      "id": "the_wall",
+      "name": "The Wall",
+      "ante": 2,
+      "effect": "Extra large blind - 4x base blind chips",
+      "category": "scoring_penalty",
+      "difficulty": "hard",
+      "difficultyByBuild": {
+        "flush": "medium",
+        "straight": "hard",
+        "pairs": "hard",
+        "high_card": "extreme",
+        "versatile": "medium"
+      },
+      "hardCounters": ["chicot", "luchador"],
+      "softCounters": ["high_mult", "scaling_jokers", "retriggers"],
+      "synergisticJokers": ["hologram", "ride_the_bus", "runner", "ice_cream", "green_joker"],
+      "vouchers": [],
+      "debuffs": {
+        "suits": [],
+        "ranks": [],
+        "cardTypes": []
+      },
+      "devastates": ["high_card", "low_mult_builds"],
+      "struggles": ["pairs", "early_game"],
+      "tips": [
+        "Need approximately 4x your normal scoring output",
+        "Focus on mult over chips",
+        "Scaling jokers shine here"
+      ]
+    },
+    {
+      "id": "the_wheel",
+      "name": "The Wheel",
+      "ante": 2,
+      "effect": "1 in 7 cards are drawn face down",
+      "category": "visibility",
+      "difficulty": "easy",
+      "difficultyByBuild": {
+        "flush": "medium",
+        "straight": "medium",
+        "pairs": "easy",
+        "high_card": "easy",
+        "versatile": "easy"
+      },
+      "hardCounters": ["chicot", "luchador"],
+      "softCounters": ["card_counting", "flexible_plays"],
+      "synergisticJokers": ["sixth_sense"],
+      "vouchers": [],
+      "debuffs": {
+        "suits": [],
+        "ranks": [],
+        "cardTypes": []
+      },
+      "devastates": [],
+      "struggles": [],
+      "tips": [
+        "Usually only 1 card is face down - manageable",
+        "Play around the hidden card if possible",
+        "Discard face-down cards if they interfere with your hand"
+      ]
+    },
+    {
+      "id": "the_arm",
+      "name": "The Arm",
+      "ante": 3,
+      "effect": "Decrease level of played poker hand by 1",
+      "category": "scoring_penalty",
+      "difficulty": "medium",
+      "difficultyByBuild": {
+        "flush": "hard",
+        "straight": "hard",
+        "pairs": "medium",
+        "high_card": "hard",
+        "versatile": "easy"
+      },
+      "hardCounters": ["chicot", "luchador"],
+      "softCounters": ["versatile_hands", "secondary_hand_type", "high_level_hands"],
+      "synergisticJokers": [],
+      "vouchers": [],
+      "debuffs": {
+        "suits": [],
+        "ranks": [],
+        "cardTypes": []
+      },
+      "devastates": ["single_hand_builds", "level_1_hands"],
+      "struggles": ["flush", "straight", "five_of_a_kind"],
+      "tips": [
+        "Use varied hand types to spread the level loss",
+        "Avoid playing your most leveled hand too often",
+        "Hand levels cannot go below 1"
+      ]
+    },
+    {
+      "id": "the_club",
+      "name": "The Club",
+      "ante": 2,
+      "effect": "All Club cards are debuffed",
+      "category": "suit_debuff",
+      "difficulty": "medium",
+      "difficultyByBuild": {
+        "flush": "hard",
+        "straight": "medium",
+        "pairs": "medium",
+        "high_card": "medium",
+        "versatile": "medium"
+      },
+      "hardCounters": ["chicot", "luchador", "pareidolia"],
+      "softCounters": ["suit_conversion", "wild_cards", "non_club_focus"],
+      "synergisticJokers": ["smeared_joker", "splash"],
+      "vouchers": [],
+      "debuffs": {
+        "suits": ["Clubs"],
+        "ranks": [],
+        "cardTypes": []
+      },
+      "devastates": ["club_flush"],
+      "struggles": ["club_heavy_deck"],
+      "tips": [
+        "Clubs contribute 0 chips and don't trigger abilities",
+        "Debuffed cards still count for hand type (pairs, straights)",
+        "Wild cards and Smeared Joker can help"
+      ]
+    },
+    {
+      "id": "the_goad",
+      "name": "The Goad",
+      "ante": 2,
+      "effect": "All Spade cards are debuffed",
+      "category": "suit_debuff",
+      "difficulty": "medium",
+      "difficultyByBuild": {
+        "flush": "hard",
+        "straight": "medium",
+        "pairs": "medium",
+        "high_card": "medium",
+        "versatile": "medium"
+      },
+      "hardCounters": ["chicot", "luchador", "pareidolia"],
+      "softCounters": ["suit_conversion", "wild_cards", "non_spade_focus"],
+      "synergisticJokers": ["smeared_joker", "splash"],
+      "vouchers": [],
+      "debuffs": {
+        "suits": ["Spades"],
+        "ranks": [],
+        "cardTypes": []
+      },
+      "devastates": ["spade_flush"],
+      "struggles": ["spade_heavy_deck"],
+      "tips": [
+        "Spades contribute 0 chips and don't trigger abilities",
+        "Debuffed cards still count for hand type",
+        "Wild cards and Smeared Joker can help"
+      ]
+    },
+    {
+      "id": "the_head",
+      "name": "The Head",
+      "ante": 2,
+      "effect": "All Heart cards are debuffed",
+      "category": "suit_debuff",
+      "difficulty": "medium",
+      "difficultyByBuild": {
+        "flush": "hard",
+        "straight": "medium",
+        "pairs": "medium",
+        "high_card": "medium",
+        "versatile": "medium"
+      },
+      "hardCounters": ["chicot", "luchador", "pareidolia"],
+      "softCounters": ["suit_conversion", "wild_cards", "non_heart_focus"],
+      "synergisticJokers": ["smeared_joker", "splash"],
+      "vouchers": [],
+      "debuffs": {
+        "suits": ["Hearts"],
+        "ranks": [],
+        "cardTypes": []
+      },
+      "devastates": ["heart_flush"],
+      "struggles": ["heart_heavy_deck"],
+      "tips": [
+        "Hearts contribute 0 chips and don't trigger abilities",
+        "Debuffed cards still count for hand type",
+        "Wild cards and Smeared Joker can help"
+      ]
+    },
+    {
+      "id": "the_window",
+      "name": "The Window",
+      "ante": 2,
+      "effect": "All Diamond cards are debuffed",
+      "category": "suit_debuff",
+      "difficulty": "medium",
+      "difficultyByBuild": {
+        "flush": "hard",
+        "straight": "medium",
+        "pairs": "medium",
+        "high_card": "medium",
+        "versatile": "medium"
+      },
+      "hardCounters": ["chicot", "luchador", "pareidolia"],
+      "softCounters": ["suit_conversion", "wild_cards", "non_diamond_focus"],
+      "synergisticJokers": ["smeared_joker", "splash"],
+      "vouchers": [],
+      "debuffs": {
+        "suits": ["Diamonds"],
+        "ranks": [],
+        "cardTypes": []
+      },
+      "devastates": ["diamond_flush"],
+      "struggles": ["diamond_heavy_deck"],
+      "tips": [
+        "Diamonds contribute 0 chips and don't trigger abilities",
+        "Debuffed cards still count for hand type",
+        "Wild cards and Smeared Joker can help"
+      ]
+    },
+    {
+      "id": "the_fish",
+      "name": "The Fish",
+      "ante": 2,
+      "effect": "Cards drawn face down after each hand played",
+      "category": "visibility",
+      "difficulty": "medium",
+      "difficultyByBuild": {
+        "flush": "medium",
+        "straight": "hard",
+        "pairs": "medium",
+        "high_card": "easy",
+        "versatile": "medium"
+      },
+      "hardCounters": ["chicot", "luchador"],
+      "softCounters": ["quick_wins", "card_counting", "flexible_plays"],
+      "synergisticJokers": ["sixth_sense"],
+      "vouchers": [],
+      "debuffs": {
+        "suits": [],
+        "ranks": [],
+        "cardTypes": []
+      },
+      "devastates": [],
+      "struggles": ["straight", "specific_combos"],
+      "tips": [
+        "First hand is normal - make it count",
+        "Subsequent hands become increasingly blind",
+        "Pairs and high cards are more reliable blind"
+      ]
+    },
+    {
+      "id": "the_psychic",
+      "name": "The Psychic",
+      "ante": 2,
+      "effect": "Must play 5 cards",
+      "category": "hand_restriction",
+      "difficulty": "medium",
+      "difficultyByBuild": {
+        "flush": "easy",
+        "straight": "easy",
+        "pairs": "hard",
+        "high_card": "easy",
+        "versatile": "medium"
+      },
+      "hardCounters": ["chicot", "luchador"],
+      "softCounters": ["five_card_hands", "flush_build", "straight_build"],
+      "synergisticJokers": ["splash", "smeared_joker", "four_fingers"],
+      "vouchers": [],
+      "debuffs": {
+        "suits": [],
+        "ranks": [],
+        "cardTypes": []
+      },
+      "devastates": ["two_pair", "three_of_a_kind", "four_of_a_kind"],
+      "struggles": ["pairs", "full_house"],
+      "tips": [
+        "Flushes and straights naturally use 5 cards",
+        "Pairs builds suffer - must include 3 filler cards",
+        "Four Fingers helps pairs by allowing 4-card flushes/straights"
+      ]
+    },
+    {
+      "id": "the_eye",
+      "name": "The Eye",
+      "ante": 3,
+      "effect": "No repeat hand types this blind",
+      "category": "hand_restriction",
+      "difficulty": "hard",
+      "difficultyByBuild": {
+        "flush": "extreme",
+        "straight": "extreme",
+        "pairs": "hard",
+        "high_card": "medium",
+        "versatile": "medium"
+      },
+      "hardCounters": ["chicot", "luchador"],
+      "softCounters": ["versatile_hands", "hand_variety", "quick_wins"],
+      "synergisticJokers": ["showman"],
+      "vouchers": ["directors_cut"],
+      "debuffs": {
+        "suits": [],
+        "ranks": [],
+        "cardTypes": []
+      },
+      "devastates": ["single_hand_builds", "flush", "straight"],
+      "struggles": ["pairs", "low_variety"],
+      "tips": [
+        "Each hand type can only be played once",
+        "Need 3-4 different playable hand types",
+        "High Card counts as a type - save it for emergency",
+        "Versatile decks with multiple strong hands excel"
+      ]
+    },
+    {
+      "id": "the_mouth",
+      "name": "The Mouth",
+      "ante": 3,
+      "effect": "Play only 1 hand type this blind",
+      "category": "hand_restriction",
+      "difficulty": "hard",
+      "difficultyByBuild": {
+        "flush": "medium",
+        "straight": "medium",
+        "pairs": "easy",
+        "high_card": "hard",
+        "versatile": "hard"
+      },
+      "hardCounters": ["chicot", "luchador"],
+      "softCounters": ["consistent_hand", "high_level_hand", "reliable_draw"],
+      "synergisticJokers": [],
+      "vouchers": [],
+      "debuffs": {
+        "suits": [],
+        "ranks": [],
+        "cardTypes": []
+      },
+      "devastates": ["versatile", "mixed_strategy"],
+      "struggles": ["inconsistent_decks"],
+      "tips": [
+        "Commit to your strongest, most consistent hand type",
+        "Pairs are easiest to repeat every hand",
+        "Consider your deck - can you reliably make the same hand 3+ times?"
+      ]
+    },
+    {
+      "id": "the_plant",
+      "name": "The Plant",
+      "ante": 3,
+      "effect": "All face cards are debuffed",
+      "category": "card_debuff",
+      "difficulty": "hard",
+      "difficultyByBuild": {
+        "flush": "medium",
+        "straight": "hard",
+        "pairs": "hard",
+        "high_card": "extreme",
+        "versatile": "hard"
+      },
+      "hardCounters": ["chicot", "luchador", "pareidolia"],
+      "softCounters": ["number_cards", "face_card_removal", "aces_tens"],
+      "synergisticJokers": ["scholar", "fibonacci", "even_steven", "odd_todd", "hack"],
+      "vouchers": [],
+      "debuffs": {
+        "suits": [],
+        "ranks": ["Jack", "Queen", "King"],
+        "cardTypes": ["face_cards"]
+      },
+      "devastates": ["face_card_builds", "photograph_builds"],
+      "struggles": ["high_card", "standard_deck"],
+      "tips": [
+        "Jacks, Queens, Kings give 0 chips and don't trigger",
+        "Aces and 10s become your highest chip cards",
+        "Even Steven, Odd Todd, and Fibonacci builds shine",
+        "Consider removing face cards from deck over time"
+      ]
+    },
+    {
+      "id": "the_tooth",
+      "name": "The Tooth",
+      "ante": 3,
+      "effect": "Lose $1 per card played",
+      "category": "money_penalty",
+      "difficulty": "medium",
+      "difficultyByBuild": {
+        "flush": "hard",
+        "straight": "hard",
+        "pairs": "medium",
+        "high_card": "easy",
+        "versatile": "medium"
+      },
+      "hardCounters": ["chicot", "luchador"],
+      "softCounters": ["small_hands", "quick_wins", "money_generation"],
+      "synergisticJokers": ["to_the_moon", "golden_joker", "rocket", "business_card"],
+      "vouchers": ["seed_money", "money_tree"],
+      "debuffs": {
+        "suits": [],
+        "ranks": [],
+        "cardTypes": []
+      },
+      "devastates": [],
+      "struggles": ["flush", "straight", "five_card_hands"],
+      "tips": [
+        "Playing 5 cards = lose $5 per hand",
+        "Pairs with fewer cards played lose less money",
+        "Win quickly to minimize total money loss",
+        "Strong money-generating jokers offset the loss"
+      ]
+    },
+    {
+      "id": "the_water",
+      "name": "The Water",
+      "ante": 2,
+      "effect": "Start with 0 discards",
+      "category": "draw_modification",
+      "difficulty": "hard",
+      "difficultyByBuild": {
+        "flush": "hard",
+        "straight": "extreme",
+        "pairs": "medium",
+        "high_card": "medium",
+        "versatile": "hard"
+      },
+      "hardCounters": ["chicot", "luchador"],
+      "softCounters": ["consistent_hands", "large_deck_manipulation", "card_draw"],
+      "synergisticJokers": ["burglar", "drunkard", "merry_andy"],
+      "vouchers": ["grabber", "nacho_tong"],
+      "debuffs": {
+        "suits": [],
+        "ranks": [],
+        "cardTypes": []
+      },
+      "devastates": ["discard_dependent", "straight"],
+      "struggles": ["flush", "specific_combos"],
+      "tips": [
+        "Must work with whatever you draw",
+        "Pairs are more reliable without discards",
+        "Burglar can restore discards",
+        "Consider your hand-in-hand odds carefully"
+      ]
+    },
+    {
+      "id": "the_needle",
+      "name": "The Needle",
+      "ante": 4,
+      "effect": "Play only 1 hand",
+      "category": "hand_restriction",
+      "difficulty": "extreme",
+      "difficultyByBuild": {
+        "flush": "hard",
+        "straight": "hard",
+        "pairs": "extreme",
+        "high_card": "extreme",
+        "versatile": "hard"
+      },
+      "hardCounters": ["chicot", "luchador"],
+      "softCounters": ["one_shot_builds", "high_mult", "retriggers"],
+      "synergisticJokers": ["blueprint", "brainstorm", "hologram", "the_idol"],
+      "vouchers": [],
+      "debuffs": {
+        "suits": [],
+        "ranks": [],
+        "cardTypes": []
+      },
+      "devastates": ["scaling_builds", "low_mult_builds"],
+      "struggles": ["pairs", "chip_builds"],
+      "tips": [
+        "Must beat the blind in a single hand",
+        "Need extremely high mult or retriggers",
+        "Use all discards to find your best possible hand",
+        "Calculate if your max hand can beat the blind first"
+      ]
+    },
+    {
+      "id": "the_manacle",
+      "name": "The Manacle",
+      "ante": 4,
+      "effect": "-1 hand size for this blind",
+      "category": "draw_modification",
+      "difficulty": "medium",
+      "difficultyByBuild": {
+        "flush": "hard",
+        "straight": "hard",
+        "pairs": "easy",
+        "high_card": "easy",
+        "versatile": "medium"
+      },
+      "hardCounters": ["chicot", "luchador"],
+      "softCounters": ["small_hands", "hand_size_increase", "pairs"],
+      "synergisticJokers": ["troubadour", "juggler"],
+      "vouchers": [],
+      "debuffs": {
+        "suits": [],
+        "ranks": [],
+        "cardTypes": []
+      },
+      "devastates": ["seven_card_hands"],
+      "struggles": ["flush", "straight"],
+      "tips": [
+        "Default 8 cards becomes 7",
+        "Harder to find flushes and straights",
+        "Pairs become relatively stronger",
+        "Hand size jokers can offset"
+      ]
+    },
+    {
+      "id": "the_serpent",
+      "name": "The Serpent",
+      "ante": 3,
+      "effect": "After playing or discarding, always draw 3 cards",
+      "category": "draw_modification",
+      "difficulty": "medium",
+      "difficultyByBuild": {
+        "flush": "medium",
+        "straight": "medium",
+        "pairs": "easy",
+        "high_card": "easy",
+        "versatile": "medium"
+      },
+      "hardCounters": ["chicot", "luchador"],
+      "softCounters": ["held_card_jokers", "efficient_hands"],
+      "synergisticJokers": ["mime", "raised_fist", "shoot_the_moon"],
+      "vouchers": [],
+      "debuffs": {
+        "suits": [],
+        "ranks": [],
+        "cardTypes": []
+      },
+      "devastates": [],
+      "struggles": ["hand_held_synergies"],
+      "tips": [
+        "Hand replenishes slowly - only 3 cards at a time",
+        "Held-in-hand jokers like Mime get fewer triggers",
+        "Play more efficiently with smaller hands if possible"
+      ]
+    },
+    {
+      "id": "the_pillar",
+      "name": "The Pillar",
+      "ante": 4,
+      "effect": "Cards played previously this Ante are debuffed",
+      "category": "card_debuff",
+      "difficulty": "hard",
+      "difficultyByBuild": {
+        "flush": "medium",
+        "straight": "medium",
+        "pairs": "hard",
+        "high_card": "hard",
+        "versatile": "medium"
+      },
+      "hardCounters": ["chicot", "luchador"],
+      "softCounters": ["large_deck", "card_variety", "fresh_cards"],
+      "synergisticJokers": [],
+      "vouchers": [],
+      "debuffs": {
+        "suits": [],
+        "ranks": [],
+        "cardTypes": []
+      },
+      "devastates": ["small_deck", "pairs"],
+      "struggles": ["recycled_combos"],
+      "tips": [
+        "Cards from small blind and big blind become debuffed",
+        "Large decks suffer less - more fresh cards available",
+        "Try to save key cards for boss blind if possible",
+        "Consider skipping earlier blinds to preserve cards"
+      ]
+    },
+    {
+      "id": "the_flint",
+      "name": "The Flint",
+      "ante": 4,
+      "effect": "Base chips and mult are halved",
+      "category": "scoring_penalty",
+      "difficulty": "hard",
+      "difficultyByBuild": {
+        "flush": "hard",
+        "straight": "hard",
+        "pairs": "hard",
+        "high_card": "extreme",
+        "versatile": "hard"
+      },
+      "hardCounters": ["chicot", "luchador"],
+      "softCounters": ["mult_jokers", "high_mult", "scaling"],
+      "synergisticJokers": ["hologram", "ride_the_bus", "green_joker"],
+      "vouchers": [],
+      "debuffs": {
+        "suits": [],
+        "ranks": [],
+        "cardTypes": []
+      },
+      "devastates": ["chip_builds", "high_card"],
+      "struggles": ["base_stat_dependent"],
+      "tips": [
+        "Base hand chips and mult cut in half",
+        "Joker additions are NOT affected",
+        "X mult and +mult from jokers still full value",
+        "Rely on joker-based scoring to compensate"
+      ]
+    },
+    {
+      "id": "the_mark",
+      "name": "The Mark",
+      "ante": 3,
+      "effect": "All face cards are drawn face down",
+      "category": "visibility",
+      "difficulty": "medium",
+      "difficultyByBuild": {
+        "flush": "medium",
+        "straight": "hard",
+        "pairs": "medium",
+        "high_card": "medium",
+        "versatile": "medium"
+      },
+      "hardCounters": ["chicot", "luchador"],
+      "softCounters": ["face_card_removal", "number_cards", "card_counting"],
+      "synergisticJokers": ["scholar", "fibonacci", "even_steven", "odd_todd"],
+      "vouchers": [],
+      "debuffs": {
+        "suits": [],
+        "ranks": [],
+        "cardTypes": []
+      },
+      "devastates": [],
+      "struggles": ["face_card_dependent", "photograph"],
+      "tips": [
+        "J, Q, K are drawn face down - unknown identity",
+        "Still know it's a face card - use for pairs strategy",
+        "Decks with fewer face cards suffer less"
+      ]
+    },
+    {
+      "id": "amber_acorn",
+      "name": "Amber Acorn",
+      "ante": 5,
+      "effect": "Flips and shuffles all Joker positions",
+      "category": "card_manipulation",
+      "difficulty": "medium",
+      "difficultyByBuild": {
+        "flush": "medium",
+        "straight": "medium",
+        "pairs": "medium",
+        "high_card": "medium",
+        "versatile": "medium"
+      },
+      "hardCounters": ["chicot", "luchador"],
+      "softCounters": ["position_independent_jokers", "simple_builds"],
+      "synergisticJokers": [],
+      "vouchers": [],
+      "debuffs": {
+        "suits": [],
+        "ranks": [],
+        "cardTypes": []
+      },
+      "devastates": ["blueprint_dependent", "position_matters"],
+      "struggles": ["brainstorm", "blueprint"],
+      "tips": [
+        "Jokers are face down and in random order",
+        "Blueprint/Brainstorm copy random joker",
+        "Order-dependent effects become unreliable",
+        "Effect wears off after blind"
+      ]
+    },
+    {
+      "id": "verdant_leaf",
+      "name": "Verdant Leaf",
+      "ante": 5,
+      "effect": "All cards are debuffed until a Joker is sold",
+      "category": "card_debuff",
+      "difficulty": "extreme",
+      "difficultyByBuild": {
+        "flush": "extreme",
+        "straight": "extreme",
+        "pairs": "extreme",
+        "high_card": "extreme",
+        "versatile": "extreme"
+      },
+      "hardCounters": ["chicot", "luchador"],
+      "softCounters": ["sacrificial_joker", "joker_generation", "cheap_jokers"],
+      "synergisticJokers": [],
+      "vouchers": [],
+      "debuffs": {
+        "suits": ["Hearts", "Diamonds", "Clubs", "Spades"],
+        "ranks": ["2", "3", "4", "5", "6", "7", "8", "9", "10", "Jack", "Queen", "King", "Ace"],
+        "cardTypes": ["all"]
+      },
+      "devastates": ["all_builds"],
+      "struggles": ["valuable_jokers"],
+      "tips": [
+        "ALL cards debuffed until you sell a joker",
+        "Must sacrifice a joker to enable cards",
+        "Keep a cheap/weak joker as sacrifice",
+        "Selling immediately re-enables all cards"
+      ]
+    },
+    {
+      "id": "violet_vessel",
+      "name": "Violet Vessel",
+      "ante": 5,
+      "effect": "Very large blind - 6x base blind chips",
+      "category": "scoring_penalty",
+      "difficulty": "extreme",
+      "difficultyByBuild": {
+        "flush": "hard",
+        "straight": "extreme",
+        "pairs": "extreme",
+        "high_card": "extreme",
+        "versatile": "hard"
+      },
+      "hardCounters": ["chicot", "luchador"],
+      "softCounters": ["high_mult", "scaling_jokers", "retriggers", "x_mult"],
+      "synergisticJokers": ["hologram", "ride_the_bus", "obelisk", "green_joker", "red_card"],
+      "vouchers": [],
+      "debuffs": {
+        "suits": [],
+        "ranks": [],
+        "cardTypes": []
+      },
+      "devastates": ["low_scaling", "chip_builds"],
+      "struggles": ["pairs", "early_game"],
+      "tips": [
+        "Need 6x normal scoring output",
+        "Scaling jokers essential",
+        "X mult jokers are critical",
+        "May need multiple strong hands"
+      ]
+    },
+    {
+      "id": "crimson_heart",
+      "name": "Crimson Heart",
+      "ante": 5,
+      "effect": "One random Joker is disabled each hand",
+      "category": "card_manipulation",
+      "difficulty": "hard",
+      "difficultyByBuild": {
+        "flush": "hard",
+        "straight": "hard",
+        "pairs": "hard",
+        "high_card": "hard",
+        "versatile": "hard"
+      },
+      "hardCounters": ["chicot", "luchador"],
+      "softCounters": ["joker_redundancy", "many_jokers", "independent_jokers"],
+      "synergisticJokers": [],
+      "vouchers": [],
+      "debuffs": {
+        "suits": [],
+        "ranks": [],
+        "cardTypes": []
+      },
+      "devastates": ["single_joker_reliant", "combo_dependent"],
+      "struggles": ["blueprint_combos", "key_joker_builds"],
+      "tips": [
+        "Each hand, one random joker does nothing",
+        "More jokers = lower chance key joker disabled",
+        "Redundant scoring sources help",
+        "Don't rely on a single joker for all scoring"
+      ]
+    },
+    {
+      "id": "cerulean_bell",
+      "name": "Cerulean Bell",
+      "ante": 5,
+      "effect": "Forces 1 card to always be selected",
+      "category": "card_manipulation",
+      "difficulty": "medium",
+      "difficultyByBuild": {
+        "flush": "hard",
+        "straight": "hard",
+        "pairs": "medium",
+        "high_card": "easy",
+        "versatile": "medium"
+      },
+      "hardCounters": ["chicot", "luchador"],
+      "softCounters": ["flexible_hands", "card_manipulation"],
+      "synergisticJokers": [],
+      "vouchers": [],
+      "debuffs": {
+        "suits": [],
+        "ranks": [],
+        "cardTypes": []
+      },
+      "devastates": [],
+      "struggles": ["specific_combos", "flush"],
+      "tips": [
+        "One card is always forced into your played hand",
+        "Must build around this forced card",
+        "Forced card is marked - plan accordingly",
+        "Can still be discarded but returns to selection"
+      ]
+    },
+    {
+      "id": "the_bloom",
+      "name": "The Bloom",
+      "ante": 6,
+      "effect": "Blind size grows every hand played",
+      "category": "scoring_penalty",
+      "difficulty": "hard",
+      "difficultyByBuild": {
+        "flush": "medium",
+        "straight": "hard",
+        "pairs": "hard",
+        "high_card": "extreme",
+        "versatile": "medium"
+      },
+      "hardCounters": ["chicot", "luchador"],
+      "softCounters": ["quick_wins", "high_first_hand", "efficient_plays"],
+      "synergisticJokers": ["hologram", "ride_the_bus"],
+      "vouchers": [],
+      "debuffs": {
+        "suits": [],
+        "ranks": [],
+        "cardTypes": []
+      },
+      "devastates": ["slow_scaling"],
+      "struggles": ["chip_builds"],
+      "tips": [
+        "Blind grows each hand - win quickly",
+        "Front-load your scoring",
+        "First hand is easiest - make it count",
+        "Scaling jokers can keep pace"
+      ]
+    },
+    {
+      "id": "the_claw",
+      "name": "The Claw",
+      "ante": 6,
+      "effect": "Jokers are disabled if the blind score isn't passed in one hand",
+      "category": "scoring_penalty",
+      "difficulty": "extreme",
+      "difficultyByBuild": {
+        "flush": "hard",
+        "straight": "extreme",
+        "pairs": "extreme",
+        "high_card": "extreme",
+        "versatile": "hard"
+      },
+      "hardCounters": ["chicot", "luchador"],
+      "softCounters": ["high_first_hand", "one_shot_builds"],
+      "synergisticJokers": ["blueprint", "brainstorm"],
+      "vouchers": [],
+      "debuffs": {
+        "suits": [],
+        "ranks": [],
+        "cardTypes": []
+      },
+      "devastates": ["scaling_builds", "slow_starts"],
+      "struggles": ["multi_hand_strategies"],
+      "tips": [
+        "Must beat blind score in first hand or lose jokers for blind",
+        "Similar pressure to The Needle",
+        "Use discards to find best hand first",
+        "Calculate if one-shot is possible"
+      ]
+    },
+    {
+      "id": "the_tooth_fish",
+      "name": "The Eel",
+      "ante": 7,
+      "effect": "Lose $4 for each hand played",
+      "category": "money_penalty",
+      "difficulty": "hard",
+      "difficultyByBuild": {
+        "flush": "medium",
+        "straight": "medium",
+        "pairs": "medium",
+        "high_card": "medium",
+        "versatile": "medium"
+      },
+      "hardCounters": ["chicot", "luchador"],
+      "softCounters": ["quick_wins", "money_generation"],
+      "synergisticJokers": ["to_the_moon", "golden_joker", "rocket"],
+      "vouchers": ["seed_money", "money_tree"],
+      "debuffs": {
+        "suits": [],
+        "ranks": [],
+        "cardTypes": []
+      },
+      "devastates": [],
+      "struggles": ["slow_wins"],
+      "tips": [
+        "Lose $4 flat per hand played",
+        "Win quickly to minimize loss",
+        "Money-generating jokers help offset"
+      ]
+    }
+  ],
+  "categories": {
+    "suit_debuff": {
+      "name": "Suit Debuff",
+      "description": "Debuffs all cards of a specific suit",
+      "examples": ["The Club", "The Goad", "The Head", "The Window"]
+    },
+    "card_debuff": {
+      "name": "Card Debuff",
+      "description": "Debuffs specific card types or previously played cards",
+      "examples": ["The Plant", "The Pillar", "Verdant Leaf"]
+    },
+    "hand_restriction": {
+      "name": "Hand Restriction",
+      "description": "Restricts what hands you can play",
+      "examples": ["The Eye", "The Mouth", "The Needle", "The Psychic"]
+    },
+    "visibility": {
+      "name": "Visibility",
+      "description": "Hides card information",
+      "examples": ["The House", "The Wheel", "The Fish", "The Mark"]
+    },
+    "scoring_penalty": {
+      "name": "Scoring Penalty",
+      "description": "Reduces scoring or increases blind size",
+      "examples": ["The Wall", "The Arm", "The Flint", "Violet Vessel", "The Bloom"]
+    },
+    "money_penalty": {
+      "name": "Money Penalty",
+      "description": "Causes money loss",
+      "examples": ["The Ox", "The Tooth", "The Eel"]
+    },
+    "card_manipulation": {
+      "name": "Card Manipulation",
+      "description": "Manipulates cards or jokers",
+      "examples": ["The Hook", "Amber Acorn", "Crimson Heart", "Cerulean Bell"]
+    },
+    "draw_modification": {
+      "name": "Draw Modification",
+      "description": "Changes hand size or card draw mechanics",
+      "examples": ["The Water", "The Manacle", "The Serpent"]
+    }
+  },
+  "universalCounters": {
+    "hardCounters": [
+      {
+        "id": "chicot",
+        "name": "Chicot",
+        "effect": "Disables Boss Blind effect entirely",
+        "rarity": "legendary"
+      },
+      {
+        "id": "luchador",
+        "name": "Luchador",
+        "effect": "Sell to disable current Boss Blind ability",
+        "rarity": "uncommon"
+      }
+    ],
+    "softCounters": [
+      {
+        "strategy": "quick_wins",
+        "description": "Beat the blind in fewer hands to reduce effect duration"
+      },
+      {
+        "strategy": "skip_boss",
+        "description": "Use Skip tag or vouchers to avoid problematic bosses"
+      }
+    ]
+  },
+  "bossBlindsByAnte": {
+    "2": ["the_hook", "the_ox", "the_house", "the_wall", "the_wheel", "the_club", "the_goad", "the_head", "the_window", "the_fish", "the_psychic", "the_water"],
+    "3": ["the_arm", "the_eye", "the_mouth", "the_plant", "the_tooth", "the_serpent", "the_mark"],
+    "4": ["the_needle", "the_manacle", "the_pillar", "the_flint"],
+    "5": ["amber_acorn", "verdant_leaf", "violet_vessel", "crimson_heart", "cerulean_bell"],
+    "6": ["the_bloom", "the_claw"],
+    "7": ["the_tooth_fish"]
+  },
+  "difficultyRatings": {
+    "easy": {
+      "description": "Minor inconvenience, easily played around",
+      "examples": ["The Wheel"]
+    },
+    "medium": {
+      "description": "Requires adjustment but manageable",
+      "examples": ["The Club", "The Tooth", "The Manacle"]
+    },
+    "hard": {
+      "description": "Significant challenge, may require specific counters",
+      "examples": ["The Eye", "The Plant", "The Water"]
+    },
+    "extreme": {
+      "description": "Can end runs, requires strong preparation",
+      "examples": ["The Needle", "Verdant Leaf", "Violet Vessel"]
+    }
+  }
+}
