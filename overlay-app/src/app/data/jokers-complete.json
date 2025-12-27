@@ -1123,8 +1123,8 @@
         "scalingRate": null
       },
       "position": {
-        "sensitive": false,
-        "requirement": "any",
+        "sensitive": true,
+        "requirement": "first_card_position",
         "copyable": true
       },
       "tier": "A",
@@ -1273,8 +1273,8 @@
         "scalingRate": null
       },
       "position": {
-        "sensitive": false,
-        "requirement": "any",
+        "sensitive": true,
+        "requirement": "first_face_card_position",
         "copyable": true
       },
       "tier": "A",
@@ -2205,7 +2205,7 @@
     {
       "id": "burnt_joker",
       "name": "Burnt Joker",
-      "rarity": "uncommon",
+      "rarity": "rare",
       "cost": 6,
       "effect": "Upgrade the level of the first discarded poker hand each round",
       "scoringType": "effect",
@@ -3288,7 +3288,7 @@
     {
       "id": "stuntman",
       "name": "Stuntman",
-      "rarity": "uncommon",
+      "rarity": "rare",
       "cost": 7,
       "effect": "+250 Chips, -2 hand size",
       "scoringType": "chips",
@@ -3357,7 +3357,7 @@
     {
       "id": "vagabond",
       "name": "Vagabond",
-      "rarity": "uncommon",
+      "rarity": "rare",
       "cost": 6,
       "effect": "Create a Tarot card if hand is played with $4 or less",
       "scoringType": "effect",
