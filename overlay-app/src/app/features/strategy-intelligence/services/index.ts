@@ -1,6 +1,7 @@
-﻿export * from './synergy-graph.service';
-export * from './build-detector.service';
-export * from './shop-advisor.service';
-export * from './deck-strategy.service';
-export * from './boss-awareness.service';
-export * from './scaling-calculator.service';
+export { BuildDetectorService } from './build-detector.service';
+export { ScalingCalculatorService } from './scaling-calculator.service';
+export type { ScalingProjection, BlindComparison } from './scaling-calculator.service';
+export { SynergyGraphService } from './synergy-graph.service';
+export { ShopAdvisorService } from './shop-advisor.service';
+export { DeckStrategyService } from './deck-strategy.service';
+export { BossAwarenessService } from './boss-awareness.service';
