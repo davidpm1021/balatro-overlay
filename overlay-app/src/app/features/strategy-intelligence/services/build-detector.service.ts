@@ -3,6 +3,36 @@ import { GameStateService } from '../../../core/services/game-state.service';
 import { DetectedStrategy, StrategyType } from '../../../../../../shared/models';
 import { Card, Suit, Rank } from '../../../../../../shared/models';
 import { JokerState } from '../../../../../../shared/models';
+import { HandType, HandLevel } from '../../../../../../shared/models';
+
+/**
+ * Signal inputs for weighted confidence calculation
+ */
+export interface StrategySignals {
+  jokerSignal: number;    // 0-100
+  deckSignal: number;     // 0-100
+  handLevelSignal: number; // 0-100
+}
+
+/**
+ * Detected build with hybrid support
+ */
+export interface DetectedBuild {
+  primary: DetectedStrategy | null;
+  secondary?: DetectedStrategy;
+  isHybrid: boolean;
+}
+
+/**
+ * Deck composition signals for strategy detection
+ */
+export interface DeckSignals {
+  suitConcentration: number;  // 0-1 - max percentage of any single suit
+  rankCoverage: number;       // 0-1 - percentage of ranks with 2+ cards
+  pairDensity: number;        // 0-1 - density of duplicate ranks
+  fibonacciCount: number;     // raw count of fibonacci cards
+  faceCardCount: number;      // raw count of face cards
+}
 
 // Import joker data from consolidated source
 import jokersData from '../../../data/jokers-complete.json';
@@ -170,6 +200,159 @@ export class BuildDetectorService {
     const strategies = this.detectedStrategies();
     return strategies.length > 0 ? strategies[0] : null;
   });
+
+  /**
+   * Detected build with hybrid support
+   * Hybrid is detected when secondary strategy >= 70% of primary confidence
+   */
+  detectedBuild = computed<DetectedBuild>(() => {
+    const strategies = this.detectedStrategies();
+
+    if (strategies.length === 0) {
+      return { primary: null, secondary: undefined, isHybrid: false };
+    }
+
+    const primary = strategies[0];
+    const secondary = strategies[1];
+
+    // Hybrid if secondary exists and is >= 70% of primary confidence
+    const isHybrid = secondary !== undefined &&
+                     primary.confidence > 0 &&
+                     secondary.confidence >= primary.confidence * 0.7;
+
+    return {
+      primary,
+      secondary: isHybrid ? secondary : undefined,
+      isHybrid,
+    };
+  });
+
+  /**
+   * Calculate strategy confidence using 60/30/10 weighted formula
+   * @param strategyType - The strategy type being evaluated
+   * @param signals - Object containing joker, deck, and hand level signals (0-100 each)
+   * @returns Weighted confidence score (0-100)
+   */
+  calculateStrategyConfidence(
+    strategyType: StrategyType,
+    signals: StrategySignals
+  ): number {
+    return Math.round(
+      signals.jokerSignal * 0.6 +
+      signals.deckSignal * 0.3 +
+      signals.handLevelSignal * 0.1
+    );
+  }
+
+  /**
+   * Get hand level signals mapped to strategy types
+   * Maps Balatro hand types to strategy types and returns normalized 0-100 values
+   */
+  getHandLevelSignals(): Record<StrategyType, number> {
+    const handLevels = this.gameState.handLevels();
+
+    // Initialize all strategies to 0
+    const signals: Record<StrategyType, number> = {
+      flush: 0,
+      straight: 0,
+      pairs: 0,
+      face_cards: 0,
+      mult_stacking: 0,
+      xmult_scaling: 0,
+      chip_stacking: 0,
+      retrigger: 0,
+      economy: 0,
+      fibonacci: 0,
+      even_steven: 0,
+      odd_todd: 0,
+      steel_scaling: 0,
+      glass_cannon: 0,
+      hybrid: 0,
+    };
+
+    if (!handLevels || handLevels.length === 0) {
+      return signals;
+    }
+
+    // Map hand types to strategies
+    const handTypeToStrategy: Partial<Record<HandType, StrategyType[]>> = {
+      flush: ['flush'],
+      straight: ['straight'],
+      straight_flush: ['flush', 'straight'],
+      royal_flush: ['flush', 'straight'],
+      pair: ['pairs'],
+      two_pair: ['pairs'],
+      three_of_a_kind: ['pairs'],
+      full_house: ['pairs'],
+      four_of_a_kind: ['pairs'],
+      five_of_a_kind: ['pairs'],
+      flush_house: ['flush', 'pairs'],
+      flush_five: ['flush', 'pairs'],
+    };
+
+    // Calculate signals based on hand levels
+    // Level 1 = base (0 points), each level above 1 = +12 points (capped at 100)
+    for (const handLevel of handLevels) {
+      const strategies = handTypeToStrategy[handLevel.handType];
+      if (strategies) {
+        const levelBonus = Math.min(100, Math.max(0, (handLevel.level - 1) * 12));
+        for (const strategy of strategies) {
+          signals[strategy] = Math.max(signals[strategy], levelBonus);
+        }
+      }
+    }
+
+    return signals;
+  }
+
+  /**
+   * Get deck composition signals for strategy detection
+   */
+  getDeckSignals(): DeckSignals {
+    const cards = this.allDeckCards();
+    const totalCards = cards.length || 1;
+
+    // Suit concentration
+    const suitCounts = this.getSuitDistribution(cards);
+    const maxSuitCount = Math.max(...Object.values(suitCounts));
+    const suitConcentration = maxSuitCount / totalCards;
+
+    // Rank distribution for various signals
+    const rankCounts = this.getRankDistribution(cards);
+
+    // Rank coverage: how many ranks have 2+ cards (for pairs strategy)
+    const ranksWithMultiples = Object.values(rankCounts).filter(c => c >= 2).length;
+    const rankCoverage = ranksWithMultiples / 13; // 13 possible ranks
+
+    // Pair density: weighted by how many duplicates exist
+    let duplicateCards = 0;
+    for (const count of Object.values(rankCounts)) {
+      if (count >= 2) {
+        duplicateCards += count;
+      }
+    }
+    const pairDensity = totalCards > 0 ? duplicateCards / totalCards : 0;
+
+    // Fibonacci count
+    let fibonacciCount = 0;
+    for (const rank of FIBONACCI_RANKS) {
+      fibonacciCount += rankCounts[rank] || 0;
+    }
+
+    // Face card count
+    let faceCardCount = 0;
+    for (const rank of FACE_RANKS) {
+      faceCardCount += rankCounts[rank] || 0;
+    }
+
+    return {
+      suitConcentration,
+      rankCoverage,
+      pairDensity,
+      fibonacciCount,
+      faceCardCount,
+    };
+  }
 
   /**
    * Analyze flush strategy potential
