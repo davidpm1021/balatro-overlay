@@ -4,12 +4,12 @@ import { RouterOutlet } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 import { GameStateService } from './core/services';
 import { DeckTrackerComponent } from './features/deck-tracker';
-import { JokerBarComponent } from './features/joker-display';
+import { SynergyDisplayComponent } from './features/synergy-display';
 import { ShopOverlayComponent } from './features/strategy-intelligence';
 
 @Component({
   selector: 'app-root',
-  imports: [CommonModule, RouterOutlet, DeckTrackerComponent, JokerBarComponent, ShopOverlayComponent, FormsModule],
+  imports: [CommonModule, RouterOutlet, DeckTrackerComponent, SynergyDisplayComponent, ShopOverlayComponent, FormsModule],
   changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './app.component.html',
   styleUrl: './app.component.scss'
