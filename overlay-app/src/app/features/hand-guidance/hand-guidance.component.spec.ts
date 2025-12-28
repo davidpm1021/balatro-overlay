@@ -1,9 +1,10 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { signal } from '@angular/core';
+import { signal, Signal } from '@angular/core';
 import { By } from '@angular/platform-browser';
 import { HandGuidanceComponent } from './hand-guidance.component';
 import { HandAnalyzerService, HandAnalysis, AnalyzedCard } from './services/hand-analyzer.service';
 import { GameStateService } from '../../core/services/game-state.service';
+import { PhaseVisibilityService } from '../../core/services/phase-visibility.service';
 import { Card, BlindState, Suit, Rank, HandType } from '../../../../../shared/models';
 import { StrategyType } from '../../../../../shared/models';
 
@@ -100,11 +101,16 @@ describe('HandGuidanceComponent', () => {
       blind: blindSignal.asReadonly(),
     });
 
+    const mockVisibilityService = {
+      isPanelVisible: (panelId: string): Signal<boolean> => signal(true).asReadonly()
+    };
+
     await TestBed.configureTestingModule({
       imports: [HandGuidanceComponent],
       providers: [
         { provide: HandAnalyzerService, useValue: handAnalyzerMock },
         { provide: GameStateService, useValue: gameStateMock },
+        { provide: PhaseVisibilityService, useValue: mockVisibilityService },
       ],
     }).compileComponents();
 

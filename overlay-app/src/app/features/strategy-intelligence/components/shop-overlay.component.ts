@@ -1,6 +1,6 @@
 import { Component, ChangeDetectionStrategy, inject, computed, effect, signal } from '@angular/core';
 import { NgClass, UpperCasePipe } from '@angular/common';
-import { GameStateService } from '../../../core/services';
+import { GameStateService, PhaseVisibilityService } from '../../../core/services';
 import {
   ShopAdvisorService,
   EnhancedShopRecommendation,
@@ -12,7 +12,7 @@ import { ShopItemDetailComponent } from './shop-item-detail.component';
   imports: [NgClass, UpperCasePipe, ShopItemDetailComponent],
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
-    @if (isInShop() && recommendations().length > 0) {
+    @if (isVisible() && recommendations().length > 0) {
       <div class="shop-overlay rounded-lg p-3 bg-black/30 border border-white/10 mt-2">
         <!-- Header with build detection -->
         <div class="header flex items-center justify-between mb-2">
@@ -133,8 +133,9 @@ import { ShopItemDetailComponent } from './shop-item-detail.component';
 export class ShopOverlayComponent {
   private gameState = inject(GameStateService);
   private shopAdvisor = inject(ShopAdvisorService);
+  private visibilityService = inject(PhaseVisibilityService);
 
-  readonly isInShop = this.gameState.isInShop;
+  readonly isVisible = this.visibilityService.isPanelVisible('shop-advisor');
   readonly rerollCost = computed(() => this.gameState.shop()?.rerollCost ?? 0);
   readonly rerollsUsed = computed(() => this.gameState.shop()?.rerollsUsed ?? 0);
   readonly currentAnte = computed(() => this.gameState.state()?.progress.ante ?? 1);
@@ -148,7 +149,6 @@ export class ShopOverlayComponent {
   private expandedItems = signal<Set<string>>(new Set());
 
   readonly recommendations = computed<EnhancedShopRecommendation[]>(() => {
-    if (!this.isInShop()) return [];
     return this.shopAdvisor.getEnhancedShopRecommendations();
   });
 

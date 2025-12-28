@@ -1,10 +1,11 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { signal } from '@angular/core';
+import { signal, Signal } from '@angular/core';
 import { By } from '@angular/platform-browser';
 import { BuildIdentityComponent } from './build-identity.component';
 import { BuildGuidanceService, BuildGuidance } from './build-guidance.service';
 import { BuildDetectorService, DetectedBuild } from '../strategy-intelligence/services/build-detector.service';
 import { GameStateService } from '../../core/services/game-state.service';
+import { PhaseVisibilityService } from '../../core/services/phase-visibility.service';
 import { DetectedStrategy, StrategyType } from '../../../../../shared/models/strategy.model';
 import { JokerState } from '../../../../../shared/models/joker.model';
 
@@ -91,12 +92,17 @@ describe('BuildIdentityComponent', () => {
       jokers: jokersSignal.asReadonly(),
     });
 
+    const mockVisibilityService = {
+      isPanelVisible: (panelId: string): Signal<boolean> => signal(true).asReadonly()
+    };
+
     await TestBed.configureTestingModule({
       imports: [BuildIdentityComponent],
       providers: [
         { provide: BuildDetectorService, useValue: buildDetectorMock },
         { provide: BuildGuidanceService, useValue: buildGuidanceMock },
         { provide: GameStateService, useValue: gameStateMock },
+        { provide: PhaseVisibilityService, useValue: mockVisibilityService },
       ],
     }).compileComponents();
 

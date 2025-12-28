@@ -2,6 +2,7 @@ import { Component, ChangeDetectionStrategy, inject, computed } from '@angular/c
 import { CommonModule } from '@angular/common';
 import { HandAnalyzerService, HandAnalysis, AnalyzedCard } from './services/hand-analyzer.service';
 import { GameStateService } from '../../core/services/game-state.service';
+import { PhaseVisibilityService } from '../../core/services/phase-visibility.service';
 import { Card, Suit, Rank } from '../../../../../shared/models';
 
 /**
@@ -29,6 +30,7 @@ const SUIT_COLORS: Record<Suit, string> = {
   imports: [CommonModule],
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
+    @if (isVisible()) {
     <section class="hand-guidance balatro-panel">
       <header class="header">
         <span class="section-header">Hand Guidance</span>
@@ -131,6 +133,7 @@ const SUIT_COLORS: Record<Suit, string> = {
         }
       }
     </section>
+    }
   `,
   styles: [`
     .hand-guidance {
@@ -394,6 +397,9 @@ const SUIT_COLORS: Record<Suit, string> = {
 export class HandGuidanceComponent {
   private handAnalyzer = inject(HandAnalyzerService);
   private gameState = inject(GameStateService);
+  private visibilityService = inject(PhaseVisibilityService);
+
+  readonly isVisible = this.visibilityService.isPanelVisible('hand-guidance');
 
   /**
    * Current hand analysis from the analyzer service

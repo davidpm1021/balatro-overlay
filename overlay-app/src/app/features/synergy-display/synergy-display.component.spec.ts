@@ -1,8 +1,9 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { signal } from '@angular/core';
+import { signal, Signal } from '@angular/core';
 import { SynergyDisplayComponent } from './synergy-display.component';
 import { SynergyDisplayService } from './synergy-display.service';
 import { GameStateService } from '../../core/services/game-state.service';
+import { PhaseVisibilityService } from '../../core/services/phase-visibility.service';
 import { JokerState } from '../../../../../shared/models/joker.model';
 import { SynergyGroup } from '../../../../../shared/models/synergy-group.model';
 
@@ -43,11 +44,16 @@ describe('SynergyDisplayComponent', () => {
       totalSynergyScore: totalScoreSignal.asReadonly(),
     });
 
+    const mockVisibilityService = {
+      isPanelVisible: (panelId: string): Signal<boolean> => signal(true).asReadonly()
+    };
+
     await TestBed.configureTestingModule({
       imports: [SynergyDisplayComponent],
       providers: [
         { provide: GameStateService, useValue: gameStateServiceMock },
         { provide: SynergyDisplayService, useValue: synergyDisplayServiceMock },
+        { provide: PhaseVisibilityService, useValue: mockVisibilityService },
       ],
     }).compileComponents();
 

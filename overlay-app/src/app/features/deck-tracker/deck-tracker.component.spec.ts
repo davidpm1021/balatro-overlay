@@ -1,13 +1,14 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { DeckTrackerComponent, CardLocation } from './deck-tracker.component';
-import { GameStateService } from '../../core/services';
-import { signal, WritableSignal } from '@angular/core';
-import { DeckState, Card, Suit, Rank } from '../../../../../shared/models';
+import { GameStateService, PhaseVisibilityService } from '../../core/services';
+import { signal, WritableSignal, Signal } from '@angular/core';
+import { DeckState, Card, Suit, Rank, GamePhase } from '../../../../../shared/models';
 
 describe('DeckTrackerComponent', () => {
   let component: DeckTrackerComponent;
   let fixture: ComponentFixture<DeckTrackerComponent>;
   let mockDeckSignal: WritableSignal<DeckState | null>;
+  let mockPhaseSignal: WritableSignal<GamePhase>;
 
   const createCard = (suit: Suit, rank: Rank): Card => ({
     id: `${suit}-${rank}`,
@@ -35,15 +36,22 @@ describe('DeckTrackerComponent', () => {
 
   beforeEach(async () => {
     mockDeckSignal = signal<DeckState | null>(null);
+    mockPhaseSignal = signal<GamePhase>('playing'); // Default to playing so panel is visible
 
     const mockGameStateService = {
-      deck: mockDeckSignal.asReadonly()
+      deck: mockDeckSignal.asReadonly(),
+      phase: mockPhaseSignal.asReadonly()
+    };
+
+    const mockVisibilityService = {
+      isPanelVisible: (panelId: string): Signal<boolean> => signal(true).asReadonly()
     };
 
     await TestBed.configureTestingModule({
       imports: [DeckTrackerComponent],
       providers: [
-        { provide: GameStateService, useValue: mockGameStateService }
+        { provide: GameStateService, useValue: mockGameStateService },
+        { provide: PhaseVisibilityService, useValue: mockVisibilityService }
       ]
     }).compileComponents();
 

@@ -1,6 +1,6 @@
 import { Component, ChangeDetectionStrategy, inject, computed, signal } from '@angular/core';
 import { NgClass } from '@angular/common';
-import { GameStateService } from '../../core/services';
+import { GameStateService, PhaseVisibilityService } from '../../core/services';
 import { Suit, Rank, Card } from '../../../../../shared/models';
 import { SuitColumnComponent } from './suit-column/suit-column.component';
 import { CardDetailsPanelComponent } from './card-details-panel/card-details-panel.component';
@@ -23,6 +23,7 @@ export interface SelectedCell {
   selector: 'app-deck-tracker',
   imports: [SuitColumnComponent, CardDetailsPanelComponent, NgClass],
   template: `
+    @if (isVisible()) {
     <div class="deck-tracker balatro-panel" [class.has-details]="hasSelection()">
       <div class="header">
         <span class="section-header">Deck</span>
@@ -69,6 +70,7 @@ export interface SelectedCell {
           (close)="clearSelection()" />
       }
     </div>
+    }
   `,
   styles: [`
     .deck-tracker {
@@ -164,7 +166,9 @@ export interface SelectedCell {
 })
 export class DeckTrackerComponent {
   private readonly gameState = inject(GameStateService);
+  private readonly visibilityService = inject(PhaseVisibilityService);
 
+  readonly isVisible = this.visibilityService.isPanelVisible('deck-tracker');
   readonly suits = ALL_SUITS;
   readonly showDiscard = signal(false);
   readonly selectedCell = signal<SelectedCell | null>(null);

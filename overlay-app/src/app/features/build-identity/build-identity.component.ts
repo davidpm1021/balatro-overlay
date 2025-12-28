@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { BuildDetectorService } from '../strategy-intelligence/services/build-detector.service';
 import { BuildGuidanceService, BuildGuidance } from './build-guidance.service';
 import { GameStateService } from '../../core/services/game-state.service';
+import { PhaseVisibilityService } from '../../core/services/phase-visibility.service';
 
 /**
  * Display state for the build identity panel
@@ -18,6 +19,7 @@ interface BuildDisplay {
   imports: [CommonModule],
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
+    @if (isVisible()) {
     <section class="build-identity balatro-panel">
       <header class="header">
         <span class="section-header">Your Build</span>
@@ -99,6 +101,7 @@ interface BuildDisplay {
         }
       }
     </section>
+    }
   `,
   styles: [`
     .build-identity {
@@ -309,6 +312,9 @@ export class BuildIdentityComponent {
   private buildDetector = inject(BuildDetectorService);
   private buildGuidance = inject(BuildGuidanceService);
   private gameState = inject(GameStateService);
+  private visibilityService = inject(PhaseVisibilityService);
+
+  readonly isVisible = this.visibilityService.isPanelVisible('build-identity');
 
   /**
    * Current detected build from the build detector

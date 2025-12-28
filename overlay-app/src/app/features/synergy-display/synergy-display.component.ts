@@ -1,5 +1,5 @@
 import { Component, inject, computed, ChangeDetectionStrategy } from '@angular/core';
-import { GameStateService } from '../../core/services';
+import { GameStateService, PhaseVisibilityService } from '../../core/services';
 import { SynergyDisplayService } from './synergy-display.service';
 import { SynergyGroupComponent } from './synergy-group.component';
 import { SynergyGroup } from '../../../../../shared/models/synergy-group.model';
@@ -10,6 +10,7 @@ import { JokerState } from '../../../../../shared/models/joker.model';
   imports: [SynergyGroupComponent],
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
+    @if (isVisible()) {
     <section class="synergy-display balatro-panel">
       <!-- Header -->
       <header class="header">
@@ -43,6 +44,7 @@ import { JokerState } from '../../../../../shared/models/joker.model';
         }
       }
     </section>
+    }
   `,
   styles: [`
     .synergy-display {
@@ -157,7 +159,9 @@ import { JokerState } from '../../../../../shared/models/joker.model';
 export class SynergyDisplayComponent {
   private gameStateService = inject(GameStateService);
   private synergyDisplayService = inject(SynergyDisplayService);
+  private visibilityService = inject(PhaseVisibilityService);
 
+  readonly isVisible = this.visibilityService.isPanelVisible('synergy-display');
   readonly maxJokers = 5;
 
   readonly groups = this.synergyDisplayService.groups;
