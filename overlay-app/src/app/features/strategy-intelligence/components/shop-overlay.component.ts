@@ -1,11 +1,15 @@
-import { Component, ChangeDetectionStrategy, inject, computed, effect } from '@angular/core';
-import { NgClass } from '@angular/common';
+import { Component, ChangeDetectionStrategy, inject, computed, effect, signal } from '@angular/core';
+import { NgClass, UpperCasePipe } from '@angular/common';
 import { GameStateService } from '../../../core/services';
-import { ShopAdvisorService, ShopRecommendation } from '../services/shop-advisor.service';
+import {
+  ShopAdvisorService,
+  EnhancedShopRecommendation,
+} from '../services/shop-advisor.service';
+import { ShopItemDetailComponent } from './shop-item-detail.component';
 
 @Component({
   selector: 'app-shop-overlay',
-  imports: [NgClass],
+  imports: [NgClass, UpperCasePipe, ShopItemDetailComponent],
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
     @if (isInShop() && recommendations().length > 0) {
@@ -40,47 +44,58 @@ import { ShopAdvisorService, ShopRecommendation } from '../services/shop-advisor
         <div class="items space-y-2">
           @for (rec of recommendations(); track rec.item.id) {
             <div
-              class="item flex items-start gap-2 rounded px-2 py-1.5 border"
+              class="item rounded px-2 py-1.5 border"
               [ngClass]="getItemClasses(rec)">
-              <!-- Tier badge -->
-              <div
-                class="tier-badge w-6 h-6 flex items-center justify-center rounded text-xs font-bold shrink-0"
-                [ngClass]="getTierClasses(rec.tier)">
-                {{ rec.tier }}
+              <!-- Item Header Row -->
+              <div class="item-header flex items-start gap-2">
+                <!-- Tier badge -->
+                <div
+                  class="tier-badge w-6 h-6 flex items-center justify-center rounded text-xs font-bold shrink-0"
+                  [ngClass]="getTierClasses(rec.tier)">
+                  {{ rec.tier }}
+                </div>
+
+                <!-- Item info -->
+                <div class="flex-1 min-w-0">
+                  <div class="flex items-center gap-2">
+                    <span class="text-xs font-medium text-white truncate">{{ rec.item.name }}</span>
+                    <span class="text-[10px] text-yellow-400/70">\${{ rec.item.cost }}</span>
+                  </div>
+
+                  <!-- Type badge + score -->
+                  <div class="flex items-center gap-1 mt-0.5">
+                    <span
+                      class="text-[9px] px-1 py-0.5 rounded uppercase"
+                      [ngClass]="getTypeBadgeClasses(rec.item.type)">
+                      {{ rec.item.type }}
+                    </span>
+                    <span class="text-[10px]" [ngClass]="getScoreClasses(rec.score)">
+                      {{ rec.score }}/100
+                    </span>
+                    <!-- Recommendation badge -->
+                    <span
+                      class="text-[9px] px-1 py-0.5 rounded ml-1"
+                      [ngClass]="getRecommendationBadgeClasses(rec.analysis.recommendation)">
+                      {{ rec.analysis.recommendation | uppercase }}
+                    </span>
+                  </div>
+                </div>
               </div>
 
-              <!-- Item info -->
-              <div class="flex-1 min-w-0">
-                <div class="flex items-center gap-2">
-                  <span class="text-xs font-medium text-white truncate">{{ rec.item.name }}</span>
-                  <span class="text-[10px] text-yellow-400/70">\${{ rec.item.cost }}</span>
+              <!-- Synergies (shown always if present) -->
+              @if (rec.synergiesWithOwned.length > 0) {
+                <div class="synergies mt-1 ml-8 text-[10px] text-green-400/70">
+                  + {{ rec.synergiesWithOwned.slice(0, 2).join(', ') }}
                 </div>
+              }
 
-                <!-- Type badge + score -->
-                <div class="flex items-center gap-1 mt-0.5">
-                  <span
-                    class="text-[9px] px-1 py-0.5 rounded uppercase"
-                    [ngClass]="getTypeBadgeClasses(rec.item.type)">
-                    {{ rec.item.type }}
-                  </span>
-                  <span class="text-[10px]" [ngClass]="getScoreClasses(rec.score)">
-                    {{ rec.score }}
-                  </span>
-                </div>
-
-                <!-- Reasons -->
-                @if (rec.reasons.length > 0) {
-                  <div class="reasons mt-1 text-[10px] text-white/50 line-clamp-2">
-                    {{ rec.reasons.slice(0, 2).join(' | ') }}
-                  </div>
-                }
-
-                <!-- Synergies -->
-                @if (rec.synergiesWithOwned.length > 0) {
-                  <div class="synergies mt-1 text-[10px] text-green-400/70">
-                    + {{ rec.synergiesWithOwned.slice(0, 2).join(', ') }}
-                  </div>
-                }
+              <!-- Enhanced Detail Component -->
+              <div class="detail-section ml-8">
+                <app-shop-item-detail
+                  [recommendation]="rec"
+                  [expanded]="isItemExpanded(rec.item.id)"
+                  (expandToggle)="toggleItemExpanded(rec.item.id, $event)"
+                />
               </div>
             </div>
           }
@@ -129,9 +144,12 @@ export class ShopOverlayComponent {
   // Build detection from shop advisor
   readonly primaryBuild = this.shopAdvisor.primaryBuild;
 
-  readonly recommendations = computed(() => {
+  // Track which items are expanded
+  private expandedItems = signal<Set<string>>(new Set());
+
+  readonly recommendations = computed<EnhancedShopRecommendation[]>(() => {
     if (!this.isInShop()) return [];
-    return this.shopAdvisor.getShopRecommendations();
+    return this.shopAdvisor.getEnhancedShopRecommendations();
   });
 
   constructor() {
@@ -142,6 +160,26 @@ export class ShopOverlayComponent {
         this.shopAdvisor.updateState(state);
       }
     });
+  }
+
+  /**
+   * Check if an item is expanded
+   */
+  isItemExpanded(itemId: string): boolean {
+    return this.expandedItems().has(itemId);
+  }
+
+  /**
+   * Toggle item expanded state
+   */
+  toggleItemExpanded(itemId: string, expanded: boolean): void {
+    const current = new Set(this.expandedItems());
+    if (expanded) {
+      current.add(itemId);
+    } else {
+      current.delete(itemId);
+    }
+    this.expandedItems.set(current);
   }
 
   formatBuildType(type: string): string {
@@ -166,7 +204,7 @@ export class ShopOverlayComponent {
     };
   }
 
-  getItemClasses(rec: ShopRecommendation): Record<string, boolean> {
+  getItemClasses(rec: EnhancedShopRecommendation): Record<string, boolean> {
     return {
       'bg-yellow-500/5 border-yellow-500/30': rec.tier === 'S',
       'bg-green-500/5 border-green-500/20': rec.tier === 'A',
@@ -207,6 +245,14 @@ export class ShopOverlayComponent {
       'text-white/50': score >= 40 && score < 55,
       'text-orange-400': score >= 25 && score < 40,
       'text-red-400': score < 25,
+    };
+  }
+
+  getRecommendationBadgeClasses(recommendation: 'buy' | 'consider' | 'skip'): Record<string, boolean> {
+    return {
+      'bg-green-500/30 text-green-300': recommendation === 'buy',
+      'bg-yellow-500/30 text-yellow-300': recommendation === 'consider',
+      'bg-red-500/30 text-red-300': recommendation === 'skip',
     };
   }
 }

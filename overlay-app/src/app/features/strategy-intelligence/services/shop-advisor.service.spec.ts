@@ -1154,4 +1154,377 @@ describe('ShopAdvisorService', () => {
       });
     });
   });
+
+  // ===========================
+  // Spec 010: Enhanced Shop Advisor Tests
+  // ===========================
+
+  describe('Enhanced Shop Recommendations', () => {
+    it('should return EnhancedShopRecommendation with analysis', () => {
+      const mockState = createMockGameState({
+        shop: {
+          items: [createMockShopItem({ id: 'blueprint', name: 'Blueprint', cost: 10 })],
+          rerollCost: 5,
+          rerollsUsed: 0,
+        },
+      });
+      service.updateState(mockState);
+
+      const recommendations = service.getEnhancedShopRecommendations();
+
+      expect(recommendations.length).toBe(1);
+      expect(recommendations[0].analysis).toBeDefined();
+      expect(recommendations[0].analysis.recommendation).toBeDefined();
+      expect(recommendations[0].analysis.scoreBreakdown).toBeDefined();
+    });
+
+    it('should set recommendation to "buy" for score >= 70', () => {
+      const mockState = createMockGameState({
+        shop: {
+          items: [createMockShopItem({ id: 'blueprint', name: 'Blueprint', cost: 10 })],
+          rerollCost: 5,
+          rerollsUsed: 0,
+        },
+      });
+      service.updateState(mockState);
+
+      const recommendations = service.getEnhancedShopRecommendations();
+      const blueprintRec = recommendations.find(r => r.item.id === 'blueprint');
+
+      expect(blueprintRec).toBeDefined();
+      expect(blueprintRec!.score).toBeGreaterThanOrEqual(70);
+      expect(blueprintRec!.analysis.recommendation).toBe('buy');
+    });
+
+    it('should set recommendation to "skip" for score < 50', () => {
+      const mockState = createMockGameState({
+        progress: { ante: 8, round: 1, phase: 'shop', handsRemaining: 4, discardsRemaining: 3, money: 50 },
+        shop: {
+          items: [createMockShopItem({ id: 'egg', name: 'Egg', cost: 4 })],
+          rerollCost: 5,
+          rerollsUsed: 0,
+        },
+      });
+      service.updateState(mockState);
+
+      const recommendations = service.getEnhancedShopRecommendations();
+      const eggRec = recommendations.find(r => r.item.id === 'egg');
+
+      expect(eggRec).toBeDefined();
+      // Egg in late game should score low
+      expect(eggRec!.analysis.recommendation).toBe('skip');
+    });
+  });
+
+  describe('WHY BUY Reason Generation', () => {
+    it('should generate tier-based WHY BUY reason for S-tier jokers', () => {
+      const mockState = createMockGameState({
+        shop: {
+          items: [createMockShopItem({ id: 'blueprint', name: 'Blueprint', cost: 10 })],
+          rerollCost: 5,
+          rerollsUsed: 0,
+        },
+      });
+      service.updateState(mockState);
+
+      const recommendations = service.getEnhancedShopRecommendations();
+      const blueprintRec = recommendations.find(r => r.item.id === 'blueprint');
+
+      expect(blueprintRec).toBeDefined();
+      expect(blueprintRec!.analysis.whyBuy.length).toBeGreaterThan(0);
+
+      const tierReason = blueprintRec!.analysis.whyBuy.find(r => r.category === 'tier');
+      expect(tierReason).toBeDefined();
+      expect(tierReason!.text.toLowerCase()).toContain('tier');
+    });
+
+    it('should generate synergy-based WHY BUY reason when synergies exist', () => {
+      synergyGraphServiceMock.getSynergies.and.returnValue([
+        { jokerId: 'triboulet', strength: 'strong', reason: 'Face card synergy' },
+      ]);
+      synergyGraphServiceMock.getJoker.and.returnValue({
+        id: 'triboulet',
+        name: 'Triboulet',
+        tags: ['face', 'xmult'],
+        strategies: [],
+        synergiesWith: [],
+      } as any);
+
+      const mockState = createMockGameState({
+        jokers: [createMockJokerState({ id: 'triboulet', name: 'Triboulet' })],
+        shop: {
+          items: [createMockShopItem({ id: 'baron', name: 'Baron', cost: 8 })],
+          rerollCost: 5,
+          rerollsUsed: 0,
+        },
+      });
+      service.updateState(mockState);
+
+      const recommendations = service.getEnhancedShopRecommendations();
+      const baronRec = recommendations.find(r => r.item.id === 'baron');
+
+      expect(baronRec).toBeDefined();
+      const synergyReason = baronRec!.analysis.whyBuy.find(r => r.category === 'synergy');
+      expect(synergyReason).toBeDefined();
+    });
+
+    it('should generate boss prep WHY BUY reason when joker counters boss', () => {
+      const mockState = createMockGameState({
+        blind: {
+          type: 'boss',
+          name: 'The Wall',
+          chipGoal: 10000,
+          chipsScored: 0,
+          isBoss: true,
+          effect: 'Extra large blind',
+        },
+        shop: {
+          items: [createMockShopItem({ id: 'luchador', name: 'Luchador', cost: 5 })],
+          rerollCost: 5,
+          rerollsUsed: 0,
+        },
+      });
+      service.updateState(mockState);
+
+      const recommendations = service.getEnhancedShopRecommendations();
+      const luchadorRec = recommendations.find(r => r.item.id === 'luchador');
+
+      expect(luchadorRec).toBeDefined();
+      const bossReason = luchadorRec!.analysis.whyBuy.find(r => r.category === 'boss_prep');
+      expect(bossReason).toBeDefined();
+    });
+  });
+
+  describe('WHY SKIP Reason Generation', () => {
+    it('should generate economy WHY SKIP reason when purchase drops below $25', () => {
+      const mockState = createMockGameState({
+        progress: { ante: 3, round: 1, phase: 'shop', handsRemaining: 4, discardsRemaining: 3, money: 27 },
+        shop: {
+          items: [createMockShopItem({ id: 'joker', name: 'Joker', cost: 5 })],
+          rerollCost: 5,
+          rerollsUsed: 0,
+        },
+      });
+      service.updateState(mockState);
+
+      const recommendations = service.getEnhancedShopRecommendations();
+      const jokerRec = recommendations.find(r => r.item.id === 'joker');
+
+      expect(jokerRec).toBeDefined();
+      const economyReason = jokerRec!.analysis.whySkip.find(r => r.category === 'economy');
+      expect(economyReason).toBeDefined();
+      expect(economyReason!.text).toContain('$25');
+    });
+
+    it('should generate timing WHY SKIP reason for economy jokers late game', () => {
+      const mockState = createMockGameState({
+        progress: { ante: 7, round: 1, phase: 'shop', handsRemaining: 4, discardsRemaining: 3, money: 50 },
+        shop: {
+          items: [createMockShopItem({ id: 'egg', name: 'Egg', cost: 4 })],
+          rerollCost: 5,
+          rerollsUsed: 0,
+        },
+      });
+      service.updateState(mockState);
+
+      const recommendations = service.getEnhancedShopRecommendations();
+      const eggRec = recommendations.find(r => r.item.id === 'egg');
+
+      expect(eggRec).toBeDefined();
+      const timingReason = eggRec!.analysis.whySkip.find(r => r.category === 'timing');
+      expect(timingReason).toBeDefined();
+      expect(timingReason!.text.toLowerCase()).toContain('economy');
+    });
+  });
+
+  describe('Score Breakdown Accuracy', () => {
+    it('should provide accurate score breakdown for jokers', () => {
+      const mockState = createMockGameState({
+        shop: {
+          items: [createMockShopItem({ id: 'blueprint', name: 'Blueprint', cost: 10 })],
+          rerollCost: 5,
+          rerollsUsed: 0,
+        },
+      });
+      service.updateState(mockState);
+
+      const recommendations = service.getEnhancedShopRecommendations();
+      const blueprintRec = recommendations.find(r => r.item.id === 'blueprint');
+
+      expect(blueprintRec).toBeDefined();
+      const breakdown = blueprintRec!.analysis.scoreBreakdown;
+
+      expect(breakdown.baseTierScore).toBeGreaterThan(0);
+      expect(breakdown.totalScore).toBe(blueprintRec!.score);
+    });
+
+    it('should include synergy bonus in score breakdown', () => {
+      synergyGraphServiceMock.getSynergies.and.returnValue([
+        { jokerId: 'triboulet', strength: 'strong', reason: 'Face card synergy' },
+      ]);
+
+      const mockState = createMockGameState({
+        jokers: [createMockJokerState({ id: 'triboulet', name: 'Triboulet' })],
+        shop: {
+          items: [createMockShopItem({ id: 'baron', name: 'Baron', cost: 8 })],
+          rerollCost: 5,
+          rerollsUsed: 0,
+        },
+      });
+      service.updateState(mockState);
+
+      const recommendations = service.getEnhancedShopRecommendations();
+      const baronRec = recommendations.find(r => r.item.id === 'baron');
+
+      expect(baronRec).toBeDefined();
+      expect(baronRec!.analysis.scoreBreakdown.synergyBonus).toBeGreaterThan(0);
+    });
+
+    it('should include economy penalty in score breakdown', () => {
+      const mockState = createMockGameState({
+        progress: { ante: 3, round: 1, phase: 'shop', handsRemaining: 4, discardsRemaining: 3, money: 27 },
+        shop: {
+          items: [createMockShopItem({ id: 'blueprint', name: 'Blueprint', cost: 10 })],
+          rerollCost: 5,
+          rerollsUsed: 0,
+        },
+      });
+      service.updateState(mockState);
+
+      const recommendations = service.getEnhancedShopRecommendations();
+      const blueprintRec = recommendations.find(r => r.item.id === 'blueprint');
+
+      expect(blueprintRec).toBeDefined();
+      expect(blueprintRec!.analysis.scoreBreakdown.economyPenalty).toBeGreaterThan(0);
+    });
+  });
+
+  describe('Build Context Integration', () => {
+    it('should include build context when build is detected with >= 50% confidence', () => {
+      const strategySignal = signal<DetectedStrategy | null>({
+        type: 'flush',
+        confidence: 70,
+        viability: 70,
+        requirements: [],
+        currentStrength: 50,
+      });
+      (buildDetectorServiceMock as any).primaryStrategy = strategySignal;
+
+      TestBed.resetTestingModule();
+      TestBed.configureTestingModule({
+        providers: [
+          ShopAdvisorService,
+          { provide: GameStateService, useValue: gameStateServiceMock },
+          { provide: SynergyGraphService, useValue: synergyGraphServiceMock },
+          { provide: BuildDetectorService, useValue: buildDetectorServiceMock },
+        ],
+      });
+      const freshService = TestBed.inject(ShopAdvisorService);
+
+      const mockState = createMockGameState({
+        shop: {
+          items: [createMockShopItem({ id: 'lusty_joker', name: 'Lusty Joker', cost: 5 })],
+          rerollCost: 5,
+          rerollsUsed: 0,
+        },
+      });
+      freshService.updateState(mockState);
+
+      const recommendations = freshService.getEnhancedShopRecommendations();
+      const lustyRec = recommendations.find(r => r.item.id === 'lusty_joker');
+
+      expect(lustyRec).toBeDefined();
+      expect(lustyRec!.analysis.buildContext).not.toBeNull();
+      expect(lustyRec!.analysis.buildContext!.buildType).toBe('flush');
+    });
+
+    it('should return null build context when build confidence is below 50%', () => {
+      const strategySignal = signal<DetectedStrategy | null>({
+        type: 'flush',
+        confidence: 40,
+        viability: 40,
+        requirements: [],
+        currentStrength: 30,
+      });
+      (buildDetectorServiceMock as any).primaryStrategy = strategySignal;
+
+      const mockState = createMockGameState({
+        shop: {
+          items: [createMockShopItem({ id: 'lusty_joker', name: 'Lusty Joker', cost: 5 })],
+          rerollCost: 5,
+          rerollsUsed: 0,
+        },
+      });
+      service.updateState(mockState);
+
+      const recommendations = service.getEnhancedShopRecommendations();
+      const lustyRec = recommendations.find(r => r.item.id === 'lusty_joker');
+
+      expect(lustyRec).toBeDefined();
+      expect(lustyRec!.analysis.buildContext).toBeNull();
+    });
+  });
+
+  describe('Joker Explanation Integration', () => {
+    it('should include joker explanation for joker items', () => {
+      const mockState = createMockGameState({
+        shop: {
+          items: [createMockShopItem({ id: 'blueprint', name: 'Blueprint', cost: 10 })],
+          rerollCost: 5,
+          rerollsUsed: 0,
+        },
+      });
+      service.updateState(mockState);
+
+      const recommendations = service.getEnhancedShopRecommendations();
+      const blueprintRec = recommendations.find(r => r.item.id === 'blueprint');
+
+      expect(blueprintRec).toBeDefined();
+      // Blueprint has an explanation in joker-explanations.json
+      expect(blueprintRec!.analysis.jokerExplanation).not.toBeNull();
+      expect(blueprintRec!.analysis.jokerExplanation!.effect).toBeDefined();
+    });
+
+    it('should return null joker explanation for non-joker items', () => {
+      const mockState = createMockGameState({
+        shop: {
+          items: [createMockShopItem({ id: 'c_mars', name: 'Mars', type: 'planet', cost: 3 })],
+          rerollCost: 5,
+          rerollsUsed: 0,
+        },
+      });
+      service.updateState(mockState);
+
+      const recommendations = service.getEnhancedShopRecommendations();
+      const marsRec = recommendations.find(r => r.item.id === 'c_mars');
+
+      expect(marsRec).toBeDefined();
+      expect(marsRec!.analysis.jokerExplanation).toBeNull();
+    });
+  });
+
+  describe('ReasonBullet Structure', () => {
+    it('should have correct structure for reason bullets', () => {
+      const mockState = createMockGameState({
+        shop: {
+          items: [createMockShopItem({ id: 'blueprint', name: 'Blueprint', cost: 10 })],
+          rerollCost: 5,
+          rerollsUsed: 0,
+        },
+      });
+      service.updateState(mockState);
+
+      const recommendations = service.getEnhancedShopRecommendations();
+      const blueprintRec = recommendations.find(r => r.item.id === 'blueprint');
+
+      expect(blueprintRec).toBeDefined();
+      expect(blueprintRec!.analysis.whyBuy.length).toBeGreaterThan(0);
+
+      blueprintRec!.analysis.whyBuy.forEach(bullet => {
+        expect(['tier', 'synergy', 'build_fit', 'boss_prep', 'economy', 'timing', 'general']).toContain(bullet.category);
+        expect(typeof bullet.text).toBe('string');
+        expect(['high', 'medium', 'low']).toContain(bullet.importance);
+      });
+    });
+  });
 });

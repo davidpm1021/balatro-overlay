@@ -1,6 +1,7 @@
 import { Injectable, computed, inject, signal } from '@angular/core';
 import { SynergyGraphService } from './synergy-graph.service';
 import { BuildDetectorService } from './build-detector.service';
+import { JokerExplainerService, JokerExplanation } from './joker-explainer.service';
 import { GameStateService } from '../../../core/services/game-state.service';
 import {
   OverlayGameState,
@@ -18,6 +19,60 @@ export interface ShopRecommendation {
   reasons: string[];
   tier: 'S' | 'A' | 'B' | 'C' | 'D' | 'F';
   synergiesWithOwned: string[];
+}
+
+/**
+ * Single reason bullet with category and importance
+ */
+export interface ReasonBullet {
+  category: 'tier' | 'synergy' | 'build_fit' | 'boss_prep' | 'economy' | 'timing' | 'general';
+  text: string;
+  importance: 'high' | 'medium' | 'low';
+}
+
+/**
+ * Score breakdown showing contribution of each factor
+ */
+export interface ScoreBreakdown {
+  baseTierScore: number;
+  synergyBonus: number;
+  antiSynergyPenalty: number;
+  buildFitBonus: number;
+  bossCounterBonus: number;
+  economyPenalty: number;
+  lateGameAdjustment: number;
+  totalScore: number;
+}
+
+/**
+ * Build context for the shop item
+ */
+export interface BuildContext {
+  buildType: string;
+  buildName: string;
+  buildConfidence: number;
+  fitsPercentage: number;
+  fitDescription: string;
+}
+
+/**
+ * Detailed analysis of a shop item
+ */
+export interface ShopItemAnalysis {
+  recommendation: 'buy' | 'consider' | 'skip';
+  whyBuy: ReasonBullet[];
+  whySkip: ReasonBullet[];
+  whyConsider: ReasonBullet[];
+  scoreBreakdown: ScoreBreakdown;
+  buildContext: BuildContext | null;
+  jokerExplanation: JokerExplanation | null;
+}
+
+/**
+ * Enhanced shop recommendation with expanded analysis
+ */
+export interface EnhancedShopRecommendation extends ShopRecommendation {
+  analysis: ShopItemAnalysis;
 }
 
 export interface BoosterCardRecommendation {
@@ -111,6 +166,7 @@ export class ShopAdvisorService {
   private readonly synergyGraph = inject(SynergyGraphService);
   private readonly buildDetector = inject(BuildDetectorService);
   private readonly gameStateService = inject(GameStateService);
+  private readonly jokerExplainer = inject(JokerExplainerService);
 
   private readonly gameState = signal<OverlayGameState | null>(null);
 
@@ -215,6 +271,563 @@ export class ShopAdvisorService {
     });
 
     return recommendations;
+  }
+
+  /**
+   * Get enhanced shop recommendations with detailed analysis
+   * This is the main entry point for the enhanced shop advisor UI
+   */
+  getEnhancedShopRecommendations(): EnhancedShopRecommendation[] {
+    const items = this.shopItems();
+    const ante = this.currentAnte();
+    const owned = this.ownedJokers();
+    const blind = this.currentBlind();
+    const money = this.money();
+    const build = this.primaryBuild();
+
+    const recommendations = items
+      .filter(item => !item.sold)
+      .map(item => this.scoreEnhancedShopItem(item, ante, owned, blind, build, money))
+      .sort((a, b) => b.score - a.score);
+
+    return recommendations;
+  }
+
+  /**
+   * Score a shop item with enhanced analysis
+   */
+  private scoreEnhancedShopItem(
+    item: ShopItem,
+    ante: number,
+    ownedJokers: JokerState[],
+    blind: BlindState | null,
+    build: DetectedStrategy | null,
+    money: number
+  ): EnhancedShopRecommendation {
+    // Get base recommendation
+    const baseRec = this.scoreShopItem(item, ante, ownedJokers, blind, build, money);
+
+    // Calculate score breakdown
+    const scoreBreakdown = this.calculateScoreBreakdown(item, ante, ownedJokers, blind, build, money);
+
+    // Get build context
+    const buildContext = this.getBuildContext(item, build);
+
+    // Get joker explanation (only for jokers)
+    const jokerExplanation = item.type === 'joker'
+      ? this.jokerExplainer.getExplanation(item.id)
+      : null;
+
+    // Determine recommendation type
+    const recommendation = this.getRecommendationType(baseRec.score);
+
+    // Generate reason bullets
+    const whyBuy = this.generateWhyBuyBullets(item, scoreBreakdown, build, blind, ownedJokers, ante);
+    const whySkip = this.generateWhySkipBullets(item, scoreBreakdown, build, blind, ante, money);
+    const whyConsider = this.generateWhyConsiderBullets(item, scoreBreakdown, build);
+
+    const analysis: ShopItemAnalysis = {
+      recommendation,
+      whyBuy,
+      whySkip,
+      whyConsider,
+      scoreBreakdown,
+      buildContext,
+      jokerExplanation,
+    };
+
+    return {
+      ...baseRec,
+      analysis,
+    };
+  }
+
+  /**
+   * Calculate score breakdown showing all contributing factors
+   */
+  private calculateScoreBreakdown(
+    item: ShopItem,
+    ante: number,
+    ownedJokers: JokerState[],
+    blind: BlindState | null,
+    build: DetectedStrategy | null,
+    money: number
+  ): ScoreBreakdown {
+    if (item.type !== 'joker') {
+      // Non-joker items get simplified breakdown
+      const baseScore = this.getNonJokerBaseScore(item.type);
+      return {
+        baseTierScore: baseScore,
+        synergyBonus: 0,
+        antiSynergyPenalty: 0,
+        buildFitBonus: build && build.confidence >= 60 ? 8 : 0,
+        bossCounterBonus: 0,
+        economyPenalty: this.checkInterestThreshold(item.cost, money),
+        lateGameAdjustment: 0,
+        totalScore: this.scoreNonJokerItem(item, ante, money, build).score,
+      };
+    }
+
+    const jokerJson = this.getJokerFromJson(item.id);
+    if (!jokerJson) {
+      return {
+        baseTierScore: 50,
+        synergyBonus: 0,
+        antiSynergyPenalty: 0,
+        buildFitBonus: 0,
+        bossCounterBonus: 0,
+        economyPenalty: 0,
+        lateGameAdjustment: 0,
+        totalScore: 50,
+      };
+    }
+
+    // Calculate individual components
+    const phase = this.getAntePhase(ante);
+    const tierForPhase = jokerJson.tierByAnte[phase] ?? jokerJson.tier;
+    let baseTierScore = TIER_SCORES[tierForPhase] ?? 50;
+    if (jokerJson.alwaysBuy) {
+      baseTierScore += 10;
+    }
+
+    // Synergy calculation
+    const { synergyBonus, antiSynergyPenalty } = this.calculateSynergyValues(
+      item.id, jokerJson, ownedJokers
+    );
+
+    // Build fit bonus
+    const buildFitBonus = this.calculateBuildFitValue(jokerJson, build);
+
+    // Boss counter bonus
+    const bossCounterBonus = this.calculateBossCounterValue(jokerJson, blind);
+
+    // Economy penalty
+    const economyPenalty = this.checkInterestThreshold(item.cost, money);
+
+    // Late game adjustment
+    let lateGameAdjustment = 0;
+    if (ante >= 6 && jokerJson.scoringType === 'economy') {
+      lateGameAdjustment = -Math.min(20, (ante - 5) * 10);
+    }
+    if (ante >= 6 && jokerJson.scoringType === 'xmult') {
+      lateGameAdjustment = 15;
+    }
+
+    const totalScore = Math.max(0, Math.min(100, Math.round(
+      baseTierScore + synergyBonus - antiSynergyPenalty +
+      buildFitBonus + bossCounterBonus - economyPenalty + lateGameAdjustment
+    )));
+
+    return {
+      baseTierScore,
+      synergyBonus,
+      antiSynergyPenalty,
+      buildFitBonus,
+      bossCounterBonus,
+      economyPenalty,
+      lateGameAdjustment,
+      totalScore,
+    };
+  }
+
+  /**
+   * Calculate synergy values separately for breakdown
+   */
+  private calculateSynergyValues(
+    jokerId: string,
+    jokerJson: JokerJsonData,
+    ownedJokers: JokerState[]
+  ): { synergyBonus: number; antiSynergyPenalty: number } {
+    if (ownedJokers.length === 0) {
+      return { synergyBonus: 0, antiSynergyPenalty: 0 };
+    }
+
+    let synergyBonus = 0;
+    let antiSynergyPenalty = 0;
+    const ownedIds = new Set(ownedJokers.map(j => j.id.replace('j_', '')));
+
+    // Check strong synergies (+15 each)
+    for (const strongSynergy of jokerJson.synergies.strong) {
+      if (ownedIds.has(strongSynergy) || ownedIds.has(strongSynergy.replace('j_', ''))) {
+        synergyBonus += 15;
+      }
+    }
+
+    // Check medium synergies (+8 each)
+    for (const mediumSynergy of jokerJson.synergies.medium) {
+      if (ownedIds.has(mediumSynergy) || ownedIds.has(mediumSynergy.replace('j_', ''))) {
+        synergyBonus += 8;
+      }
+    }
+
+    // Check anti-synergies (-10 each)
+    for (const antiSynergy of jokerJson.synergies.antiSynergy) {
+      if (ownedIds.has(antiSynergy) || ownedIds.has(antiSynergy.replace('j_', ''))) {
+        antiSynergyPenalty += 10;
+      }
+    }
+
+    // Also check synergies from synergy graph service
+    const synergies = this.synergyGraph.getSynergies(jokerId);
+    for (const synergy of synergies) {
+      if (ownedIds.has(synergy.jokerId) || ownedIds.has(synergy.jokerId.replace('j_', ''))) {
+        const bonus = synergy.strength === 'strong' ? 15 : synergy.strength === 'medium' ? 8 : 3;
+        synergyBonus += bonus;
+      }
+    }
+
+    // Cap values
+    synergyBonus = Math.min(30, synergyBonus);
+    antiSynergyPenalty = Math.min(20, antiSynergyPenalty);
+
+    return { synergyBonus, antiSynergyPenalty };
+  }
+
+  /**
+   * Calculate build fit value separately for breakdown
+   */
+  private calculateBuildFitValue(
+    jokerJson: JokerJsonData,
+    build: DetectedStrategy | null
+  ): number {
+    if (!build || build.confidence < 40) return 0;
+
+    const buildTypeMap: Record<string, keyof typeof jokerJson.builds> = {
+      'flush': 'flush',
+      'pairs': 'pairs',
+      'straights': 'straights',
+      'straight': 'straights',
+      'face_cards': 'face_cards',
+      'xmult_scaling': 'xmult_scaling',
+      'retrigger': 'retrigger',
+      'economy': 'economy',
+    };
+
+    const buildKey = buildTypeMap[build.type];
+    if (buildKey && jokerJson.builds[buildKey]) {
+      return Math.round(jokerJson.builds[buildKey] * 0.3);
+    }
+
+    return 0;
+  }
+
+  /**
+   * Calculate boss counter value separately for breakdown
+   */
+  private calculateBossCounterValue(
+    jokerJson: JokerJsonData,
+    blind: BlindState | null
+  ): number {
+    if (!blind || !blind.isBoss) return 0;
+
+    const bossId = blind.name.toLowerCase().replace(/\s+/g, '_');
+
+    // Check if joker counters this boss (+20)
+    if (jokerJson.bossCounters.includes('all') ||
+        jokerJson.bossCounters.some(c => bossId.includes(c) || c.includes(bossId.replace('the_', '')))) {
+      return 20;
+    }
+
+    // Check if joker is weak to this boss (-10)
+    if (jokerJson.bossWeaknesses.some(w => bossId.includes(w) || w.includes(bossId.replace('the_', '')))) {
+      return -10;
+    }
+
+    return 0;
+  }
+
+  /**
+   * Get base score for non-joker item types
+   */
+  private getNonJokerBaseScore(type: string): number {
+    const scores: Record<string, number> = {
+      planet: 62,
+      tarot: 58,
+      spectral: 70,
+      voucher: 72,
+      booster: 55,
+    };
+    return scores[type] ?? 50;
+  }
+
+  /**
+   * Determine recommendation type based on score
+   */
+  private getRecommendationType(score: number): 'buy' | 'consider' | 'skip' {
+    if (score >= 70) return 'buy';
+    if (score >= 50) return 'consider';
+    return 'skip';
+  }
+
+  /**
+   * Get build context for an item
+   */
+  private getBuildContext(
+    item: ShopItem,
+    build: DetectedStrategy | null
+  ): BuildContext | null {
+    if (!build || build.confidence < 50) return null;
+
+    const buildNameMap: Record<string, string> = {
+      flush: 'Flush Build',
+      pairs: 'Pairs Build',
+      straight: 'Straight Build',
+      face_cards: 'Face Cards Build',
+      xmult_scaling: 'xMult Scaling',
+      mult_stacking: 'Mult Stacking',
+      fibonacci: 'Fibonacci Build',
+      economy: 'Economy Build',
+    };
+
+    let fitsPercentage = 0;
+    let fitDescription = 'Works with any build';
+
+    if (item.type === 'joker') {
+      const jokerJson = this.getJokerFromJson(item.id);
+      if (jokerJson) {
+        const buildTypeMap: Record<string, keyof typeof jokerJson.builds> = {
+          flush: 'flush',
+          pairs: 'pairs',
+          straights: 'straights',
+          straight: 'straights',
+          face_cards: 'face_cards',
+          xmult_scaling: 'xmult_scaling',
+          economy: 'economy',
+        };
+        const buildKey = buildTypeMap[build.type];
+        if (buildKey) {
+          fitsPercentage = jokerJson.builds[buildKey];
+        }
+
+        if (fitsPercentage >= 70) {
+          fitDescription = `Fits your ${build.confidence}% ${build.type.replace('_', ' ')} build`;
+        } else if (fitsPercentage >= 40) {
+          fitDescription = `Partially fits your ${build.type.replace('_', ' ')} build`;
+        } else if (fitsPercentage > 0) {
+          fitDescription = `Weak fit for ${build.type.replace('_', ' ')} build`;
+        } else {
+          fitDescription = `Doesn't fit your ${build.type.replace('_', ' ')} build`;
+        }
+      }
+    }
+
+    return {
+      buildType: build.type,
+      buildName: buildNameMap[build.type] ?? build.type,
+      buildConfidence: build.confidence,
+      fitsPercentage,
+      fitDescription,
+    };
+  }
+
+  /**
+   * Generate WHY BUY bullet points
+   */
+  private generateWhyBuyBullets(
+    item: ShopItem,
+    breakdown: ScoreBreakdown,
+    build: DetectedStrategy | null,
+    blind: BlindState | null,
+    ownedJokers: JokerState[],
+    ante: number
+  ): ReasonBullet[] {
+    const bullets: ReasonBullet[] = [];
+
+    // Tier-based reason
+    if (breakdown.baseTierScore >= 85) {
+      bullets.push({
+        category: 'tier',
+        text: 'S-Tier: One of the best jokers in the game',
+        importance: 'high',
+      });
+    } else if (breakdown.baseTierScore >= 70) {
+      bullets.push({
+        category: 'tier',
+        text: 'A-Tier: Strong joker with reliable value',
+        importance: 'medium',
+      });
+    }
+
+    // Build fit reason
+    if (build && build.confidence >= 50 && breakdown.buildFitBonus >= 20) {
+      bullets.push({
+        category: 'build_fit',
+        text: `Fits your build: You're ${build.confidence}% ${build.type.replace('_', ' ')}`,
+        importance: 'high',
+      });
+    }
+
+    // Synergy reason
+    if (breakdown.synergyBonus >= 15 && item.type === 'joker') {
+      const synergies = this.findSynergiesWithOwned(item.id, ownedJokers);
+      if (synergies.length > 0) {
+        bullets.push({
+          category: 'synergy',
+          text: `Synergy: Works with your ${synergies[0]}`,
+          importance: 'high',
+        });
+      }
+    }
+
+    // Boss preparation
+    if (breakdown.bossCounterBonus > 0 && blind?.isBoss) {
+      bullets.push({
+        category: 'boss_prep',
+        text: `Boss prep: Helps vs ${blind.name}`,
+        importance: 'high',
+      });
+    }
+
+    // Late game xMult boost
+    if (ante >= 6 && breakdown.lateGameAdjustment > 0) {
+      bullets.push({
+        category: 'timing',
+        text: 'Essential xMult for late game scaling',
+        importance: 'high',
+      });
+    }
+
+    // Always buy jokers
+    const jokerJson = item.type === 'joker' ? this.getJokerFromJson(item.id) : null;
+    if (jokerJson?.alwaysBuy) {
+      bullets.push({
+        category: 'general',
+        text: 'Always buy: Top-tier value regardless of build',
+        importance: 'high',
+      });
+    }
+
+    return bullets.slice(0, 5);
+  }
+
+  /**
+   * Generate WHY SKIP bullet points
+   */
+  private generateWhySkipBullets(
+    item: ShopItem,
+    breakdown: ScoreBreakdown,
+    build: DetectedStrategy | null,
+    blind: BlindState | null,
+    ante: number,
+    money: number
+  ): ReasonBullet[] {
+    const bullets: ReasonBullet[] = [];
+
+    // Tier-based reason
+    if (breakdown.baseTierScore <= 40) {
+      bullets.push({
+        category: 'tier',
+        text: 'Low-tier: Weak effect compared to alternatives',
+        importance: 'medium',
+      });
+    }
+
+    // Build mismatch
+    if (build && build.confidence >= 50 && breakdown.buildFitBonus === 0 && item.type === 'joker') {
+      bullets.push({
+        category: 'build_fit',
+        text: `No synergy with your ${build.type.replace('_', ' ')} build`,
+        importance: 'medium',
+      });
+    }
+
+    // Anti-synergy
+    if (breakdown.antiSynergyPenalty > 0) {
+      bullets.push({
+        category: 'synergy',
+        text: 'Anti-synergy with your current jokers',
+        importance: 'high',
+      });
+    }
+
+    // Boss weakness
+    if (breakdown.bossCounterBonus < 0 && blind?.isBoss) {
+      bullets.push({
+        category: 'boss_prep',
+        text: `Weak vs upcoming boss: ${blind.name}`,
+        importance: 'high',
+      });
+    }
+
+    // Economy warning
+    if (breakdown.economyPenalty > 0) {
+      const remaining = money - item.cost;
+      bullets.push({
+        category: 'economy',
+        text: `Drops below $25 interest threshold ($${remaining} remaining)`,
+        importance: 'medium',
+      });
+    }
+
+    // Late game economy falloff
+    if (ante >= 6 && breakdown.lateGameAdjustment < 0) {
+      bullets.push({
+        category: 'timing',
+        text: 'Economy joker, falls off late game',
+        importance: 'medium',
+      });
+    }
+
+    // Trap joker warning
+    const jokerJson = item.type === 'joker' ? this.getJokerFromJson(item.id) : null;
+    if (jokerJson?.trapJoker) {
+      bullets.push({
+        category: 'general',
+        text: 'Trap joker: Looks good but underperforms',
+        importance: 'high',
+      });
+    }
+
+    return bullets.slice(0, 5);
+  }
+
+  /**
+   * Generate WHY CONSIDER bullet points (for mid-tier items)
+   */
+  private generateWhyConsiderBullets(
+    item: ShopItem,
+    breakdown: ScoreBreakdown,
+    build: DetectedStrategy | null
+  ): ReasonBullet[] {
+    const bullets: ReasonBullet[] = [];
+
+    // Situational value
+    if (breakdown.baseTierScore >= 50 && breakdown.baseTierScore < 70) {
+      bullets.push({
+        category: 'tier',
+        text: 'Solid mid-tier: Good but not essential',
+        importance: 'medium',
+      });
+    }
+
+    // Partial build fit
+    if (build && breakdown.buildFitBonus > 0 && breakdown.buildFitBonus < 20) {
+      bullets.push({
+        category: 'build_fit',
+        text: `Partial fit for ${build.type.replace('_', ' ')} build`,
+        importance: 'low',
+      });
+    }
+
+    // Some synergies
+    if (breakdown.synergyBonus > 0 && breakdown.synergyBonus < 15) {
+      bullets.push({
+        category: 'synergy',
+        text: 'Weak synergy with owned jokers',
+        importance: 'low',
+      });
+    }
+
+    // General advice
+    if (bullets.length === 0) {
+      bullets.push({
+        category: 'general',
+        text: 'Depends on your priorities and current needs',
+        importance: 'low',
+      });
+    }
+
+    return bullets.slice(0, 3);
   }
 
   /**

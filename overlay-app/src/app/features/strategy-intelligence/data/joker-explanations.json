@@ -1,0 +1,216 @@
+{
+  "$schema": "./joker-explanations.schema.json",
+  "version": "1.0.0",
+  "explanations": {
+    "splash": {
+      "effect": "Every played card counts as every suit",
+      "implication": "ANY 5 cards = flush!",
+      "tips": ["Combine with other flush jokers like Lusty Joker or Gluttenous Joker", "Makes flush hands extremely consistent"]
+    },
+    "blueprint": {
+      "effect": "Copies the ability of the Joker to its right",
+      "implication": "Double your best joker's effect!",
+      "tips": ["Position to the left of your strongest joker", "Copies xMult jokers for exponential scaling", "Works with most jokers except other copy jokers"]
+    },
+    "brainstorm": {
+      "effect": "Copies the ability of the leftmost Joker",
+      "implication": "Always copies your first joker's effect!",
+      "tips": ["Put your strongest joker in slot 1", "Pairs amazingly with Blueprint for triple effects", "Great for copying xMult jokers"]
+    },
+    "triboulet": {
+      "effect": "Played Kings and Queens each give x2 Mult when scored",
+      "implication": "Play K-K-K-Q-Q = x32 multiplier!",
+      "tips": ["Build around face cards", "Combine with Baron for held Kings", "Retrigger effects multiply this further"]
+    },
+    "baron": {
+      "effect": "Each King held in hand gives x1.5 Mult",
+      "implication": "Hold 4 Kings = x5 Mult without playing them!",
+      "tips": ["Works while cards are in your hand, not played", "Combine with Triboulet for Kings that score AND boost held", "Add more Kings to your deck"]
+    },
+    "mime": {
+      "effect": "Retriggers all card abilities",
+      "implication": "Double all card effects!",
+      "tips": ["Amazing with face card jokers", "Works with steel and glass cards", "Doubles chip and mult from card enhancements"]
+    },
+    "sock_and_buskin": {
+      "effect": "Retriggers all played face cards",
+      "implication": "Face cards score twice!",
+      "tips": ["Essential for face card builds", "Combine with Triboulet for x4 per face card", "Stack with Mime for x3 triggers"]
+    },
+    "hack": {
+      "effect": "Retriggers each played 2, 3, 4, or 5",
+      "implication": "Low cards score twice!",
+      "tips": ["Great for straight builds", "Works well with Fibonacci joker", "Can retrigger steel card xMult"]
+    },
+    "dusk": {
+      "effect": "Retriggers all played cards on final hand of round",
+      "implication": "Save your best hand for last!",
+      "tips": ["Plan to use your strongest hand as the last one", "Combines with all retrigger effects", "Position matters less than timing"]
+    },
+    "fibonacci": {
+      "effect": "Cards with Fibonacci ranks (A,2,3,5,8) give +8 Mult each",
+      "implication": "Play 5 fibonacci cards = +40 Mult!",
+      "tips": ["Remove non-fibonacci cards (4,6,7,9,10,J,Q,K)", "Works great with Hack for retriggers", "Pairs well with Scholar for Aces"]
+    },
+    "steel_joker": {
+      "effect": "Gives x0.2 Mult for each Steel Card in your deck",
+      "implication": "10 steel cards = x2 Mult!",
+      "tips": ["Add steel enhancement to valuable cards", "Steel cards in hand give xMult when held", "Scales as you add more steel cards"]
+    },
+    "glass_joker": {
+      "effect": "Gives x0.75 Mult for each Glass Card in your deck",
+      "implication": "4 glass cards = x3 Mult permanently!",
+      "tips": ["High risk - glass cards can break", "Pairs with Lucky Cat for growing xMult", "Best in decks with card duplication"]
+    },
+    "egg": {
+      "effect": "Gains $3 sell value at end of round",
+      "implication": "Buy early, sell late for profit!",
+      "tips": ["Buy in ante 1-2 for maximum growth", "Sell when you need the slot or money", "Falls off in value late game"]
+    },
+    "golden_joker": {
+      "effect": "Earn $4 at end of round",
+      "implication": "Passive $4 income every round!",
+      "tips": ["Best bought early", "Helps reach $25 interest threshold", "Consider selling late game for a scoring joker"]
+    },
+    "to_the_moon": {
+      "effect": "Earn an extra $1 interest for every $5 you have at end of round (max $10)",
+      "implication": "At $50, earn $10 extra per round!",
+      "tips": ["Synergizes with maintaining high cash", "Cap is $50 for max benefit", "Strong economy joker for mid-game"]
+    },
+    "bull": {
+      "effect": "Gives +2 Chips for each dollar you have",
+      "implication": "At $50 = +100 Chips every hand!",
+      "tips": ["Keep money high for bigger bonus", "Synergizes with economy jokers", "Chips add up with multipliers"]
+    },
+    "cavendish": {
+      "effect": "Gives x3 Mult",
+      "implication": "Flat x3 to all scoring!",
+      "tips": ["Simple but powerful xMult", "Has a small chance to be destroyed", "Copy with Blueprint/Brainstorm"]
+    },
+    "vampire": {
+      "effect": "Gains x0.1 Mult per enhanced card played, removes enhancement",
+      "implication": "Grows stronger by eating card enhancements!",
+      "tips": ["Play enhanced cards to grow", "Permanent scaling xMult", "Can conflict with enhancement strategies"]
+    },
+    "obelisk": {
+      "effect": "Gains x0.2 Mult per consecutive hand played of your most played type",
+      "implication": "Keep playing the same hand type to scale!",
+      "tips": ["Commit to one hand type", "Grows very fast with consistency", "Reset on different hand types"]
+    },
+    "hologram": {
+      "effect": "Gains x0.25 Mult for each card added to deck",
+      "implication": "Deck size = multiplier growth!",
+      "tips": ["Add cards via packs and spectrals", "Each card added is permanent growth", "Great for Buffoon/Standard packs"]
+    },
+    "ride_the_bus": {
+      "effect": "Gains +1 Mult for each consecutive hand without face card",
+      "implication": "No face cards = growing mult!",
+      "tips": ["Remove face cards from deck", "Reset when face card is played", "Can grow very large"]
+    },
+    "blackboard": {
+      "effect": "x3 Mult if all held cards are Spades or Clubs",
+      "implication": "Hold only black cards for x3!",
+      "tips": ["Works with cards in hand, not played", "Remove red cards from deck", "Consistent x3 in black-only deck"]
+    },
+    "greedy_joker": {
+      "effect": "Played Diamonds give +3 Mult each",
+      "implication": "Diamond flush = +15 Mult!",
+      "tips": ["Build around Diamonds suit", "Combine with Splash for any-suit diamonds", "Stacks with mult jokers"]
+    },
+    "lusty_joker": {
+      "effect": "Played Hearts give +3 Mult each",
+      "implication": "Hearts flush = +15 Mult!",
+      "tips": ["Build around Hearts suit", "Combine with Splash for any-suit hearts", "Stacks with mult jokers"]
+    },
+    "wrathful_joker": {
+      "effect": "Played Spades give +3 Mult each",
+      "implication": "Spades flush = +15 Mult!",
+      "tips": ["Build around Spades suit", "Combine with Splash for any-suit spades", "Stacks with mult jokers"]
+    },
+    "gluttonous_joker": {
+      "effect": "Played Clubs give +3 Mult each",
+      "implication": "Clubs flush = +15 Mult!",
+      "tips": ["Build around Clubs suit", "Combine with Splash for any-suit clubs", "Stacks with mult jokers"]
+    },
+    "pareidolia": {
+      "effect": "All cards are considered face cards",
+      "implication": "Every card triggers face card jokers!",
+      "tips": ["Makes all cards work with Triboulet, Baron, etc.", "Incredible with Sock and Buskin", "Turns any deck into face cards"]
+    },
+    "scary_face": {
+      "effect": "Played face cards give +30 Chips each",
+      "implication": "5 face cards = +150 Chips!",
+      "tips": ["Build chip base for multipliers", "Combine with face card jokers", "Pareidolia makes all cards give +30"]
+    },
+    "smiley_face": {
+      "effect": "Played face cards give +4 Mult each",
+      "implication": "5 face cards = +20 Mult!",
+      "tips": ["Strong with face card builds", "Stacks with Scary Face", "Great with Sock and Buskin retriggers"]
+    },
+    "duo": {
+      "effect": "x2 Mult if hand contains a pair",
+      "implication": "Any pair = x2 Mult!",
+      "tips": ["Easy to trigger with pairs in deck", "Works with Two Pair, Full House, etc.", "Reliable xMult source"]
+    },
+    "trio": {
+      "effect": "x3 Mult if hand contains a Three of a Kind",
+      "implication": "Three of a kind = x3 Mult!",
+      "tips": ["Needs 3+ of same rank in deck", "Harder to trigger than Duo", "Very strong when it works"]
+    },
+    "family": {
+      "effect": "x4 Mult if hand contains a Four of a Kind",
+      "implication": "Four of a kind = x4 Mult!",
+      "tips": ["Needs 4+ of same rank in deck", "Build around duplicate ranks", "Massive multiplier when triggered"]
+    },
+    "order": {
+      "effect": "x3 Mult if first hand is a Straight",
+      "implication": "Open with straight for x3!",
+      "tips": ["Plan your opening hand", "Only works on first hand of round", "Good for straight-focused decks"]
+    },
+    "luchador": {
+      "effect": "Sell this card to disable the Boss Blind",
+      "implication": "Skip any boss blind effect!",
+      "tips": ["Save for difficult boss blinds", "One-time use when sold", "Invaluable vs The Needle, The Plant, etc."]
+    },
+    "chicot": {
+      "effect": "Disables the effect of every Boss Blind",
+      "implication": "Boss blinds have no special effect!",
+      "tips": ["Permanent boss immunity", "Legendary tier power", "Makes late game much easier"]
+    },
+    "madness": {
+      "effect": "When Small/Big Blind is selected, destroy a random Joker and gain x0.5 Mult permanently",
+      "implication": "Sacrifice jokers for permanent scaling!",
+      "tips": ["High risk, high reward", "Keep valuable jokers filled", "Can grow very powerful"]
+    },
+    "supernova": {
+      "effect": "+1 Mult for each time same hand has been played this run",
+      "implication": "Repeated hand types = growing mult!",
+      "tips": ["Track your most played hand", "Grows throughout the run", "Commit to one hand type"]
+    },
+    "riff_raff": {
+      "effect": "When Blind selected, create 2 random Jokers if joker slots available",
+      "implication": "Free jokers each round!",
+      "tips": ["Keep joker slots open", "Random quality but free value", "Fills out roster quickly"]
+    },
+    "space_joker": {
+      "effect": "1 in 4 chance to upgrade level of played hand",
+      "implication": "Random hand level ups!",
+      "tips": ["Luck-based but valuable", "Levels compound over the run", "Free scaling potential"]
+    },
+    "scholar": {
+      "effect": "Played Aces give +20 Chips and +4 Mult each",
+      "implication": "Each Ace = big chips AND mult!",
+      "tips": ["Add more Aces to your deck", "Works great with Fibonacci build", "Retriggers multiply the effect"]
+    },
+    "walkie_talkie": {
+      "effect": "Played 10s and 4s give +10 Chips and +4 Mult each",
+      "implication": "10s and 4s power up!",
+      "tips": ["Niche but strong with right deck", "Retriggers multiply effect", "Build around these ranks"]
+    },
+    "reserved_parking": {
+      "effect": "Each face card held in hand has a 1 in 2 chance to give $1",
+      "implication": "Hold face cards for money!",
+      "tips": ["Economy from face cards", "Works while cards are in hand", "Random but adds up"]
+    }
+  }
+}
