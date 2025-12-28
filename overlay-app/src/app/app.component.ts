@@ -6,10 +6,11 @@ import { GameStateService } from './core/services';
 import { DeckTrackerComponent } from './features/deck-tracker';
 import { SynergyDisplayComponent } from './features/synergy-display';
 import { ShopOverlayComponent } from './features/strategy-intelligence';
+import { BuildIdentityComponent } from './features/build-identity';
 
 @Component({
   selector: 'app-root',
-  imports: [CommonModule, RouterOutlet, DeckTrackerComponent, SynergyDisplayComponent, ShopOverlayComponent, FormsModule],
+  imports: [CommonModule, RouterOutlet, DeckTrackerComponent, SynergyDisplayComponent, ShopOverlayComponent, BuildIdentityComponent, FormsModule],
   changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './app.component.html',
   styleUrl: './app.component.scss'
