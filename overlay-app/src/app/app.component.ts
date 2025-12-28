@@ -7,10 +7,11 @@ import { DeckTrackerComponent } from './features/deck-tracker';
 import { SynergyDisplayComponent } from './features/synergy-display';
 import { ShopOverlayComponent } from './features/strategy-intelligence';
 import { BuildIdentityComponent } from './features/build-identity';
+import { HandGuidanceComponent } from './features/hand-guidance';
 
 @Component({
   selector: 'app-root',
-  imports: [CommonModule, RouterOutlet, DeckTrackerComponent, SynergyDisplayComponent, ShopOverlayComponent, BuildIdentityComponent, FormsModule],
+  imports: [CommonModule, RouterOutlet, DeckTrackerComponent, SynergyDisplayComponent, ShopOverlayComponent, BuildIdentityComponent, HandGuidanceComponent, FormsModule],
   changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './app.component.html',
   styleUrl: './app.component.scss'
