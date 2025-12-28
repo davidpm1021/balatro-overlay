@@ -1,8 +1,8 @@
 # Bug Tracker
 
-## Status: Testing Complete - Prioritized for Spec 004
+## Status: All Fixed (Spec 004 Complete)
 
-4 bugs found, prioritized by impact.
+4 bugs found, all resolved. 268 tests passing.
 
 ---
 
@@ -10,10 +10,10 @@
 
 | ID | Severity | Component | Status | Fix Priority |
 |----|----------|-----------|--------|--------------|
-| BUG-004 | P1 | Build Detector | Spec 004 | 1st - Reactivity |
-| BUG-001 | P1 | Shop Overlay / Card Display | Spec 004 | 2nd - Type Detection |
-| BUG-003 | P1 | Shop Advisor | Spec 004 | 3rd - Booster Phase |
-| BUG-002 | P2 | Build Detector | Spec 004 | 4th - Edge Case |
+| BUG-004 | P1 | Build Detector | Fixed | 1st - Reactivity |
+| BUG-001 | P1 | Shop Overlay / Card Display | Fixed | 2nd - Type Detection |
+| BUG-003 | P1 | Shop Advisor | Fixed | 3rd - Booster Phase |
+| BUG-002 | P2 | Build Detector | Fixed | 4th - Edge Case |
 
 ---
 
