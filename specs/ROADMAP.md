@@ -170,6 +170,48 @@ Features identified in PROJECT_CONTEXT.md assessment that need implementation.
 
 **Estimated Scope**: New voucher-display component
 
+### 3.7 Context-Aware Panel Visibility (Spec 006)
+**Status**: Not implemented — panels always visible
+
+The overlay should show/hide panels based on game phase. The bridge mod already exports `phase` in game state. The UI just needs to react to it.
+
+**Phase-to-Panel Mapping**:
+
+| Phase | Show | Hide |
+|-------|------|------|
+| `PLAYING` | Deck tracker, Probability panel, Score preview | Shop advisor |
+| `SHOP` | Shop advisor, Joker bar, Build detection | Deck tracker, Probability panel |
+| `BOSS_INTRO` | Boss warning, Build counter check | Everything else |
+| `PACK_OPEN` | Pack advisor (which card to pick) | Deck tracker |
+| `BLIND_SELECT` | Blind info, Skip recommendations | Deck tracker |
+
+**Requirements**:
+- [ ] Create PhaseVisibilityService that maps phase → visible panels
+- [ ] Add `isVisible` computed signal to each panel component
+- [ ] Animate panel show/hide transitions (fade or slide)
+- [ ] Allow user override in settings (e.g., "always show deck tracker")
+- [ ] Handle edge cases (rapid phase changes, unknown phases)
+
+**Implementation Approach**:
+```typescript
+// PhaseVisibilityService
+phaseConfig = {
+  PLAYING: { show: ['deck-tracker', 'probability', 'score-preview'], hide: ['shop-advisor'] },
+  SHOP: { show: ['shop-advisor', 'joker-bar', 'build-detection'], hide: ['deck-tracker', 'probability'] },
+  BOSS_INTRO: { show: ['boss-warning'], hide: ['*'] },
+  PACK_OPEN: { show: ['pack-advisor'], hide: ['deck-tracker'] },
+  BLIND_SELECT: { show: ['blind-info'], hide: ['deck-tracker'] },
+};
+
+isPanelVisible = (panelId: string) => computed(() => {
+  const phase = this.gameState.phase();
+  const config = this.phaseConfig[phase];
+  return config?.show.includes(panelId) ?? true;
+});
+```
+
+**Estimated Scope**: New service + modifications to 5-6 panel components
+
 ---
 
 ## Phase 4: Polish & Performance
