@@ -260,40 +260,37 @@ export class HandAnalyzerService {
 
   /**
    * Find the best possible hand from a set of cards
-   * Excludes debuffed cards since they score 0
+   * Uses actual projected score (with hand levels + jokers) instead of poker rank
+   * Considers all valid hand sizes (1-5 cards) since a high-level pair might
+   * outscore a low-level flush when combined with joker bonuses
+   *
+   * NOTE: Debuffed cards ARE included in hand detection (they form hand types)
+   * but they contribute 0 chips when scored (handled by ScoreEngineService)
    */
   private findBestHand(cards: Card[]): HandDetectionResult {
-    // Filter out debuffed cards - they score 0, so shouldn't be in best hand
-    const playableCards = cards.filter(c => !c.debuffed);
+    // Include ALL cards for hand type detection
+    // In Balatro, debuffed cards DO count for hand type formation (full house, flush, etc.)
+    // They just contribute 0 chips when scored - ScoreEngineService already handles this correctly
+    const playableCards = cards;
 
     if (playableCards.length === 0) {
-      // All cards debuffed - return high card with first card as fallback
-      return { handType: 'high_card', scoringCards: cards.slice(0, 1) };
+      return { handType: 'high_card', scoringCards: [] };
     }
 
-    if (playableCards.length <= 5) {
-      return this.handCalculator.detectHandType(playableCards);
-    }
-
-    // For more than 5 cards, we need to find the best 5-card combination
-    const combinations = this.get5CardCombinations(playableCards);
+    // Generate all valid combinations (1 to 5 cards)
+    // A pair of Kings might outscore a flush if pair level is high + face card jokers
+    const combinations = this.getAllValidCombinations(playableCards);
     let bestResult: HandDetectionResult = { handType: 'high_card', scoringCards: [] };
-    let bestScore = -1;
+    let bestProjectedScore = -1;
 
     for (const combo of combinations) {
       const result = this.handCalculator.detectHandType(combo);
-      const score = this.getHandTypeScore(result.handType);
+      // Calculate actual projected score with hand levels and jokers
+      const projectedScore = this.calculateCombinationScore(combo, result.handType, cards);
 
-      if (score > bestScore) {
-        bestScore = score;
+      if (projectedScore > bestProjectedScore) {
+        bestProjectedScore = projectedScore;
         bestResult = result;
-      } else if (score === bestScore) {
-        // Same hand type - compare by card values for tiebreaker
-        const currentTotal = this.getTotalCardValue(result.scoringCards);
-        const bestTotal = this.getTotalCardValue(bestResult.scoringCards);
-        if (currentTotal > bestTotal) {
-          bestResult = result;
-        }
       }
     }
 
@@ -301,14 +298,50 @@ export class HandAnalyzerService {
   }
 
   /**
-   * Generate all 5-card combinations from a set of cards
+   * Calculate projected score for a hand combination
+   * Considers hand levels and joker effects for accurate comparison
    */
-  private get5CardCombinations(cards: Card[]): Card[][] {
+  private calculateCombinationScore(
+    playedCards: Card[],
+    handType: HandType,
+    allHandCards: Card[]
+  ): number {
+    const handLevels = this.handLevels();
+    const handLevelEntry = handLevels.find(hl => hl.handType === handType);
+    const handLevel = handLevelEntry?.level ?? 1;
+
+    const playedCardIds = new Set(playedCards.map(c => c.id));
+    const heldCards = allHandCards.filter(c => !playedCardIds.has(c.id));
+
+    const scoringContext: ScoringContext = {
+      playedCards: playedCards,
+      heldCards: heldCards,
+      jokers: this.jokers(),
+      handType: handType,
+      handLevel: handLevel,
+      discardsRemaining: this.gameState.discardsRemaining(),
+      handsRemaining: this.gameState.handsRemaining(),
+      money: this.gameState.money(),
+      isLastHand: this.gameState.handsRemaining() === 1,
+    };
+
+    return this.scoreEngine.calculateScore(scoringContext);
+  }
+
+  /**
+   * Generate all valid hand combinations (1 to 5 cards)
+   * Includes subsets of all sizes to find optimal scoring hand
+   */
+  private getAllValidCombinations(cards: Card[]): Card[][] {
     const combinations: Card[][] = [];
+    const maxSize = Math.min(5, cards.length);
 
     const combine = (start: number, current: Card[]) => {
-      if (current.length === 5) {
+      if (current.length > 0 && current.length <= maxSize) {
         combinations.push([...current]);
+      }
+
+      if (current.length === maxSize) {
         return;
       }
 
@@ -365,22 +398,27 @@ export class HandAnalyzerService {
     return hand.map(card => {
       const isPartOfBestHand = bestHandIds.has(card.id);
 
-      // Debuffed cards should always be discarded - they score 0
+      // Cards that form the best hand should be played (even if debuffed)
+      // In Balatro, debuffed cards DO count for hand type formation (full house, flush, etc.)
+      // They just contribute 0 chips when scored
+      if (isPartOfBestHand) {
+        return {
+          card,
+          action: 'play' as const,
+          reason: card.debuffed
+            ? 'Forms best hand (debuffed - 0 chips but counts for hand type)'
+            : KEEP_REASONS.forms_best_hand,
+          isPartOfBestHand: true,
+        };
+      }
+
+      // Debuffed cards NOT part of best hand should be discarded
       if (card.debuffed) {
         return {
           card,
           action: 'discard' as const,
           reason: DISCARD_REASONS.debuffed,
           isPartOfBestHand: false,
-        };
-      }
-
-      if (isPartOfBestHand) {
-        return {
-          card,
-          action: 'play' as const,
-          reason: KEEP_REASONS.forms_best_hand,
-          isPartOfBestHand: true,
         };
       }
 
