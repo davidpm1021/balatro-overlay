@@ -2,6 +2,7 @@ import { TestBed } from '@angular/core/testing';
 import { signal } from '@angular/core';
 import { HandAnalyzerService, HandAnalysis, AnalyzedCard } from './hand-analyzer.service';
 import { HandCalculatorService, HandDetectionResult } from '../../score-preview/services/hand-calculator.service';
+import { ScoreEngineService } from '../../../core/services/score-engine.service';
 import { BuildDetectorService, DetectedBuild } from '../../strategy-intelligence/services/build-detector.service';
 import { GameStateService } from '../../../core/services/game-state.service';
 import {
@@ -20,6 +21,7 @@ describe('HandAnalyzerService', () => {
   let service: HandAnalyzerService;
   let gameStateMock: jasmine.SpyObj<GameStateService>;
   let handCalculatorMock: jasmine.SpyObj<HandCalculatorService>;
+  let scoreEngineMock: jasmine.SpyObj<ScoreEngineService>;
   let buildDetectorMock: jasmine.SpyObj<BuildDetectorService>;
 
   let handSignal: ReturnType<typeof signal<Card[]>>;
@@ -27,6 +29,9 @@ describe('HandAnalyzerService', () => {
   let handLevelsSignal: ReturnType<typeof signal<HandLevel[]>>;
   let jokersSignal: ReturnType<typeof signal<JokerState[]>>;
   let detectedBuildSignal: ReturnType<typeof signal<DetectedBuild>>;
+  let discardsRemainingSignal: ReturnType<typeof signal<number>>;
+  let handsRemainingSignal: ReturnType<typeof signal<number>>;
+  let moneySignal: ReturnType<typeof signal<number>>;
 
   function createCard(
     id: string,
@@ -96,6 +101,9 @@ describe('HandAnalyzerService', () => {
     blindSignal = signal<BlindState | null>(null);
     handLevelsSignal = signal<HandLevel[]>([]);
     jokersSignal = signal<JokerState[]>([]);
+    discardsRemainingSignal = signal<number>(3);
+    handsRemainingSignal = signal<number>(4);
+    moneySignal = signal<number>(10);
     detectedBuildSignal = signal<DetectedBuild>({
       primary: null,
       secondary: undefined,
@@ -107,10 +115,17 @@ describe('HandAnalyzerService', () => {
       blind: blindSignal.asReadonly(),
       handLevels: handLevelsSignal.asReadonly(),
       jokers: jokersSignal.asReadonly(),
+      discardsRemaining: discardsRemainingSignal.asReadonly(),
+      handsRemaining: handsRemainingSignal.asReadonly(),
+      money: moneySignal.asReadonly(),
     });
 
     handCalculatorMock = jasmine.createSpyObj('HandCalculatorService', [
       'detectHandType',
+      'calculateScore',
+    ]);
+
+    scoreEngineMock = jasmine.createSpyObj('ScoreEngineService', [
       'calculateScore',
     ]);
 
@@ -123,6 +138,7 @@ describe('HandAnalyzerService', () => {
         HandAnalyzerService,
         { provide: GameStateService, useValue: gameStateMock },
         { provide: HandCalculatorService, useValue: handCalculatorMock },
+        { provide: ScoreEngineService, useValue: scoreEngineMock },
         { provide: BuildDetectorService, useValue: buildDetectorMock },
       ],
     });
@@ -146,9 +162,7 @@ describe('HandAnalyzerService', () => {
       };
 
       handCalculatorMock.detectHandType.and.returnValue(flushResult);
-      handCalculatorMock.calculateScore.and.returnValue(
-        createScoreBreakdown(2450, 1800)
-      );
+      scoreEngineMock.calculateScore.and.returnValue(2450);
 
       handSignal.set(hand);
       blindSignal.set(createBlind(1800));
@@ -180,9 +194,7 @@ describe('HandAnalyzerService', () => {
       };
 
       handCalculatorMock.detectHandType.and.returnValue(pairResult);
-      handCalculatorMock.calculateScore.and.returnValue(
-        createScoreBreakdown(800, 1200)
-      );
+      scoreEngineMock.calculateScore.and.returnValue(800);
 
       const analysis = service.analyzeHand(hand, createBlind(1200), {
         primary: null,
@@ -214,9 +226,7 @@ describe('HandAnalyzerService', () => {
         return { handType: 'high_card' as HandType, scoringCards: [cards[0]] };
       });
 
-      handCalculatorMock.calculateScore.and.returnValue(
-        createScoreBreakdown(2450, 1800)
-      );
+      scoreEngineMock.calculateScore.and.returnValue(2450);
 
       const analysis = service.analyzeHand(hand, createBlind(1800), {
         primary: null,
@@ -242,9 +252,7 @@ describe('HandAnalyzerService', () => {
         handType: 'flush',
         scoringCards: hand,
       });
-      handCalculatorMock.calculateScore.and.returnValue(
-        createScoreBreakdown(2450, 1800)
-      );
+      scoreEngineMock.calculateScore.and.returnValue(2450);
 
       const analysis = service.analyzeHand(hand, createBlind(1800), {
         primary: null,
@@ -269,9 +277,7 @@ describe('HandAnalyzerService', () => {
         handType: 'high_card',
         scoringCards: [hand[2]], // 7 is highest
       });
-      handCalculatorMock.calculateScore.and.returnValue(
-        createScoreBreakdown(42, 1800)
-      );
+      scoreEngineMock.calculateScore.and.returnValue(42);
 
       const analysis = service.analyzeHand(hand, createBlind(1800), {
         primary: null,
@@ -290,9 +296,7 @@ describe('HandAnalyzerService', () => {
         handType: 'high_card',
         scoringCards: hand,
       });
-      handCalculatorMock.calculateScore.and.returnValue(
-        createScoreBreakdown(100, 0)
-      );
+      scoreEngineMock.calculateScore.and.returnValue(100);
 
       const analysis = service.analyzeHand(hand, null, {
         primary: null,
@@ -326,9 +330,7 @@ describe('HandAnalyzerService', () => {
         }
         return { handType: 'high_card' as HandType, scoringCards: [cards[0]] };
       });
-      handCalculatorMock.calculateScore.and.returnValue(
-        createScoreBreakdown(2450, 1800)
-      );
+      scoreEngineMock.calculateScore.and.returnValue(2450);
 
       const flushBuild = createDetectedStrategy('flush', 80, 'hearts');
       const analysis = service.analyzeHand(hand, createBlind(1800), {
@@ -358,9 +360,7 @@ describe('HandAnalyzerService', () => {
         handType: 'high_card',
         scoringCards: [hand[0]],
       });
-      handCalculatorMock.calculateScore.and.returnValue(
-        createScoreBreakdown(200, 1200)
-      );
+      scoreEngineMock.calculateScore.and.returnValue(200);
 
       const faceBuild = createDetectedStrategy('face_cards', 70);
       const analysis = service.analyzeHand(hand, createBlind(1200), {
@@ -388,9 +388,7 @@ describe('HandAnalyzerService', () => {
         handType: 'high_card',
         scoringCards: [hand[0]],
       });
-      handCalculatorMock.calculateScore.and.returnValue(
-        createScoreBreakdown(100, 500)
-      );
+      scoreEngineMock.calculateScore.and.returnValue(100);
 
       const analysis = service.analyzeHand(hand, createBlind(500), {
         primary: null,
@@ -416,9 +414,7 @@ describe('HandAnalyzerService', () => {
         handType: 'high_card',
         scoringCards: [hand[0]],
       });
-      handCalculatorMock.calculateScore.and.returnValue(
-        createScoreBreakdown(100, 500)
-      );
+      scoreEngineMock.calculateScore.and.returnValue(100);
 
       const analysis = service.analyzeHand(hand, createBlind(500), {
         primary: null,
@@ -443,9 +439,7 @@ describe('HandAnalyzerService', () => {
         handType: 'high_card',
         scoringCards: [hand[0]],
       });
-      handCalculatorMock.calculateScore.and.returnValue(
-        createScoreBreakdown(100, 500)
-      );
+      scoreEngineMock.calculateScore.and.returnValue(100);
 
       const analysis = service.analyzeHand(hand, createBlind(500), {
         primary: null,
@@ -470,9 +464,7 @@ describe('HandAnalyzerService', () => {
         handType: 'high_card',
         scoringCards: [hand[0]],
       });
-      handCalculatorMock.calculateScore.and.returnValue(
-        createScoreBreakdown(100, 500)
-      );
+      scoreEngineMock.calculateScore.and.returnValue(100);
 
       const analysis = service.analyzeHand(hand, createBlind(500), {
         primary: null,
@@ -497,9 +489,7 @@ describe('HandAnalyzerService', () => {
         handType: 'high_card',
         scoringCards: [hand[0]],
       });
-      handCalculatorMock.calculateScore.and.returnValue(
-        createScoreBreakdown(100, 500)
-      );
+      scoreEngineMock.calculateScore.and.returnValue(100);
 
       const flushBuild = createDetectedStrategy('flush', 70, 'hearts');
       const analysis = service.analyzeHand(hand, createBlind(500), {
@@ -525,9 +515,7 @@ describe('HandAnalyzerService', () => {
         handType: 'high_card',
         scoringCards: [hand[0]],
       });
-      handCalculatorMock.calculateScore.and.returnValue(
-        createScoreBreakdown(100, 500)
-      );
+      scoreEngineMock.calculateScore.and.returnValue(100);
 
       const analysis = service.analyzeHand(hand, createBlind(500), {
         primary: null,
@@ -550,9 +538,7 @@ describe('HandAnalyzerService', () => {
         handType: 'high_card',
         scoringCards: hand,
       });
-      handCalculatorMock.calculateScore.and.returnValue(
-        createScoreBreakdown(100, 500)
-      );
+      scoreEngineMock.calculateScore.and.returnValue(100);
 
       const flushBuild = createDetectedStrategy('flush', 80, 'hearts');
       const analysis = service.analyzeHand(hand, createBlind(500), {
@@ -572,9 +558,7 @@ describe('HandAnalyzerService', () => {
         handType: 'high_card',
         scoringCards: hand,
       });
-      handCalculatorMock.calculateScore.and.returnValue(
-        createScoreBreakdown(100, 500)
-      );
+      scoreEngineMock.calculateScore.and.returnValue(100);
 
       const analysis = service.analyzeHand(hand, createBlind(500), {
         primary: null,
@@ -601,9 +585,7 @@ describe('HandAnalyzerService', () => {
         handType: 'high_card',
         scoringCards: [hand[0]],
       });
-      handCalculatorMock.calculateScore.and.returnValue(
-        createScoreBreakdown(100, 500)
-      );
+      scoreEngineMock.calculateScore.and.returnValue(100);
 
       const analysis = service.analyzeHand(hand, createBlind(500), {
         primary: null,
@@ -632,9 +614,7 @@ describe('HandAnalyzerService', () => {
         handType: 'pair',
         scoringCards: [hand[0], hand[1]],
       });
-      handCalculatorMock.calculateScore.and.returnValue(
-        createScoreBreakdown(200, 500)
-      );
+      scoreEngineMock.calculateScore.and.returnValue(200);
 
       const analysis = service.analyzeHand(hand, createBlind(500), {
         primary: null,
@@ -671,9 +651,7 @@ describe('HandAnalyzerService', () => {
         handType: 'high_card',
         scoringCards: [initialHand[0]],
       });
-      handCalculatorMock.calculateScore.and.returnValue(
-        createScoreBreakdown(100, 500)
-      );
+      scoreEngineMock.calculateScore.and.returnValue(100);
 
       handSignal.set(initialHand);
       const analysis1 = service.analysis();

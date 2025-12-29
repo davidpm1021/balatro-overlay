@@ -1,5 +1,6 @@
 import { Injectable, inject, computed } from '@angular/core';
 import { GameStateService } from '../../../core/services/game-state.service';
+import { ScoreEngineService, ScoringContext } from '../../../core/services/score-engine.service';
 import { HandCalculatorService, HandDetectionResult } from '../../score-preview/services/hand-calculator.service';
 import { BuildDetectorService, DetectedBuild } from '../../strategy-intelligence/services/build-detector.service';
 import {
@@ -143,6 +144,7 @@ const FIBONACCI_RANKS: Rank[] = ['2', '3', '5', '8', 'A'];
 export class HandAnalyzerService {
   private gameState = inject(GameStateService);
   private handCalculator = inject(HandCalculatorService);
+  private scoreEngine = inject(ScoreEngineService);
   private buildDetector = inject(BuildDetectorService);
 
   /**
@@ -197,17 +199,34 @@ export class HandAnalyzerService {
     const bestHandResult = this.findBestHand(hand);
     const { handType, scoringCards } = bestHandResult;
 
-    // Calculate projected score
-    const scoreBreakdown = this.handCalculator.calculateScore(
-      scoringCards,
-      this.jokers(),
-      this.handLevels(),
-      blind
-    );
+    // Get hand level for the detected hand type
+    const handLevels = this.handLevels();
+    const handLevelEntry = handLevels.find(hl => hl.handType === handType);
+    const handLevel = handLevelEntry?.level ?? 1;
+
+    // Get held cards (cards in hand that aren't being played)
+    const playedCardIds = new Set(scoringCards.map(c => c.id));
+    const heldCards = hand.filter(c => !playedCardIds.has(c.id));
+
+    // Build scoring context for accurate score calculation
+    const scoringContext: ScoringContext = {
+      playedCards: scoringCards,
+      heldCards: heldCards,
+      jokers: this.jokers(),
+      handType: handType,
+      handLevel: handLevel,
+      discardsRemaining: this.gameState.discardsRemaining(),
+      handsRemaining: this.gameState.handsRemaining(),
+      money: this.gameState.money(),
+      isLastHand: this.gameState.handsRemaining() === 1,
+    };
+
+    // Calculate projected score using comprehensive score engine
+    const projectedScore = this.scoreEngine.calculateScore(scoringContext);
 
     const blindGoal = blind?.chipGoal ?? 0;
-    const beatsBlind = scoreBreakdown.finalScore >= blindGoal;
-    const margin = scoreBreakdown.finalScore - blindGoal;
+    const beatsBlind = projectedScore >= blindGoal;
+    const margin = projectedScore - blindGoal;
 
     // Analyze each card in hand
     const analyzedCards = this.analyzeCards(hand, scoringCards, build);
@@ -225,7 +244,7 @@ export class HandAnalyzerService {
         handType,
         handTypeLabel: HAND_TYPE_LABELS[handType],
         cards: scoringCards,
-        projectedScore: scoreBreakdown.finalScore,
+        projectedScore,
         beatsBlind,
         margin,
       },
