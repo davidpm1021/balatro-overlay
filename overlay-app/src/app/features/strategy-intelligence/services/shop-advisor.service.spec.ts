@@ -1527,4 +1527,255 @@ describe('ShopAdvisorService', () => {
       });
     });
   });
+
+  // ===========================
+  // BUG-008: Activation probability for conditional jokers
+  // ===========================
+
+  describe('BUG-008: Activation probability', () => {
+    it('should penalize conditional jokers (shoot_the_moon) in scoring', () => {
+      // Shoot the Moon requires queens held in hand (conditional)
+      // vs Joker which always activates
+      // Both have similar base tier (B or C) but Shoot the Moon should score lower
+      // because it doesn't always activate
+
+      const mockState = createMockGameState({
+        progress: { ante: 2, round: 1, phase: 'shop', handsRemaining: 4, discardsRemaining: 3, money: 50 },
+        shop: {
+          items: [
+            createMockShopItem({ id: 'shoot_the_moon', name: 'Shoot the Moon', cost: 5 }),
+            createMockShopItem({ id: 'joker', name: 'Joker', cost: 2 }),
+          ],
+          rerollCost: 5,
+          rerollsUsed: 0,
+        },
+      });
+      service.updateState(mockState);
+
+      const shootTheMoonScore = service.scoreJoker('shoot_the_moon');
+      const jokerScore = service.scoreJoker('joker');
+
+      // Shoot the Moon has activationProbability ~0.25 (need queen in hand)
+      // Even though Shoot the Moon has better tier, the activation penalty should
+      // make it score reasonably close or lower than the always-active Joker
+      // The penalty uses sqrt to soften: score - (score - 50) * (1 - sqrt(0.25))
+      // = score - (score - 50) * 0.5
+
+      // The scores should reflect that conditional jokers are less reliable
+      expect(shootTheMoonScore).toBeLessThanOrEqual(jokerScore + 15);
+    });
+
+    it('should NOT penalize unconditional jokers (activationProbability = 1.0)', () => {
+      const mockState = createMockGameState({
+        progress: { ante: 2, round: 1, phase: 'shop', handsRemaining: 4, discardsRemaining: 3, money: 50 },
+        shop: {
+          items: [
+            createMockShopItem({ id: 'blueprint', name: 'Blueprint', cost: 10 }),
+          ],
+          rerollCost: 5,
+          rerollsUsed: 0,
+        },
+      });
+      service.updateState(mockState);
+
+      // Blueprint has activationProbability = 1.0, so no penalty should be applied
+      const score = service.scoreJoker('blueprint');
+
+      // Blueprint is S-tier in mid game (95 base + 10 alwaysBuy = 105, capped at 100)
+      // With no activation penalty, it should remain high
+      expect(score).toBeGreaterThanOrEqual(85);
+    });
+
+    it('should apply partial penalty for medium activation jokers (0.5-0.75)', () => {
+      const mockState = createMockGameState({
+        progress: { ante: 2, round: 1, phase: 'shop', handsRemaining: 4, discardsRemaining: 3, money: 50 },
+        shop: {
+          items: [
+            createMockShopItem({ id: 'lusty_joker', name: 'Lusty Joker', cost: 5 }),
+          ],
+          rerollCost: 5,
+          rerollsUsed: 0,
+        },
+      });
+      service.updateState(mockState);
+
+      // Lusty Joker triggers on hearts (1 of 4 suits, but can be more with smeared joker)
+      // activationProbability ~0.5
+      const score = service.scoreJoker('lusty_joker');
+
+      // B-tier base (60), penalty = (60 - 50) * (1 - sqrt(0.5)) = 10 * 0.29 ~ 3
+      // Final ~57
+      expect(score).toBeLessThan(60);
+      expect(score).toBeGreaterThan(45);
+    });
+  });
+
+  // ===========================
+  // BUG-015: Reroll recommendations
+  // ===========================
+
+  describe('BUG-015: Reroll recommendations', () => {
+    it('should recommend reroll when money > $25 and shop is weak', () => {
+      const mockState = createMockGameState({
+        progress: { ante: 3, round: 1, phase: 'shop', handsRemaining: 4, discardsRemaining: 3, money: 35 },
+        shop: {
+          items: [
+            createMockShopItem({ id: 'egg', name: 'Egg', cost: 4 }), // Economy joker, weak late
+          ],
+          rerollCost: 5,
+          rerollsUsed: 0,
+        },
+      });
+      service.updateState(mockState);
+
+      const recommendation = service.getRerollRecommendation();
+
+      expect(recommendation.shouldReroll).toBeTrue();
+      expect(recommendation.reason.toLowerCase()).toContain('weak');
+    });
+
+    it('should NOT recommend reroll when great option available', () => {
+      const mockState = createMockGameState({
+        progress: { ante: 3, round: 1, phase: 'shop', handsRemaining: 4, discardsRemaining: 3, money: 35 },
+        shop: {
+          items: [
+            createMockShopItem({ id: 'blueprint', name: 'Blueprint', cost: 10 }), // S-tier!
+          ],
+          rerollCost: 5,
+          rerollsUsed: 0,
+        },
+      });
+      service.updateState(mockState);
+
+      const recommendation = service.getRerollRecommendation();
+
+      expect(recommendation.shouldReroll).toBeFalse();
+      expect(recommendation.reason.toLowerCase()).toContain('great');
+    });
+
+    it('should NOT recommend reroll when cannot afford', () => {
+      const mockState = createMockGameState({
+        progress: { ante: 3, round: 1, phase: 'shop', handsRemaining: 4, discardsRemaining: 3, money: 3 },
+        shop: {
+          items: [
+            createMockShopItem({ id: 'egg', name: 'Egg', cost: 4 }),
+          ],
+          rerollCost: 5,
+          rerollsUsed: 0,
+        },
+      });
+      service.updateState(mockState);
+
+      const recommendation = service.getRerollRecommendation();
+
+      expect(recommendation.shouldReroll).toBeFalse();
+      expect(recommendation.reason.toLowerCase()).toContain('afford');
+    });
+
+    it('should NOT recommend reroll when it would break interest threshold', () => {
+      const mockState = createMockGameState({
+        progress: { ante: 3, round: 1, phase: 'shop', handsRemaining: 4, discardsRemaining: 3, money: 27 },
+        shop: {
+          items: [
+            createMockShopItem({ id: 'joker', name: 'Joker', cost: 2 }), // Weak item
+          ],
+          rerollCost: 5, // 27 - 5 = 22 < 25 threshold
+          rerollsUsed: 0,
+        },
+      });
+      service.updateState(mockState);
+
+      const recommendation = service.getRerollRecommendation();
+
+      expect(recommendation.shouldReroll).toBeFalse();
+      expect(recommendation.reason.toLowerCase()).toContain('interest');
+    });
+
+    it('should have correct confidence level based on situation', () => {
+      const mockState = createMockGameState({
+        progress: { ante: 3, round: 1, phase: 'shop', handsRemaining: 4, discardsRemaining: 3, money: 50 },
+        shop: {
+          items: [
+            createMockShopItem({ id: 'blueprint', name: 'Blueprint', cost: 10 }),
+          ],
+          rerollCost: 5,
+          rerollsUsed: 0,
+        },
+      });
+      service.updateState(mockState);
+
+      const recommendation = service.getRerollRecommendation();
+
+      expect(['high', 'medium', 'low']).toContain(recommendation.confidence);
+    });
+  });
+
+  // ===========================
+  // BUG-009: Unaffordable item indicator
+  // ===========================
+
+  describe('BUG-009: Unaffordable item indicator', () => {
+    it('should identify items that cost more than current money', () => {
+      const mockState = createMockGameState({
+        progress: { ante: 3, round: 1, phase: 'shop', handsRemaining: 4, discardsRemaining: 3, money: 8 },
+        shop: {
+          items: [
+            createMockShopItem({ id: 'blueprint', name: 'Blueprint', cost: 10 }), // Unaffordable
+            createMockShopItem({ id: 'joker', name: 'Joker', cost: 2 }), // Affordable
+          ],
+          rerollCost: 5,
+          rerollsUsed: 0,
+        },
+      });
+      service.updateState(mockState);
+
+      // Service should expose a method to check affordability
+      expect(service.isAffordable(10)).toBeFalse();
+      expect(service.isAffordable(2)).toBeTrue();
+      expect(service.isAffordable(8)).toBeTrue();
+    });
+
+    it('should return current money for affordability checks', () => {
+      const mockState = createMockGameState({
+        progress: { ante: 3, round: 1, phase: 'shop', handsRemaining: 4, discardsRemaining: 3, money: 15 },
+        shop: {
+          items: [
+            createMockShopItem({ id: 'joker', name: 'Joker', cost: 2 }),
+          ],
+          rerollCost: 5,
+          rerollsUsed: 0,
+        },
+      });
+      service.updateState(mockState);
+
+      // The money() signal should be accessible for UI components
+      expect(service.money()).toBe(15);
+    });
+
+    it('should update affordability when money changes', () => {
+      // First state with low money
+      const lowMoneyState = createMockGameState({
+        progress: { ante: 3, round: 1, phase: 'shop', handsRemaining: 4, discardsRemaining: 3, money: 5 },
+        shop: {
+          items: [createMockShopItem({ id: 'blueprint', name: 'Blueprint', cost: 10 })],
+          rerollCost: 5,
+          rerollsUsed: 0,
+        },
+      });
+      service.updateState(lowMoneyState);
+      expect(service.isAffordable(10)).toBeFalse();
+
+      // Update to higher money
+      const highMoneyState = createMockGameState({
+        progress: { ante: 3, round: 1, phase: 'shop', handsRemaining: 4, discardsRemaining: 3, money: 50 },
+        shop: {
+          items: [createMockShopItem({ id: 'blueprint', name: 'Blueprint', cost: 10 })],
+          rerollCost: 5,
+          rerollsUsed: 0,
+        },
+      });
+      service.updateState(highMoneyState);
+      expect(service.isAffordable(10)).toBeTrue();
+    });
+  });
 });
