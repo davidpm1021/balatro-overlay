@@ -193,10 +193,10 @@ describe('PhaseVisibilityService', () => {
         expect(visible()).toBe(false);
       });
 
-      it('should be hidden in booster phase', () => {
+      it('should be visible in booster phase (for Buffoon packs)', () => {
         phaseSignal.set('booster');
         const visible = service.isPanelVisible('shop-advisor');
-        expect(visible()).toBe(false);
+        expect(visible()).toBe(true);
       });
     });
   });

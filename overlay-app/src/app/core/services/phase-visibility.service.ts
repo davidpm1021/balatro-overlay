@@ -41,7 +41,7 @@ export const PANEL_CONFIGS: Record<PanelId, PanelConfig> = {
     defaultWhenUnknown: false,
   },
   'shop-advisor': {
-    showInPhases: ['shop'],
+    showInPhases: ['shop', 'booster'],
     defaultWhenUnknown: false,
   },
 };

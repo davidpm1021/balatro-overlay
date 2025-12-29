@@ -37,6 +37,7 @@ const HAND_TYPE_LABELS: Record<HandType, string> = {
  * Discard reason templates
  */
 const DISCARD_REASONS = {
+  debuffed: 'Debuffed - scores 0 chips',
   off_suit: 'Off-suit for your {suit} flush build',
   no_pairs: "No duplicates - can't form pairs",
   breaks_sequence: "Doesn't connect for straights",
@@ -238,14 +239,23 @@ export class HandAnalyzerService {
 
   /**
    * Find the best possible hand from a set of cards
+   * Excludes debuffed cards since they score 0
    */
   private findBestHand(cards: Card[]): HandDetectionResult {
-    if (cards.length <= 5) {
-      return this.handCalculator.detectHandType(cards);
+    // Filter out debuffed cards - they score 0, so shouldn't be in best hand
+    const playableCards = cards.filter(c => !c.debuffed);
+
+    if (playableCards.length === 0) {
+      // All cards debuffed - return high card with first card as fallback
+      return { handType: 'high_card', scoringCards: cards.slice(0, 1) };
+    }
+
+    if (playableCards.length <= 5) {
+      return this.handCalculator.detectHandType(playableCards);
     }
 
     // For more than 5 cards, we need to find the best 5-card combination
-    const combinations = this.get5CardCombinations(cards);
+    const combinations = this.get5CardCombinations(playableCards);
     let bestResult: HandDetectionResult = { handType: 'high_card', scoringCards: [] };
     let bestScore = -1;
 
@@ -333,6 +343,16 @@ export class HandAnalyzerService {
 
     return hand.map(card => {
       const isPartOfBestHand = bestHandIds.has(card.id);
+
+      // Debuffed cards should always be discarded - they score 0
+      if (card.debuffed) {
+        return {
+          card,
+          action: 'discard' as const,
+          reason: DISCARD_REASONS.debuffed,
+          isPartOfBestHand: false,
+        };
+      }
 
       if (isPartOfBestHand) {
         return {
