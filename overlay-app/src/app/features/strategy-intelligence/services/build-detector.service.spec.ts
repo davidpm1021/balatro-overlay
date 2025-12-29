@@ -1019,4 +1019,89 @@ describe('BuildDetectorService', () => {
       });
     });
   });
+
+  // ===========================
+  // BUG-005: face_cards jokers should beat pairs on standard deck
+  // Pairs deck score was inflated for standard decks
+  // ===========================
+
+  describe('BUG-005: Face Card Jokers Should Win Over Generic Pairs', () => {
+    it('should detect face_cards as primary build with sock_and_buskin, smiley_face, space, splash', () => {
+      // This is the exact scenario the user reported:
+      // 4 jokers that strongly signal face_cards, but pairs was being detected
+      const standardDeck = createStandardDeck();
+
+      gameStateSignal.set(createMockGameState({
+        deck: createDeck(standardDeck),
+        jokers: [
+          createJoker({ id: 'j_sock_and_buskin', name: 'Sock and Buskin' }),
+          createJoker({ id: 'j_smiley_face', name: 'Smiley Face' }),
+          createJoker({ id: 'j_space_joker', name: 'Space Joker' }),
+          createJoker({ id: 'j_splash', name: 'Splash' }),
+        ],
+      }));
+
+      const build = service.detectedBuild();
+      const strategies = service.detectedStrategies();
+
+      // face_cards should be the primary build
+      expect(build.primary).not.toBeNull();
+      expect(build.primary?.type).toBe('face_cards');
+
+      // Verify face_cards beats pairs
+      const faceCardsStrategy = strategies.find(s => s.type === 'face_cards');
+      const pairsStrategy = strategies.find(s => s.type === 'pairs');
+
+      expect(faceCardsStrategy).toBeDefined();
+      expect(faceCardsStrategy!.confidence).toBeGreaterThan(0);
+
+      if (pairsStrategy) {
+        expect(faceCardsStrategy!.confidence).toBeGreaterThan(pairsStrategy.confidence);
+      }
+    });
+
+    it('should not inflate pairs confidence for standard unmodified deck', () => {
+      // A standard 52-card deck has 13 "quads" (4 of each rank)
+      // This should NOT give pairs a huge confidence boost
+      const standardDeck = createStandardDeck();
+
+      gameStateSignal.set(createMockGameState({
+        deck: createDeck(standardDeck),
+        jokers: [
+          // Give both strategies equal-ish joker support
+          createJoker({ id: 'j_sock_and_buskin', name: 'Sock and Buskin' }), // face_cards=100, pairs=70
+          createJoker({ id: 'j_scary_face', name: 'Scary Face' }), // face_cards=100, pairs=60
+        ],
+      }));
+
+      const strategies = service.detectedStrategies();
+      const faceCardsStrategy = strategies.find(s => s.type === 'face_cards');
+      const pairsStrategy = strategies.find(s => s.type === 'pairs');
+
+      // face_cards should win because the jokers have higher face_cards affinity
+      // even though the deck technically has 13 quads
+      if (faceCardsStrategy && pairsStrategy) {
+        expect(faceCardsStrategy.confidence).toBeGreaterThan(pairsStrategy.confidence);
+      }
+    });
+
+    it('should favor pairs when deck is actually modified for pairs', () => {
+      // A smaller deck concentrated with pairs SHOULD boost pairs
+      const pairsDeck = createPairHeavyDeck(); // Helper creates concentrated pairs deck
+
+      gameStateSignal.set(createMockGameState({
+        deck: createDeck(pairsDeck),
+        jokers: [
+          createJoker({ id: 'j_zany_joker', name: 'Zany Joker' }), // pairs joker
+          createJoker({ id: 'j_jolly_joker', name: 'Jolly Joker' }), // pairs joker
+        ],
+      }));
+
+      const build = service.detectedBuild();
+
+      // pairs should win with actual pair jokers and pair deck
+      expect(build.primary).not.toBeNull();
+      expect(build.primary?.type).toBe('pairs');
+    });
+  });
 });

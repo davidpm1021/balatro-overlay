@@ -424,6 +424,7 @@ export class BuildDetectorService {
    */
   private analyzePairs(cards: Card[], jokers: JokerState[]): DetectedStrategy {
     const rankCounts = this.getRankDistribution(cards);
+    const totalCards = cards.length || 1;
 
     // Count how many ranks have pairs, trips, quads
     let pairCount = 0;
@@ -440,7 +441,17 @@ export class BuildDetectorService {
     const jokerScore = this.calculateJokerAffinity(jokers, 'pairs');
 
     // Base deck score from rank concentration
-    const deckScore = Math.min(100, (quadCount * 30) + (tripCount * 20) + (pairCount * 10));
+    // A standard 52-card deck has 13 quads - that's baseline, not exceptional
+    // Score based on concentration ABOVE baseline:
+    // - Quads capped at 50 (so standard deck doesn't max out)
+    // - Trips add significant bonus (unusual without deck modification)
+    // - Pairs add small bonus
+    // - Smaller decks get a concentration bonus (deck was trimmed for pairs)
+    const baseQuadScore = Math.min(50, quadCount * 4);  // Cap at 50 for 13+ quads
+    const tripScore = tripCount * 15;                    // Trips are unusual
+    const pairScore = pairCount * 5;                     // Pairs less important
+    const concentrationBonus = totalCards < 40 ? Math.round((40 - totalCards) / 2) : 0;
+    const deckScore = Math.min(100, baseQuadScore + tripScore + pairScore + concentrationBonus);
 
     // Combined score: 30% deck, 70% jokers
     // BUT: If joker signal is below threshold, confidence is 0
@@ -540,9 +551,10 @@ export class BuildDetectorService {
     // Deck score: fibonacci concentration
     const deckScore = Math.min(100, fibConcentration * 200); // 50% = 100
 
-    // Combined score: 30% deck, 70% jokers
+    // Combined score: 15% deck, 85% jokers
+    // Fibonacci is heavily joker-driven (requires Fibonacci joker to benefit)
     // BUT: If joker signal is below threshold, confidence is 0
-    const rawConfidence = Math.round(deckScore * 0.3 + jokerScore * 0.7);
+    const rawConfidence = Math.round(deckScore * 0.15 + jokerScore * 0.85);
     const confidence = jokerScore < MIN_JOKER_SIGNAL_THRESHOLD ? 0 : rawConfidence;
 
     const reasons: string[] = [];
@@ -585,9 +597,11 @@ export class BuildDetectorService {
     // Standard deck has 12/52 = 23% face cards
     const deckScore = Math.min(100, (faceConcentration - 0.1) * 250);
 
-    // Combined score: 30% deck, 70% jokers
+    // Combined score: 15% deck, 85% jokers
+    // Face cards is heavily joker-driven (like xmult_scaling)
+    // This ensures face card jokers can compete with pure-joker strategies
     // BUT: If joker signal is below threshold, confidence is 0
-    const rawConfidence = Math.round(Math.max(0, deckScore) * 0.3 + jokerScore * 0.7);
+    const rawConfidence = Math.round(Math.max(0, deckScore) * 0.15 + jokerScore * 0.85);
     const confidence = jokerScore < MIN_JOKER_SIGNAL_THRESHOLD ? 0 : rawConfidence;
 
     const reasons: string[] = [];
@@ -644,6 +658,14 @@ export class BuildDetectorService {
   }
 
   /**
+   * Normalize joker ID by stripping the "j_" prefix if present
+   * Game state uses "j_sock_and_buskin", JSON uses "sock_and_buskin"
+   */
+  private normalizeJokerId(id: string): string {
+    return id.startsWith('j_') ? id.slice(2) : id;
+  }
+
+  /**
    * Calculate joker affinity score for a strategy
    */
   private calculateJokerAffinity(
@@ -657,7 +679,9 @@ export class BuildDetectorService {
     let matchingJokers = 0;
 
     for (const joker of jokers) {
-      const affinity = JOKER_AFFINITIES[joker.id];
+      const normalizedId = this.normalizeJokerId(joker.id);
+      const affinity = JOKER_AFFINITIES[normalizedId];
+
       if (affinity?.strategies[strategy]) {
         let score = affinity.strategies[strategy]!;
 
@@ -685,7 +709,8 @@ export class BuildDetectorService {
    */
   private getJokersForStrategy(jokers: JokerState[], strategy: StrategyType): JokerState[] {
     return jokers.filter(joker => {
-      const affinity = JOKER_AFFINITIES[joker.id];
+      const normalizedId = this.normalizeJokerId(joker.id);
+      const affinity = JOKER_AFFINITIES[normalizedId];
       return affinity?.strategies[strategy] && affinity.strategies[strategy]! >= 40;
     });
   }

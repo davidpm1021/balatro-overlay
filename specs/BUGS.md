@@ -1,8 +1,8 @@
 # Bug Tracker
 
-## Status: All Fixed (Spec 004 Complete)
+## Status: Phase 2 Integration Testing In Progress
 
-4 bugs found, all resolved. 268 tests passing.
+Testing overlay with live Balatro gameplay.
 
 ---
 
@@ -10,10 +10,6 @@
 
 | ID | Severity | Component | Status | Fix Priority |
 |----|----------|-----------|--------|--------------|
-| BUG-004 | P1 | Build Detector | Fixed | 1st - Reactivity |
-| BUG-001 | P1 | Shop Overlay / Card Display | Fixed | 2nd - Type Detection |
-| BUG-003 | P1 | Shop Advisor | Fixed | 3rd - Booster Phase |
-| BUG-002 | P2 | Build Detector | Fixed | 4th - Edge Case |
 
 ---
 
@@ -46,6 +42,22 @@
 - **Observed**: Build detection did not update when selecting a joker with flush bonuses
 - **Expected**: Build detection should immediately recalculate and show flush build when acquiring flush joker
 - **Notes**: Computed signal not reacting to joker state changes; possible issue with signal dependency chain
+- **Status**: Fixed in Spec 004
+
+### BUG-005: Face card jokers incorrectly detecting pairs build
+- **Severity**: P2
+- **Component**: Build Detector Service
+- **Observed**: With Sock and Buskin, Smiley Face, Space Joker, and Splash jokers, build detection shows "pairs + xmult scaling" instead of "face cards"
+- **Expected**: Should detect face_cards as primary build since jokers have high face_cards affinity
+- **Root Cause**: Two issues:
+  1. Joker ID mismatch: Lua bridge sends "j_sock_and_buskin", JSON uses "sock_and_buskin"
+  2. Pairs deck score was inflated for standard decks (13 quads = 100 score)
+  3. face_cards was penalized by 30/70 deck/joker weighting vs xmult_scaling's 100% joker
+- **Fix**:
+  1. Added normalizeJokerId() to strip "j_" prefix
+  2. Capped pairs base deck score so standard decks don't max out
+  3. Changed face_cards and fibonacci to 15/85 deck/joker weighting
+- **Status**: Fixed
 
 ---
 
