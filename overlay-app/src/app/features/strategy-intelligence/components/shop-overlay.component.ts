@@ -4,6 +4,7 @@ import { GameStateService, PhaseVisibilityService } from '../../../core/services
 import {
   ShopAdvisorService,
   EnhancedShopRecommendation,
+  RerollRecommendation,
 } from '../services/shop-advisor.service';
 import { ShopItemDetailComponent } from './shop-item-detail.component';
 
@@ -45,7 +46,8 @@ import { ShopItemDetailComponent } from './shop-item-detail.component';
           @for (rec of recommendations(); track rec.item.id) {
             <div
               class="item rounded px-2 py-1.5 border"
-              [ngClass]="getItemClasses(rec)">
+              [ngClass]="getItemClasses(rec)"
+              [class.opacity-50]="!isAffordable(rec.item.cost)">
               <!-- Item Header Row -->
               <div class="item-header flex items-start gap-2">
                 <!-- Tier badge -->
@@ -60,6 +62,10 @@ import { ShopItemDetailComponent } from './shop-item-detail.component';
                   <div class="flex items-center gap-2">
                     <span class="text-xs font-medium text-white truncate">{{ rec.item.name }}</span>
                     <span class="text-[10px] text-yellow-400/70">\${{ rec.item.cost }}</span>
+                    <!-- BUG-009: Unaffordable indicator -->
+                    @if (!isAffordable(rec.item.cost)) {
+                      <span class="text-[9px] px-1 bg-red-500/30 text-red-300 rounded">NO $</span>
+                    }
                   </div>
 
                   <!-- Type badge + score -->
@@ -101,12 +107,19 @@ import { ShopItemDetailComponent } from './shop-item-detail.component';
           }
         </div>
 
-        <!-- Reroll info -->
+        <!-- Reroll info with BUG-015 recommendation -->
         @if (rerollCost()) {
-          <div class="reroll mt-2 pt-2 border-t border-white/10 flex justify-between text-[10px] text-white/40">
-            <span>Reroll: \${{ rerollCost() }}</span>
-            @if (rerollsUsed() > 0) {
-              <span>{{ rerollsUsed() }} used</span>
+          <div class="reroll mt-2 pt-2 border-t border-white/10">
+            <div class="flex justify-between text-[10px] text-white/40">
+              <span>Reroll: \${{ rerollCost() }}</span>
+              @if (rerollsUsed() > 0) {
+                <span>{{ rerollsUsed() }} used</span>
+              }
+            </div>
+            @if (rerollRecommendation(); as rec) {
+              <div class="text-[10px] mt-1" [ngClass]="getRerollRecClasses(rec)">
+                {{ rec.reason }}
+              </div>
             }
           </div>
         }
@@ -144,6 +157,14 @@ export class ShopOverlayComponent {
 
   // Build detection from shop advisor
   readonly primaryBuild = this.shopAdvisor.primaryBuild;
+
+  // BUG-009: Money for affordability checks
+  readonly money = computed(() => this.gameState.state()?.progress.money ?? 0);
+
+  // BUG-015: Reroll recommendation
+  readonly rerollRecommendation = computed<RerollRecommendation>(() => {
+    return this.shopAdvisor.getRerollRecommendation();
+  });
 
   // Track which items are expanded
   private expandedItems = signal<Set<string>>(new Set());
@@ -253,6 +274,24 @@ export class ShopOverlayComponent {
       'bg-green-500/30 text-green-300': recommendation === 'buy',
       'bg-yellow-500/30 text-yellow-300': recommendation === 'consider',
       'bg-red-500/30 text-red-300': recommendation === 'skip',
+    };
+  }
+
+  /**
+   * BUG-009: Check if an item is affordable
+   */
+  isAffordable(cost: number): boolean {
+    return cost <= this.money();
+  }
+
+  /**
+   * BUG-015: Get classes for reroll recommendation
+   */
+  getRerollRecClasses(rec: RerollRecommendation): Record<string, boolean> {
+    return {
+      'text-yellow-300': rec.shouldReroll,
+      'text-green-300': !rec.shouldReroll && rec.confidence === 'high',
+      'text-white/50': !rec.shouldReroll && rec.confidence !== 'high',
     };
   }
 }

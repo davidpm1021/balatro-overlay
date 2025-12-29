@@ -83,6 +83,15 @@ export interface BoosterCardRecommendation {
   tier: 'S' | 'A' | 'B' | 'C' | 'D' | 'F';
 }
 
+/**
+ * Reroll recommendation for shop
+ */
+export interface RerollRecommendation {
+  shouldReroll: boolean;
+  reason: string;
+  confidence: 'high' | 'medium' | 'low';
+}
+
 // Interface matching jokers-complete.json structure
 interface JokerJsonData {
   id: string;
@@ -133,6 +142,9 @@ interface JokerJsonData {
   bossWeaknesses: string[];
   alwaysBuy: boolean;
   trapJoker: boolean;
+  // BUG-008: Activation probability for conditional jokers
+  // 1.0 = always activates, 0.25 = activates ~25% of hands
+  activationProbability?: number;
 }
 
 interface BossBlindJsonData {
@@ -985,6 +997,18 @@ export class ShopAdvisorService {
       debugReasons.push('LateXMult+15');
     }
 
+    // 8. BUG-008: ACTIVATION PROBABILITY PENALTY for conditional jokers
+    const activationProb = jokerJson.activationProbability ?? 1.0;
+    if (activationProb < 1.0) {
+      // Penalize conditional jokers - use sqrt to soften the penalty
+      // Only apply penalty to the portion above base 50
+      const penalty = Math.round((score - 50) * (1 - Math.sqrt(activationProb)));
+      if (penalty > 0) {
+        score -= penalty;
+        debugReasons.push(`CondPenalty-${penalty}(${Math.round(activationProb * 100)}%)`);
+      }
+    }
+
     // Clamp to 0-100
     const finalScore = Math.max(0, Math.min(100, Math.round(score)));
 
@@ -1385,5 +1409,75 @@ export class ShopAdvisorService {
     // Calculate how far below threshold
     const belowThreshold = INTEREST_THRESHOLD - remaining;
     return Math.min(10, belowThreshold);
+  }
+
+  /**
+   * BUG-009: Check if an item cost is affordable
+   */
+  isAffordable(cost: number): boolean {
+    return cost <= this.money();
+  }
+
+  /**
+   * BUG-015: Get recommendation on whether to reroll the shop
+   */
+  getRerollRecommendation(): RerollRecommendation {
+    const currentMoney = this.money();
+    const rerollCost = this.gameState()?.shop?.rerollCost ?? 5;
+    const recommendations = this.getShopRecommendations();
+    const bestScore = recommendations.length > 0 ? recommendations[0].score : 0;
+
+    // Can't afford reroll
+    if (currentMoney < rerollCost) {
+      return {
+        shouldReroll: false,
+        reason: `Can't afford reroll ($${rerollCost})`,
+        confidence: 'high',
+      };
+    }
+
+    // Great option available - don't reroll
+    if (bestScore >= 75) {
+      return {
+        shouldReroll: false,
+        reason: 'Great option available!',
+        confidence: 'high',
+      };
+    }
+
+    // Would break interest threshold
+    const INTEREST_THRESHOLD = 25;
+    if (currentMoney >= INTEREST_THRESHOLD && currentMoney - rerollCost < INTEREST_THRESHOLD) {
+      return {
+        shouldReroll: false,
+        reason: 'Reroll would break $25 interest',
+        confidence: 'medium',
+      };
+    }
+
+    // Weak shop and money to spare - recommend reroll
+    if (bestScore < 50 && currentMoney > INTEREST_THRESHOLD + rerollCost) {
+      return {
+        shouldReroll: true,
+        reason: `Weak shop (best: ${bestScore}), reroll`,
+        confidence: 'high',
+      };
+    }
+
+    // Good enough option, no need to reroll
+    if (bestScore >= 60) {
+      return {
+        shouldReroll: false,
+        reason: 'Good option available',
+        confidence: 'medium',
+      };
+    }
+
+    // Mediocre shop, could go either way
+    return {
+      shouldReroll: false,
+      reason: 'Shop is acceptable',
+      confidence: 'low',
+    };
   }
 }

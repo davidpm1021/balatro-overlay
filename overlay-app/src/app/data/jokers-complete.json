@@ -50,7 +50,8 @@
       "bossCounters": [],
       "bossWeaknesses": [],
       "alwaysBuy": true,
-      "trapJoker": false
+      "trapJoker": false,
+      "activationProbability": 1.0
     },
     {
       "id": "brainstorm",
@@ -100,7 +101,8 @@
       "bossCounters": [],
       "bossWeaknesses": [],
       "alwaysBuy": true,
-      "trapJoker": false
+      "trapJoker": false,
+      "activationProbability": 1.0
     },
     {
       "id": "triboulet",
@@ -150,7 +152,8 @@
       "bossCounters": [],
       "bossWeaknesses": ["the_club", "the_goad", "the_window", "the_head"],
       "alwaysBuy": true,
-      "trapJoker": false
+      "trapJoker": false,
+      "activationProbability": 0.5
     },
     {
       "id": "cavendish",
@@ -200,7 +203,8 @@
       "bossCounters": [],
       "bossWeaknesses": [],
       "alwaysBuy": true,
-      "trapJoker": false
+      "trapJoker": false,
+      "activationProbability": 1.0
     },
     {
       "id": "baron",
@@ -250,7 +254,8 @@
       "bossCounters": [],
       "bossWeaknesses": ["the_club", "the_goad", "the_window", "the_head"],
       "alwaysBuy": true,
-      "trapJoker": false
+      "trapJoker": false,
+      "activationProbability": 0.5
     },
     {
       "id": "vampire",
@@ -1000,7 +1005,8 @@
       "bossCounters": [],
       "bossWeaknesses": ["the_club", "the_goad", "the_window", "the_head"],
       "alwaysBuy": true,
-      "trapJoker": false
+      "trapJoker": false,
+      "activationProbability": 0.75
     },
     {
       "id": "hack",
@@ -2350,7 +2356,8 @@
       "bossCounters": [],
       "bossWeaknesses": ["the_club", "the_goad", "the_window", "the_head"],
       "alwaysBuy": false,
-      "trapJoker": false
+      "trapJoker": false,
+      "activationProbability": 0.25
     },
     {
       "id": "raised_fist",
@@ -2467,7 +2474,8 @@
       "builds": { "flush": 50, "pairs": 50, "straights": 50, "face_cards": 50, "xmult_scaling": 30, "retrigger": 30, "economy": 0 },
       "synergies": { "strong": [], "medium": ["blueprint", "brainstorm"], "antiSynergy": [] },
       "bossCounters": [], "bossWeaknesses": [],
-      "alwaysBuy": false, "trapJoker": false
+      "alwaysBuy": false, "trapJoker": false,
+      "activationProbability": 1.0
     },
     {
       "id": "greedy_joker",
@@ -2484,7 +2492,8 @@
       "builds": { "flush": 100, "pairs": 40, "straights": 40, "face_cards": 40, "xmult_scaling": 40, "retrigger": 50, "economy": 0 },
       "synergies": { "strong": ["rough_gem", "smeared_joker", "the_tribe"], "medium": ["droll_joker"], "antiSynergy": [] },
       "bossCounters": [], "bossWeaknesses": ["the_head"],
-      "alwaysBuy": false, "trapJoker": false
+      "alwaysBuy": false, "trapJoker": false,
+      "activationProbability": 0.5
     },
     {
       "id": "lusty_joker",
@@ -2501,7 +2510,8 @@
       "builds": { "flush": 100, "pairs": 40, "straights": 40, "face_cards": 40, "xmult_scaling": 40, "retrigger": 50, "economy": 0 },
       "synergies": { "strong": ["bloodstone", "smeared_joker", "the_tribe"], "medium": ["droll_joker"], "antiSynergy": [] },
       "bossCounters": [], "bossWeaknesses": ["the_goad"],
-      "alwaysBuy": false, "trapJoker": false
+      "alwaysBuy": false, "trapJoker": false,
+      "activationProbability": 0.5
     },
     {
       "id": "wrathful_joker",
@@ -3743,7 +3753,8 @@
       "builds": { "flush": 50, "pairs": 50, "straights": 50, "face_cards": 50, "xmult_scaling": 30, "retrigger": 30, "economy": 0 },
       "synergies": { "strong": ["drunkard"], "medium": [], "antiSynergy": ["burglar"] },
       "bossCounters": [], "bossWeaknesses": [],
-      "alwaysBuy": false, "trapJoker": false
+      "alwaysBuy": false, "trapJoker": false,
+      "activationProbability": 1.0
     },
     {
       "id": "mystic_summit",
@@ -4049,7 +4060,8 @@
       "builds": { "flush": 50, "pairs": 60, "straights": 40, "face_cards": 100, "xmult_scaling": 40, "retrigger": 60, "economy": 0 },
       "synergies": { "strong": ["sock_and_buskin", "pareidolia"], "medium": ["triboulet", "photograph"], "antiSynergy": [] },
       "bossCounters": [], "bossWeaknesses": ["the_club", "the_goad", "the_window", "the_head"],
-      "alwaysBuy": false, "trapJoker": false
+      "alwaysBuy": false, "trapJoker": false,
+      "activationProbability": 0.75
     },
     {
       "id": "scary_face",
@@ -4066,7 +4078,8 @@
       "builds": { "flush": 50, "pairs": 60, "straights": 40, "face_cards": 100, "xmult_scaling": 30, "retrigger": 60, "economy": 0 },
       "synergies": { "strong": ["sock_and_buskin", "pareidolia"], "medium": ["triboulet"], "antiSynergy": [] },
       "bossCounters": [], "bossWeaknesses": ["the_club", "the_goad", "the_window", "the_head"],
-      "alwaysBuy": false, "trapJoker": false
+      "alwaysBuy": false, "trapJoker": false,
+      "activationProbability": 0.75
     },
     {
       "id": "swashbuckler",

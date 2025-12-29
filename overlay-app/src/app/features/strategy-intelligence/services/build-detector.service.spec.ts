@@ -1104,4 +1104,101 @@ describe('BuildDetectorService', () => {
       expect(build.primary?.type).toBe('pairs');
     });
   });
+
+  // ===========================
+  // BUG-012: Enabler jokers overvalued without synergy partners
+  // Pareidolia/Smeared/Splash need payoff jokers to be valuable
+  // ===========================
+
+  describe('BUG-012: Enabler joker weighting', () => {
+    it('should reduce enabler weight when no payoff jokers exist', () => {
+      // Pareidolia alone should NOT show strong face_cards build
+      // Pareidolia is an enabler - it makes all cards face cards, but doesn't provide
+      // the payoff (mult, chips, xmult) that face card payoff jokers provide
+      const standardDeck = createStandardDeck();
+
+      gameStateSignal.set(createMockGameState({
+        deck: createDeck(standardDeck),
+        jokers: [createJoker({ id: 'pareidolia', name: 'Pareidolia' })],
+      }));
+
+      const build = service.detectedBuild();
+      const faceCardsConfidence = build.primary?.type === 'face_cards' ? build.primary.confidence : 0;
+
+      // Without payoff jokers, Pareidolia alone should not trigger > 50% confidence
+      expect(faceCardsConfidence).toBeLessThan(50);
+    });
+
+    it('should show normal weight when enabler + payoff both present', () => {
+      // Pareidolia + Smiley Face = strong face_cards build
+      // Pareidolia enables, Smiley Face provides the payoff
+      const standardDeck = createStandardDeck();
+
+      gameStateSignal.set(createMockGameState({
+        deck: createDeck(standardDeck),
+        jokers: [
+          createJoker({ id: 'pareidolia', name: 'Pareidolia' }),
+          createJoker({ id: 'smiley_face', name: 'Smiley Face' }),
+        ],
+      }));
+
+      const build = service.detectedBuild();
+      const faceCardsConfidence = build.primary?.type === 'face_cards' ? build.primary.confidence : 0;
+
+      // With both enabler and payoff, face_cards should have > 50% confidence
+      expect(faceCardsConfidence).toBeGreaterThan(50);
+    });
+
+    it('should reduce smeared_joker weight for flush when no suit-specific jokers', () => {
+      // Smeared Joker alone is an enabler for flush, not a payoff
+      const standardDeck = createStandardDeck();
+
+      gameStateSignal.set(createMockGameState({
+        deck: createDeck(standardDeck),
+        jokers: [createJoker({ id: 'smeared_joker', name: 'Smeared Joker' })],
+      }));
+
+      const strategies = service.detectedStrategies();
+      const flushStrategy = strategies.find(s => s.type === 'flush');
+
+      // Without suit-specific payoff jokers, flush confidence should be low
+      expect(flushStrategy?.confidence ?? 0).toBeLessThan(50);
+    });
+
+    it('should show strong flush when smeared_joker + suit joker present', () => {
+      // Smeared Joker + Lusty Joker = strong flush build
+      const standardDeck = createStandardDeck();
+
+      gameStateSignal.set(createMockGameState({
+        deck: createDeck(standardDeck),
+        jokers: [
+          createJoker({ id: 'smeared_joker', name: 'Smeared Joker' }),
+          createJoker({ id: 'lusty_joker', name: 'Lusty Joker' }),
+        ],
+      }));
+
+      const strategies = service.detectedStrategies();
+      const flushStrategy = strategies.find(s => s.type === 'flush');
+
+      // With enabler + payoff, flush should have reasonable confidence
+      expect(flushStrategy?.confidence ?? 0).toBeGreaterThan(30);
+    });
+
+    it('should reduce splash weight when no scoring jokers exist', () => {
+      // Splash alone doesn't provide any scoring benefit
+      const standardDeck = createStandardDeck();
+
+      gameStateSignal.set(createMockGameState({
+        deck: createDeck(standardDeck),
+        jokers: [createJoker({ id: 'splash', name: 'Splash' })],
+      }));
+
+      const strategies = service.detectedStrategies();
+
+      // All strategies should have low confidence with just Splash
+      strategies.forEach(strategy => {
+        expect(strategy.confidence).toBeLessThan(50);
+      });
+    });
+  });
 });

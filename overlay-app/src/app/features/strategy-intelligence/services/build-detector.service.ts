@@ -111,6 +111,46 @@ const RANK_AFFINITIES: Record<string, Rank[]> = {
 };
 
 /**
+ * BUG-012 Fix: Enabler jokers that need payoff partners to be valuable
+ * Enablers provide conditions (e.g., "all cards are face cards") but don't score
+ * Payoffs provide the scoring benefit (e.g., "+5 Mult per face card")
+ *
+ * Enabler weight is reduced by 70% when no matching payoff jokers exist
+ */
+const ENABLER_JOKERS: Record<string, {
+  strategies: StrategyType[];
+  payoffJokers: string[];
+}> = {
+  // Pareidolia: makes all cards face cards - needs face card payoffs
+  pareidolia: {
+    strategies: ['face_cards'],
+    payoffJokers: ['smiley_face', 'scary_face', 'sock_and_buskin', 'photograph', 'baron', 'triboulet', 'shoot_the_moon'],
+  },
+  // Smeared Joker: merges suits - needs flush/suit payoffs
+  smeared_joker: {
+    strategies: ['flush'],
+    payoffJokers: ['lusty_joker', 'greedy_joker', 'wrathful_joker', 'gluttonous_joker', 'bloodstone', 'rough_gem', 'arrowhead', 'onyx_agate'],
+  },
+  // Splash: all cards score - needs per-card scoring payoffs
+  splash: {
+    strategies: ['flush', 'pairs', 'face_cards'],
+    payoffJokers: ['smiley_face', 'scary_face', 'lusty_joker', 'fibonacci', 'even_steven', 'odd_todd', 'hiker'],
+  },
+};
+
+/**
+ * Payoff jokers that provide actual scoring (for inverse lookup)
+ */
+const PAYOFF_JOKERS: Set<string> = new Set([
+  // Face card payoffs
+  'smiley_face', 'scary_face', 'sock_and_buskin', 'photograph', 'baron', 'triboulet', 'shoot_the_moon',
+  // Suit payoffs
+  'lusty_joker', 'greedy_joker', 'wrathful_joker', 'gluttonous_joker', 'bloodstone', 'rough_gem', 'arrowhead', 'onyx_agate',
+  // General per-card payoffs
+  'fibonacci', 'even_steven', 'odd_todd', 'hiker', 'hack', 'walkie_talkie', 'scholar', 'wee_joker',
+]);
+
+/**
  * Build joker affinity map from jokers-complete.json
  * Maps joker IDs to their strategy affinities
  */
@@ -667,6 +707,7 @@ export class BuildDetectorService {
 
   /**
    * Calculate joker affinity score for a strategy
+   * BUG-012 Fix: Applies penalty to enabler jokers without payoff partners
    */
   private calculateJokerAffinity(
     jokers: JokerState[],
@@ -674,6 +715,12 @@ export class BuildDetectorService {
     preferredSuit?: Suit
   ): number {
     if (jokers.length === 0) return 0;
+
+    // Build a set of normalized joker IDs for quick lookup
+    const jokerIdSet = new Set(jokers.map(j => this.normalizeJokerId(j.id)));
+
+    // Check if we have payoff jokers for this strategy
+    const hasPayoffForStrategy = this.hasPayoffJokersForStrategy(jokerIdSet, strategy);
 
     let totalAffinity = 0;
     let matchingJokers = 0;
@@ -690,6 +737,17 @@ export class BuildDetectorService {
           score = Math.min(100, score * 1.3);
         }
 
+        // BUG-012: Reduce enabler weight when no payoff partners exist
+        const enablerInfo = ENABLER_JOKERS[normalizedId];
+        if (enablerInfo && enablerInfo.strategies.includes(strategy)) {
+          // Check if any payoff jokers for this enabler exist
+          const hasMatchingPayoff = enablerInfo.payoffJokers.some(payoffId => jokerIdSet.has(payoffId));
+          if (!hasMatchingPayoff) {
+            // Reduce enabler score by 70% when no payoff exists
+            score = score * 0.3;
+          }
+        }
+
         totalAffinity += score;
         matchingJokers++;
       }
@@ -702,6 +760,20 @@ export class BuildDetectorService {
     const jokerCountBonus = Math.min(30, matchingJokers * 10);
 
     return Math.min(100, Math.round(avgAffinity * 0.7 + jokerCountBonus));
+  }
+
+  /**
+   * Check if we have any payoff jokers for a given strategy
+   */
+  private hasPayoffJokersForStrategy(jokerIds: Set<string>, strategy: StrategyType): boolean {
+    // Check each enabler to see if its payoffs exist
+    for (const [enablerId, info] of Object.entries(ENABLER_JOKERS)) {
+      if (info.strategies.includes(strategy)) {
+        const hasPayoff = info.payoffJokers.some(payoffId => jokerIds.has(payoffId));
+        if (hasPayoff) return true;
+      }
+    }
+    return false;
   }
 
   /**
