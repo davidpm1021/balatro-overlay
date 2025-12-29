@@ -53,6 +53,8 @@ const DISCARD_REASONS = {
 const KEEP_REASONS = {
   forms_best_hand: 'Part of your best hand',
   matches_build: 'Matches your {build} build',
+  matches_secondary_build: 'Supports your {build} hybrid',
+  face_card_jokers: 'Face card - synergizes with your jokers',
   has_enhancement: 'Has {enhancement} enhancement',
   has_edition: 'Has {edition} edition',
   has_seal: 'Has {seal} seal',
@@ -421,7 +423,7 @@ export class HandAnalyzerService {
       return KEEP_REASONS.has_seal.replace('{seal}', card.seal);
     }
 
-    // Check build context
+    // Check primary build context
     if (build.primary) {
       const matchesBuild = this.cardMatchesBuild(card, build.primary);
       if (matchesBuild) {
@@ -430,12 +432,51 @@ export class HandAnalyzerService {
       }
     }
 
+    // Check secondary build for hybrids
+    if (build.isHybrid && build.secondary) {
+      const matchesSecondary = this.cardMatchesBuild(card, build.secondary);
+      if (matchesSecondary) {
+        const buildName = BUILD_TYPE_DISPLAY[build.secondary.type];
+        return KEEP_REASONS.matches_secondary_build.replace('{build}', buildName);
+      }
+    }
+
+    // Joker-aware fallback: Check if we have face card jokers and this is a face card
+    // This helps even if build detection isn't perfect
+    if (FACE_RANKS.includes(card.rank) && this.hasFaceCardJokers()) {
+      return KEEP_REASONS.face_card_jokers;
+    }
+
     // Check if high value card (Ace, King)
     if (card.rank === 'A' || card.rank === 'K') {
       return KEEP_REASONS.high_value;
     }
 
     return null;
+  }
+
+  /**
+   * Check if the player has jokers that benefit from face cards
+   */
+  private hasFaceCardJokers(): boolean {
+    const jokers = this.jokers();
+    if (!jokers || jokers.length === 0) return false;
+
+    // Known face card joker IDs (both with and without j_ prefix)
+    const faceCardJokerIds = [
+      'sock_and_buskin', 'j_sock_and_buskin',
+      'smiley_face', 'j_smiley_face',
+      'scary_face', 'j_scary_face',
+      'photograph', 'j_photograph',
+      'baron', 'j_baron',
+      'triboulet', 'j_triboulet',
+      'business_card', 'j_business_card',
+      'hanging_chad', 'j_hanging_chad',
+      'shoot_the_moon', 'j_shoot_the_moon',
+      'pareidolia', 'j_pareidolia',
+    ];
+
+    return jokers.some(j => faceCardJokerIds.includes(j.id));
   }
 
   /**

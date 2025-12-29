@@ -3195,7 +3195,7 @@
       "position": { "sensitive": false, "requirement": "any", "copyable": true },
       "tier": "B",
       "tierByAnte": { "early": "B", "mid": "B", "late": "C" },
-      "builds": { "flush": 60, "pairs": 50, "straights": 50, "face_cards": 50, "xmult_scaling": 40, "retrigger": 30, "economy": 0 },
+      "builds": { "flush": 50, "pairs": 30, "straights": 30, "face_cards": 0, "xmult_scaling": 30, "retrigger": 20, "economy": 0 },
       "synergies": { "strong": ["drunkard"], "medium": ["yorick"], "antiSynergy": ["burglar"] },
       "bossCounters": [], "bossWeaknesses": [],
       "alwaysBuy": false, "trapJoker": false

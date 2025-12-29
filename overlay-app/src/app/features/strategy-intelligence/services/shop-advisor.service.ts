@@ -485,6 +485,7 @@ export class ShopAdvisorService {
 
   /**
    * Calculate build fit value separately for breakdown
+   * This mirrors the logic in applyBuildFitBonusFromJson
    */
   private calculateBuildFitValue(
     jokerJson: JokerJsonData,
@@ -504,8 +505,24 @@ export class ShopAdvisorService {
     };
 
     const buildKey = buildTypeMap[build.type];
-    if (buildKey && jokerJson.builds[buildKey]) {
-      return Math.round(jokerJson.builds[buildKey] * 0.3);
+    if (!buildKey) return 0;
+
+    const buildAffinity = jokerJson.builds[buildKey] ?? 0;
+
+    if (build.confidence >= 70) {
+      if (buildAffinity >= 70) {
+        return Math.round((buildAffinity - 50) * 0.5);
+      } else if (buildAffinity <= 30) {
+        return -Math.round((30 - buildAffinity) * 0.4);
+      }
+    } else if (build.confidence >= 50) {
+      if (buildAffinity >= 60) {
+        return Math.round(buildAffinity * 0.35);
+      }
+    } else {
+      if (buildAffinity >= 80) {
+        return Math.round(buildAffinity * 0.25);
+      }
     }
 
     return 0;
@@ -1061,10 +1078,39 @@ export class ShopAdvisorService {
     };
 
     const buildKey = buildTypeMap[build.type];
-    if (buildKey && jokerJson.builds[buildKey]) {
-      // BuildFitBonus = joker.builds[detectedBuild] * 0.3
-      const bonus = Math.round(jokerJson.builds[buildKey] * 0.3);
-      if (bonus > 0) {
+    if (!buildKey) return score;
+
+    const buildAffinity = jokerJson.builds[buildKey] ?? 0;
+
+    // When build is established, weight build fit MUCH more heavily
+    // High confidence build (70%+): jokers should primarily be judged by build fit
+    // - High affinity (70+): significant bonus
+    // - Low affinity (0-30): significant penalty (doesn't fit your build)
+    // - Medium affinity (30-70): small adjustment
+
+    if (build.confidence >= 70) {
+      // Strong build - build fit matters most
+      if (buildAffinity >= 70) {
+        const bonus = Math.round((buildAffinity - 50) * 0.5); // +10 to +25
+        score += bonus;
+        debug.push(`Build+${bonus}`);
+      } else if (buildAffinity <= 30) {
+        // Penalty for jokers that don't fit the build
+        const penalty = Math.round((30 - buildAffinity) * 0.4); // -4 to -12
+        score -= penalty;
+        debug.push(`NoFit-${penalty}`);
+      }
+    } else if (build.confidence >= 50) {
+      // Medium build - moderate build fit bonus
+      if (buildAffinity >= 60) {
+        const bonus = Math.round(buildAffinity * 0.35); // up to +35
+        score += bonus;
+        debug.push(`Build+${bonus}`);
+      }
+    } else {
+      // Weak build - small bonus only for strong fits
+      if (buildAffinity >= 80) {
+        const bonus = Math.round(buildAffinity * 0.25);
         score += bonus;
         debug.push(`Build+${bonus}`);
       }
