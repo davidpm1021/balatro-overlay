@@ -226,7 +226,10 @@ describe('HandAnalyzerService', () => {
         return { handType: 'high_card' as HandType, scoringCards: [cards[0]] };
       });
 
-      scoreEngineMock.calculateScore.and.returnValue(2450);
+      // Return different scores based on hand type - flush scores higher
+      scoreEngineMock.calculateScore.and.callFake((ctx: { handType: HandType }) => {
+        return ctx.handType === 'flush' ? 2450 : 100;
+      });
 
       const analysis = service.analyzeHand(hand, createBlind(1800), {
         primary: null,
@@ -235,6 +238,56 @@ describe('HandAnalyzerService', () => {
       });
 
       expect(analysis.bestHand.handType).toBe('flush');
+    });
+
+    it('should prefer high-level pair over low-level flush with face card jokers', () => {
+      // Scenario: Pair of Kings with level 5 + face card jokers beats level 1 flush
+      const hand = [
+        createCard('h1', 'hearts', 'K'),
+        createCard('s2', 'spades', 'K'),
+        createCard('h3', 'hearts', '5'),
+        createCard('h4', 'hearts', '6'),
+        createCard('h5', 'hearts', '7'),
+        createCard('h6', 'hearts', '8'),
+      ];
+
+      // Detect both pair (2 cards) and flush (5 hearts cards)
+      handCalculatorMock.detectHandType.and.callFake((cards: Card[]) => {
+        // Two Kings = pair
+        const kings = cards.filter(c => c.rank === 'K');
+        if (kings.length === 2 && cards.length === 2) {
+          return { handType: 'pair' as HandType, scoringCards: cards };
+        }
+        // Five hearts = flush (exclude K of spades)
+        const hearts = cards.filter(c => c.suit === 'hearts');
+        if (hearts.length === 5 && cards.length === 5) {
+          return { handType: 'flush' as HandType, scoringCards: cards };
+        }
+        return { handType: 'high_card' as HandType, scoringCards: [cards[0]] };
+      });
+
+      // High-level pair (level 5) + face card jokers = higher score than low-level flush
+      scoreEngineMock.calculateScore.and.callFake((ctx: { handType: HandType }) => {
+        if (ctx.handType === 'pair') return 3500; // High level pair + face card jokers
+        if (ctx.handType === 'flush') return 2000; // Low level flush
+        return 100;
+      });
+
+      const analysis = service.analyzeHand(hand, createBlind(1800), {
+        primary: {
+          type: 'face_cards' as const,
+          confidence: 80,
+          viability: 80,
+          requirements: [],
+          currentStrength: 70,
+        },
+        secondary: undefined,
+        isHybrid: false,
+      });
+
+      // Should prefer the pair because it scores higher
+      expect(analysis.bestHand.handType).toBe('pair');
+      expect(analysis.bestHand.projectedScore).toBe(3500);
     });
   });
 
@@ -629,6 +682,180 @@ describe('HandAnalyzerService', () => {
       expect(h1Analysis?.isPartOfBestHand).toBe(true);
       expect(h2Analysis?.isPartOfBestHand).toBe(true);
       expect(s1Analysis?.isPartOfBestHand).toBe(false);
+    });
+  });
+
+  describe('BUG-010: Two pair detection', () => {
+    it('should detect two pair from 6622 hand', () => {
+      const hand = [
+        createCard('h1', 'hearts', '6'),
+        createCard('s1', 'spades', '6'),
+        createCard('c1', 'clubs', '2'),
+        createCard('d1', 'diamonds', '2'),
+      ];
+
+      handCalculatorMock.detectHandType.and.callFake((cards: Card[]) => {
+        const rankCounts = new Map<string, Card[]>();
+        cards.forEach(c => {
+          const existing = rankCounts.get(c.rank) || [];
+          existing.push(c);
+          rankCounts.set(c.rank, existing);
+        });
+
+        const pairs = [...rankCounts.values()].filter(g => g.length === 2);
+        if (pairs.length >= 2) {
+          const scoringCards = pairs.slice(0, 2).flat();
+          return { handType: 'two_pair' as HandType, scoringCards };
+        }
+        if (pairs.length === 1) {
+          return { handType: 'pair' as HandType, scoringCards: pairs[0] };
+        }
+        return { handType: 'high_card' as HandType, scoringCards: [cards[0]] };
+      });
+      // Return different scores based on hand type - two_pair should score highest
+      scoreEngineMock.calculateScore.and.callFake((ctx: { handType: HandType }) => {
+        if (ctx.handType === 'two_pair') return 500;
+        if (ctx.handType === 'pair') return 200;
+        return 50; // high_card
+      });
+
+      const analysis = service.analyzeHand(hand, createBlind(300), {
+        primary: null,
+        secondary: undefined,
+        isHybrid: false,
+      });
+
+      expect(analysis.bestHand.handType).toBe('two_pair');
+      expect(analysis.bestHand.cards.length).toBe(4);
+    });
+  });
+
+  describe('BUG-013/BUG-014: Debuffed card handling', () => {
+    it('should detect full house when one triplet card is debuffed', () => {
+      const hand = [
+        createCard('h1', 'hearts', 'A'),
+        createCard('s1', 'spades', 'A'),
+        createCard('d1', 'diamonds', '9'),
+        createCard('c1', 'clubs', '9'),
+        createCard('h2', 'hearts', '9', { debuffed: true }),
+      ];
+
+      handCalculatorMock.detectHandType.and.callFake((cards: Card[]) => {
+        const rankCounts = new Map<string, Card[]>();
+        cards.forEach(c => {
+          const existing = rankCounts.get(c.rank) || [];
+          existing.push(c);
+          rankCounts.set(c.rank, existing);
+        });
+
+        const triplet = [...rankCounts.entries()].find(([, g]) => g.length === 3);
+        const pair = [...rankCounts.entries()].find(([, g]) => g.length === 2);
+
+        if (triplet && pair) {
+          return { handType: 'full_house' as HandType, scoringCards: [...triplet[1], ...pair[1]] };
+        }
+        if (triplet) {
+          return { handType: 'three_of_a_kind' as HandType, scoringCards: triplet[1] };
+        }
+        if (pair) {
+          return { handType: 'pair' as HandType, scoringCards: pair[1] };
+        }
+        return { handType: 'high_card' as HandType, scoringCards: [cards[0]] };
+      });
+      // Return different scores - full_house should score highest
+      scoreEngineMock.calculateScore.and.callFake((ctx: { handType: HandType }) => {
+        if (ctx.handType === 'full_house') return 800;
+        if (ctx.handType === 'three_of_a_kind') return 400;
+        if (ctx.handType === 'two_pair') return 300;
+        if (ctx.handType === 'pair') return 200;
+        return 50; // high_card
+      });
+
+      const analysis = service.analyzeHand(hand, createBlind(600), {
+        primary: null,
+        secondary: undefined,
+        isHybrid: false,
+      });
+
+      expect(analysis.bestHand.handType).toBe('full_house');
+      expect(analysis.bestHand.cards.length).toBe(5);
+    });
+
+    it('should include debuffed cards in scoring cards when they form best hand', () => {
+      const debuffedCard = createCard('h2', 'hearts', '9', { debuffed: true });
+      const hand = [
+        createCard('h1', 'hearts', 'A'),
+        createCard('s1', 'spades', 'A'),
+        createCard('d1', 'diamonds', '9'),
+        createCard('c1', 'clubs', '9'),
+        debuffedCard,
+      ];
+
+      handCalculatorMock.detectHandType.and.callFake((cards: Card[]) => {
+        const rankCounts = new Map<string, Card[]>();
+        cards.forEach(c => {
+          const existing = rankCounts.get(c.rank) || [];
+          existing.push(c);
+          rankCounts.set(c.rank, existing);
+        });
+
+        const triplet = [...rankCounts.entries()].find(([, g]) => g.length === 3);
+        const pair = [...rankCounts.entries()].find(([, g]) => g.length === 2);
+
+        if (triplet && pair) {
+          return { handType: 'full_house' as HandType, scoringCards: [...triplet[1], ...pair[1]] };
+        }
+        if (triplet) {
+          return { handType: 'three_of_a_kind' as HandType, scoringCards: triplet[1] };
+        }
+        if (pair) {
+          return { handType: 'pair' as HandType, scoringCards: pair[1] };
+        }
+        return { handType: 'high_card' as HandType, scoringCards: [cards[0]] };
+      });
+      // Return different scores - full_house should score highest
+      scoreEngineMock.calculateScore.and.callFake((ctx: { handType: HandType }) => {
+        if (ctx.handType === 'full_house') return 800;
+        if (ctx.handType === 'three_of_a_kind') return 400;
+        if (ctx.handType === 'two_pair') return 300;
+        if (ctx.handType === 'pair') return 200;
+        return 50; // high_card
+      });
+
+      const analysis = service.analyzeHand(hand, createBlind(600), {
+        primary: null,
+        secondary: undefined,
+        isHybrid: false,
+      });
+
+      // The debuffed card should be in the scoring cards since it forms the full house
+      expect(analysis.bestHand.cards.some(c => c.id === 'h2')).toBe(true);
+    });
+
+    it('should recommend discarding debuffed cards not in best hand', () => {
+      const debuffedCard = createCard('d2', 'diamonds', '3', { debuffed: true });
+      const hand = [
+        createCard('h1', 'hearts', 'K'),
+        createCard('s1', 'spades', 'K'),
+        createCard('c1', 'clubs', '5'),
+        debuffedCard,
+      ];
+
+      handCalculatorMock.detectHandType.and.returnValue({
+        handType: 'pair',
+        scoringCards: [hand[0], hand[1]],
+      });
+      scoreEngineMock.calculateScore.and.returnValue(300);
+
+      const analysis = service.analyzeHand(hand, createBlind(200), {
+        primary: null,
+        secondary: undefined,
+        isHybrid: false,
+      });
+
+      const debuffedAnalysis = analysis.analyzedCards.find(a => a.card.id === 'd2');
+      expect(debuffedAnalysis?.action).toBe('discard');
+      expect(debuffedAnalysis?.reason).toContain('Debuffed');
     });
   });
 
