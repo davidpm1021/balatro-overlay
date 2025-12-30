@@ -70,10 +70,10 @@ export class HandCalculatorService {
 
     // Detect hand type (highest to lowest priority)
     if (hasFive && isFlush) {
-      return { handType: 'flush_five', scoringCards: cards };
+      return { handType: 'flush_five', scoringCards: this.getScoringCardsForRank(cards, rankCounts, 5) };
     }
     if (hasTrips && pairCount >= 1 && isFlush) {
-      return { handType: 'flush_house', scoringCards: cards };
+      return { handType: 'flush_house', scoringCards: this.getFullHouseCards(cards, rankCounts) };
     }
     if (hasFive) {
       return { handType: 'five_of_a_kind', scoringCards: this.getScoringCardsForRank(cards, rankCounts, 5) };
@@ -89,7 +89,7 @@ export class HandCalculatorService {
       return { handType: 'four_of_a_kind', scoringCards: this.getScoringCardsForRank(cards, rankCounts, 4) };
     }
     if (hasTrips && pairCount >= 1) {
-      return { handType: 'full_house', scoringCards: cards };
+      return { handType: 'full_house', scoringCards: this.getFullHouseCards(cards, rankCounts) };
     }
     if (isFlush) {
       return { handType: 'flush', scoringCards: this.getFlushCards(cards, suitCounts) };
@@ -307,6 +307,24 @@ export class HandCalculatorService {
     return cards.filter(c => pairRanks.includes(c.rank));
   }
 
+  private getFullHouseCards(cards: Card[], rankCounts: Record<Rank, number>): Card[] {
+    // Find the three-of-a-kind rank (highest if multiple)
+    const tripsRank = (Object.keys(rankCounts) as Rank[])
+      .filter(rank => rankCounts[rank] >= 3)
+      .sort((a, b) => RANK_ORDER[b] - RANK_ORDER[a])[0];
+
+    // Find the pair rank (highest that isn't the trips)
+    const pairRank = (Object.keys(rankCounts) as Rank[])
+      .filter(rank => rank !== tripsRank && rankCounts[rank] >= 2)
+      .sort((a, b) => RANK_ORDER[b] - RANK_ORDER[a])[0];
+
+    // Get exactly 3 cards of trips rank and 2 of pair rank
+    const tripsCards = cards.filter(c => c.rank === tripsRank).slice(0, 3);
+    const pairCards = cards.filter(c => c.rank === pairRank).slice(0, 2);
+
+    return [...tripsCards, ...pairCards];
+  }
+
   private getHighCard(cards: Card[]): Card | null {
     if (cards.length === 0) return null;
     return cards.reduce((highest, card) =>
@@ -315,6 +333,10 @@ export class HandCalculatorService {
   }
 
   private getCardChipValue(card: Card): number {
+    // Debuffed cards contribute 0 chips
+    if (card.debuffed) {
+      return 0;
+    }
     // Stone cards give +50 chips but no rank value
     if (card.enhancement === 'stone') {
       return 50;
@@ -323,6 +345,10 @@ export class HandCalculatorService {
   }
 
   private getEnhancementEffect(card: Card): { chips: number; mult: number } {
+    // Debuffed cards contribute no enhancement effects
+    if (card.debuffed) {
+      return { chips: 0, mult: 0 };
+    }
     switch (card.enhancement) {
       case 'bonus': return { chips: 30, mult: 0 };
       case 'mult': return { chips: 0, mult: 4 };
@@ -335,6 +361,10 @@ export class HandCalculatorService {
   }
 
   private getEditionEffect(card: Card): { chips: number; addMult: number; xMult: number } {
+    // Debuffed cards contribute no edition effects
+    if (card.debuffed) {
+      return { chips: 0, addMult: 0, xMult: 1 };
+    }
     switch (card.edition) {
       case 'foil': return { chips: 50, addMult: 0, xMult: 1 };
       case 'holographic': return { chips: 0, addMult: 10, xMult: 1 };

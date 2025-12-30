@@ -1,8 +1,8 @@
 # Bug Tracker
 
-## Status: All Spec 011 Bugs Fixed (2025-12-29)
+## Status: 3 Open Bugs (2025-12-29)
 
-All 12 bugs from QA testing have been resolved across 4 sprints.
+22 bugs logged total. 19 fixed, 3 open from latest QA session.
 
 ---
 
@@ -25,6 +25,13 @@ All 12 bugs from QA testing have been resolved across 4 sprints.
 | BUG-013 | P1 | Hand Analyzer | Fixed | 1 |
 | BUG-014 | P2 | Hand Analyzer | Fixed | 1 |
 | BUG-015 | P2 | Shop Advisor | Fixed | 4 |
+| BUG-016 | P2 | Hand Analyzer | Fixed | 5 |
+| BUG-017 | P1 | Score Preview | Fixed | 5 |
+| BUG-018 | P1 | Score Preview | Fixed | 5 |
+| BUG-019 | P1 | Score Engine | Fixed | 5 |
+| BUG-020 | P1 | Shop Overlay | Open | - |
+| BUG-021 | P1 | Hand Analyzer | Open | - |
+| BUG-022 | P3 | Hand Guidance UI | Open | - |
 
 ---
 
@@ -139,6 +146,62 @@ All 12 bugs from QA testing have been resolved across 4 sprints.
 - **Fix**: Added `getRerollRecommendation()` method considering money, interest threshold ($25), and best item score
 - **Status**: Fixed (Sprint 4)
 
+### BUG-016: Best play doesn't account for debuffed card scoring impact
+- **Severity**: P2
+- **Component**: Hand Analyzer
+- **Observed**: Best play recommends Two Pair when 2 of the 4 cards are debuffed spades; projection doesn't reflect reduced score
+- **Expected**: Should either show accurate reduced score for the debuffed hand, or recommend alternative play with non-debuffed cards
+- **Fix**: Added debuff checks to `getCardChipValue()`, `getEnhancementEffect()`, and `getEditionEffect()` - debuffed cards now contribute 0
+- **Status**: Fixed (Sprint 5)
+
+### BUG-017: Flush score projection ~4x higher than actual
+- **Severity**: P1
+- **Component**: Score Preview
+- **Observed**: Flush projected 1300, actual score was 316 (~4x overestimate)
+- **Expected**: Projection should closely match actual game score
+- **Fix**: Same root cause as BUG-016 - debuffed cards were incorrectly contributing chip values
+- **Status**: Fixed (Sprint 5)
+
+### BUG-018: Straight score projection lower than actual
+- **Severity**: P1
+- **Component**: Score Preview
+- **Observed**: Straight projected 308, actual score was 420 (~27% underestimate)
+- **Expected**: Projection should closely match actual game score
+- **Fix**: Same root cause as BUG-016/017 - debuffed cards calculation issue
+- **Status**: Fixed (Sprint 5)
+
+### BUG-019: Unknown joker conditions applied unconditionally
+- **Severity**: P1
+- **Component**: Score Engine
+- **Observed**: Two Pair projected 920, actual was 488; x3 mult joker (all same color) incorrectly applied when condition not met
+- **Expected**: Jokers with unrecognized conditions should not apply their effects
+- **Fix**: Changed default case in `evaluateJokerCondition()` to return `defaultReturn` instead of applying the effect
+- **Status**: Fixed (Sprint 5)
+
+### BUG-020: Planet cards (Jupiter) displayed as jokers
+- **Severity**: P1
+- **Component**: Shop Overlay
+- **Observed**: Jupiter planet card labeled as a joker instead of planet card
+- **Expected**: Should display as PLANET with hand type upgrade info
+- **Notes**: Similar to BUG-001 (Mars as unknown joker) - may be regression or incomplete fix
+
+### BUG-021: Two pair not detected, recommends pair or discard instead
+- **Severity**: P1
+- **Component**: Hand Analyzer
+- **Observed**:
+  - Hand 5522: recommends "Pair 55" with projection 1.2k; actual was 120 (10x overestimate)
+  - Hand 6655: recommends discarding 55 and keeping just 66 (pair) instead of playing two pair
+  - Hand 6655+2: not suggesting adding 5th card (like 2) for free discard while scoring two pair
+- **Expected**: Should recommend Two Pair (4 cards) + low kicker for 5-card hand to thin deck
+- **Notes**: Two pair detection/recommendation appears fundamentally broken; also missing BUG-007 padding logic
+
+### BUG-022: Hand guidance UI confusing - best play vs discard recommendation unclear
+- **Severity**: P3
+- **Component**: Hand Guidance UI
+- **Observed**: Shows "best play: pair" then projected score, then discard recommendation below - user mistook pair for final recommendation
+- **Expected**: Clearer visual hierarchy showing discard recommendation as the primary action when it applies
+- **Notes**: Feature IS working, but UI layout causes confusion
+
 ---
 
 ## Sprint Summary
@@ -149,6 +212,7 @@ All 12 bugs from QA testing have been resolved across 4 sprints.
 | 2 | BUG-007, BUG-011 | Hand Analyzer - Discard strategy, Padding |
 | 3 | BUG-001, BUG-003 | Lua Bridge - Shop/Booster export |
 | 4 | BUG-002, BUG-008, BUG-009, BUG-012, BUG-015 | Build Detector, Shop Advisor |
+| 5 | BUG-016, BUG-017, BUG-018, BUG-019 | Score Preview/Engine - Debuffed cards, joker conditions |
 
 ---
 

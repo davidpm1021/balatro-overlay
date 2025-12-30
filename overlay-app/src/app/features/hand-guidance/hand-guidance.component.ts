@@ -1,6 +1,6 @@
 import { Component, ChangeDetectionStrategy, inject, computed } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { HandAnalyzerService, HandAnalysis, AnalyzedCard } from './services/hand-analyzer.service';
+import { HandAnalyzerService, HandAnalysis, AnalyzedCard, StrategyRecommendation, HandStrength } from './services/hand-analyzer.service';
 import { GameStateService } from '../../core/services/game-state.service';
 import { PhaseVisibilityService } from '../../core/services/phase-visibility.service';
 import { Card, Suit, Rank } from '../../../../../shared/models';
@@ -34,6 +34,11 @@ const SUIT_COLORS: Record<Suit, string> = {
     <section class="hand-guidance balatro-panel">
       <header class="header">
         <span class="section-header">Hand Guidance</span>
+        @if (analysis()?.strategy) {
+          <span class="strength-badge" [class]="'strength-' + analysis()!.strategy.handStrength">
+            {{ getStrengthLabel(analysis()!.strategy.handStrength) }}
+          </span>
+        }
       </header>
 
       @if (!analysis()) {
@@ -44,10 +49,27 @@ const SUIT_COLORS: Record<Suit, string> = {
           </p>
         </div>
       } @else {
-        <!-- Best Play Section -->
+        <!-- PRIMARY ACTION - The most important thing to show -->
+        <div class="primary-action-section" [class.action-play]="analysis()!.strategy.primaryAction === 'play'" [class.action-discard]="analysis()!.strategy.primaryAction === 'discard'">
+          <div class="action-header">
+            @if (analysis()!.strategy.primaryAction === 'play') {
+              <span class="action-icon play-icon">&#9654;</span>
+              <span class="action-text">PLAY NOW</span>
+            } @else {
+              <span class="action-icon discard-icon">&#8635;</span>
+              <span class="action-text">DISCARD FIRST</span>
+            }
+            <span class="confidence-badge" [class]="'confidence-' + analysis()!.strategy.confidence">
+              {{ analysis()!.strategy.confidence }}
+            </span>
+          </div>
+          <p class="action-reason">{{ analysis()!.strategy.reason }}</p>
+        </div>
+
+        <!-- Best Hand Info (secondary) -->
         <div class="best-play-section">
           <div class="best-play-header">
-            <span class="best-play-label">BEST PLAY:</span>
+            <span class="best-play-label">BEST HAND:</span>
             <span class="hand-type">{{ analysis()!.bestHand.handTypeLabel }}</span>
           </div>
 
@@ -79,13 +101,11 @@ const SUIT_COLORS: Record<Suit, string> = {
           </div>
         </div>
 
-        <!-- Recommendations Section -->
-        <div class="recommendations-section">
-          <div class="recommendation-header">RECOMMENDATION</div>
-
-          @if (analysis()!.cardsToDiscard.length > 0) {
+        <!-- Card Details Section - shown when discarding is recommended -->
+        @if (analysis()!.strategy.primaryAction === 'discard' && analysis()!.cardsToDiscard.length > 0) {
+          <div class="card-details-section">
             <div class="discard-section">
-              <span class="action-label discard-label">DISCARD:</span>
+              <span class="action-label discard-label">DISCARD THESE:</span>
               @for (analyzed of analysis()!.cardsToDiscard; track analyzed.card.id) {
                 <div class="card-recommendation">
                   <span class="card-display small" [class]="getSuitColorClass(analyzed.card)">
@@ -95,34 +115,22 @@ const SUIT_COLORS: Record<Suit, string> = {
                 </div>
               }
             </div>
-          }
+          </div>
+        }
 
-          @if (analysis()!.cardsToKeep.length > 0) {
-            <div class="keep-section">
-              <span class="action-label keep-label">KEEP:</span>
-              <div class="keep-cards">
-                @for (analyzed of analysis()!.cardsToKeep; track analyzed.card.id) {
-                  <span class="card-display small" [class]="getSuitColorClass(analyzed.card)">
-                    {{ getSuitSymbol(analyzed.card) }}{{ analyzed.card.rank }}
-                  </span>
-                }
-              </div>
-              @if (getKeepReasonsGrouped().length > 0) {
-                <div class="keep-reasons">
-                  @for (reason of getKeepReasonsGrouped(); track reason) {
-                    <span class="reason">{{ reason }}</span>
-                  }
-                </div>
+        <!-- Keep cards info (collapsed when playing) -->
+        @if (analysis()!.cardsToKeep.length > 0 && analysis()!.strategy.primaryAction === 'discard') {
+          <div class="keep-section">
+            <span class="action-label keep-label">KEEP:</span>
+            <div class="keep-cards">
+              @for (analyzed of analysis()!.cardsToKeep; track analyzed.card.id) {
+                <span class="card-display small" [class]="getSuitColorClass(analyzed.card)">
+                  {{ getSuitSymbol(analyzed.card) }}{{ analyzed.card.rank }}
+                </span>
               }
             </div>
-          }
-
-          @if (analysis()!.cardsToDiscard.length === 0 && analysis()!.cardsToKeep.length === 0) {
-            <div class="no-recommendations">
-              <p>All cards are part of your best hand - play them!</p>
-            </div>
-          }
-        </div>
+          </div>
+        }
 
         <!-- Build Context -->
         @if (analysis()!.buildContext.buildType) {
@@ -155,6 +163,19 @@ const SUIT_COLORS: Record<Suit, string> = {
       color: rgba(255, 255, 255, 0.9);
     }
 
+    .strength-badge {
+      font-size: 9px;
+      font-weight: 600;
+      padding: 2px 6px;
+      border-radius: 4px;
+      text-transform: uppercase;
+    }
+
+    .strength-weak { background: #dc2626; color: white; }
+    .strength-medium { background: #f59e0b; color: white; }
+    .strength-strong { background: #22c55e; color: white; }
+    .strength-excellent { background: #8b5cf6; color: white; }
+
     .empty-state {
       text-align: center;
       padding: 24px 16px;
@@ -171,6 +192,67 @@ const SUIT_COLORS: Record<Suit, string> = {
       font-size: 11px;
       line-height: 1.4;
       margin: 0;
+    }
+
+    /* PRIMARY ACTION Section - Most important */
+    .primary-action-section {
+      border-radius: 8px;
+      padding: 12px;
+      margin-bottom: 10px;
+    }
+
+    .primary-action-section.action-play {
+      background: linear-gradient(135deg, rgba(34, 197, 94, 0.3), rgba(22, 163, 74, 0.2));
+      border: 1px solid rgba(34, 197, 94, 0.4);
+    }
+
+    .primary-action-section.action-discard {
+      background: linear-gradient(135deg, rgba(245, 158, 11, 0.3), rgba(217, 119, 6, 0.2));
+      border: 1px solid rgba(245, 158, 11, 0.4);
+    }
+
+    .action-header {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 6px;
+    }
+
+    .action-icon {
+      font-size: 16px;
+    }
+
+    .play-icon { color: #4ade80; }
+    .discard-icon { color: #fbbf24; }
+
+    .action-text {
+      font-size: 16px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .action-play .action-text { color: #4ade80; }
+    .action-discard .action-text { color: #fbbf24; }
+
+    .confidence-badge {
+      font-size: 9px;
+      font-weight: 600;
+      padding: 2px 6px;
+      border-radius: 4px;
+      text-transform: uppercase;
+      margin-left: auto;
+    }
+
+    .confidence-high { background: rgba(34, 197, 94, 0.3); color: #4ade80; }
+    .confidence-medium { background: rgba(245, 158, 11, 0.3); color: #fbbf24; }
+    .confidence-low { background: rgba(239, 68, 68, 0.3); color: #f87171; }
+
+    .action-reason {
+      font-size: 12px;
+      color: rgba(255, 255, 255, 0.85);
+      margin: 0;
+      line-height: 1.4;
     }
 
     /* Best Play Section */
@@ -288,20 +370,11 @@ const SUIT_COLORS: Record<Suit, string> = {
       font-size: 14px;
     }
 
-    /* Recommendations Section */
-    .recommendations-section {
+    /* Card Details Section */
+    .card-details-section {
       background: rgba(0, 0, 0, 0.2);
       border-radius: 8px;
       padding: 12px;
-      margin-bottom: 10px;
-    }
-
-    .recommendation-header {
-      font-size: 10px;
-      font-weight: 600;
-      color: rgba(255, 255, 255, 0.5);
-      text-transform: uppercase;
-      letter-spacing: 0.3px;
       margin-bottom: 10px;
     }
 
@@ -323,7 +396,7 @@ const SUIT_COLORS: Record<Suit, string> = {
     }
 
     .discard-label {
-      color: #f87171;
+      color: #fbbf24;
     }
 
     .keep-label {
@@ -347,27 +420,6 @@ const SUIT_COLORS: Record<Suit, string> = {
       flex-wrap: wrap;
       gap: 4px;
       margin-bottom: 6px;
-    }
-
-    .keep-reasons {
-      display: flex;
-      flex-direction: column;
-      gap: 2px;
-    }
-
-    .keep-reasons .reason {
-      padding-left: 4px;
-    }
-
-    .no-recommendations {
-      text-align: center;
-      padding: 8px;
-    }
-
-    .no-recommendations p {
-      font-size: 12px;
-      color: #4ade80;
-      margin: 0;
     }
 
     /* Build Context */
@@ -453,5 +505,18 @@ export class HandGuidanceComponent {
       reasons.add(analyzed.reason);
     }
     return Array.from(reasons);
+  }
+
+  /**
+   * Get display label for hand strength
+   */
+  getStrengthLabel(strength: HandStrength): string {
+    const labels: Record<HandStrength, string> = {
+      weak: 'Weak',
+      medium: 'OK',
+      strong: 'Strong',
+      excellent: 'Great',
+    };
+    return labels[strength];
   }
 }

@@ -328,7 +328,26 @@ export class ScoreEngineService {
       }
     }
 
-    // Joker edition xMult
+    // Joker edition chips and mult (foil = +50 chips, holographic = +10 mult)
+    for (const joker of context.jokers) {
+      const editionData = this.editions[joker.edition];
+      if (editionData && (editionData.chips > 0 || editionData.mult > 0)) {
+        chips += editionData.chips;
+        mult += editionData.mult;
+        steps.push({
+          source: `${joker.name} (${joker.edition})`,
+          sourceId: joker.id,
+          type: 'edition',
+          chips: editionData.chips,
+          mult: editionData.mult,
+          xmult: 1,
+          runningChips: chips,
+          runningMult: mult,
+        });
+      }
+    }
+
+    // Joker edition xMult (polychrome = x1.5)
     for (const joker of context.jokers) {
       const editionData = this.editions[joker.edition];
       if (editionData && editionData.xmult > 1) {
@@ -492,6 +511,30 @@ export class ScoreEngineService {
           mult: 13,
           xmult: 1,
           description: 'Shoot the Moon: Queen held +13 Mult',
+        });
+      }
+    }
+
+    // Raised Fist (lowest card held in hand)
+    const hasRaisedFist = context.jokers.some(j => j.id === 'j_raised_fist');
+    if (hasRaisedFist) {
+      const nonDebuffedHeld = context.heldCards.filter(c => !c.debuffed && c.enhancement !== 'stone');
+      if (nonDebuffedHeld.length > 0) {
+        // Find lowest ranked card
+        const lowestCard = nonDebuffedHeld.reduce((lowest, card) => {
+          const cardValue = RANK_VALUES[card.rank];
+          const lowestValue = RANK_VALUES[lowest.rank];
+          return cardValue < lowestValue ? card : lowest;
+        });
+        // Raised Fist gives 2× the rank value as mult
+        const raisedFistMult = RANK_VALUES[lowestCard.rank] * 2;
+        effects.push({
+          source: `Raised Fist (${lowestCard.rank}${this.getSuitSymbol(lowestCard.suit)})`,
+          sourceId: lowestCard.id,
+          chips: 0,
+          mult: raisedFistMult,
+          xmult: 1,
+          description: `Raised Fist: Lowest held card gives +${raisedFistMult} Mult`,
         });
       }
     }
@@ -729,9 +772,23 @@ export class ScoreEngineService {
         }
         return defaultReturn;
 
+      // Raised Fist: Double the rank of lowest held card → Mult
+      case 'double_lowest_held_rank':
+        const nonDebuffedHeld = context.heldCards.filter(c => !c.debuffed && c.enhancement !== 'stone');
+        if (nonDebuffedHeld.length === 0) return defaultReturn;
+        // Find lowest ranked card
+        const lowestCard = nonDebuffedHeld.reduce((lowest, card) => {
+          const cardValue = RANK_VALUES[card.rank];
+          const lowestValue = RANK_VALUES[lowest.rank];
+          return cardValue < lowestValue ? card : lowest;
+        });
+        // Raised Fist gives 2× the rank value as mult
+        const raisedFistMult = RANK_VALUES[lowestCard.rank] * 2;
+        return effectType === 'mult' ? raisedFistMult : defaultReturn;
+
       default:
-        // Unknown condition - return base value
-        return effectType === 'xmult' ? 1 + value : value;
+        // Unknown condition - DON'T apply effect (safer than over-projecting)
+        return defaultReturn;
     }
   }
 

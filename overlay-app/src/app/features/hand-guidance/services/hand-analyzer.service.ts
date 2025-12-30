@@ -72,6 +72,22 @@ export interface AnalyzedCard {
 }
 
 /**
+ * Hand strength classification
+ */
+export type HandStrength = 'weak' | 'medium' | 'strong' | 'excellent';
+
+/**
+ * Strategy recommendation result
+ */
+export interface StrategyRecommendation {
+  primaryAction: 'play' | 'discard';
+  confidence: 'low' | 'medium' | 'high';
+  reason: string;
+  handStrength: HandStrength;
+  improvementPotential: number; // 0-100 estimate of how much better hand could be
+}
+
+/**
  * Complete hand analysis result
  */
 export interface HandAnalysis {
@@ -91,6 +107,7 @@ export interface HandAnalysis {
     buildType: StrategyType | null;
     buildName: string;
   };
+  strategy: StrategyRecommendation;
 }
 
 /**
@@ -241,6 +258,18 @@ export class HandAnalyzerService {
     // Get build context
     const buildContext = this.getBuildContext(build);
 
+    // Evaluate strategy: should we play or discard?
+    const strategy = this.evaluateDiscardStrategy(
+      handType,
+      projectedScore,
+      blindGoal,
+      beatsBlind,
+      this.gameState.discardsRemaining(),
+      this.gameState.handsRemaining(),
+      cardsToDiscard.length,
+      build
+    );
+
     return {
       bestHand: {
         handType,
@@ -255,6 +284,7 @@ export class HandAnalyzerService {
       cardsToDiscard,
       cardsToKeep,
       buildContext,
+      strategy,
     };
   }
 
@@ -581,6 +611,172 @@ export class HandAnalyzerService {
       default:
         return false;
     }
+  }
+
+  /**
+   * Evaluate whether to play the current best hand or discard to improve
+   * This is the core strategic decision engine
+   */
+  private evaluateDiscardStrategy(
+    handType: HandType,
+    projectedScore: number,
+    blindGoal: number,
+    beatsBlind: boolean,
+    discardsRemaining: number,
+    handsRemaining: number,
+    discardableCards: number,
+    build: DetectedBuild
+  ): StrategyRecommendation {
+    // Classify hand strength
+    const handStrength = this.classifyHandStrength(handType, projectedScore, blindGoal);
+
+    // Calculate improvement potential based on hand type and build
+    const improvementPotential = this.calculateImprovementPotential(handType, discardableCards, build);
+
+    // Decision logic
+    let primaryAction: 'play' | 'discard' = 'play';
+    let confidence: 'low' | 'medium' | 'high' = 'medium';
+    let reason = '';
+
+    // Case 1: No discards left - must play
+    if (discardsRemaining === 0) {
+      primaryAction = 'play';
+      confidence = 'high';
+      reason = 'No discards remaining - play your best hand';
+    }
+    // Case 2: Last hand - must score enough
+    else if (handsRemaining === 1) {
+      if (beatsBlind) {
+        primaryAction = 'play';
+        confidence = 'high';
+        reason = 'Last hand and you beat the blind - play now!';
+      } else {
+        // Last hand but doesn't beat blind - risky discard
+        if (handStrength === 'weak' && discardableCards > 0) {
+          primaryAction = 'discard';
+          confidence = 'low';
+          reason = `Last hand but ${projectedScore.toLocaleString()} won't beat ${blindGoal.toLocaleString()} - discard to try for better`;
+        } else {
+          primaryAction = 'play';
+          confidence = 'low';
+          reason = 'Last hand - play and hope for joker effects';
+        }
+      }
+    }
+    // Case 3: Strong hand that beats blind - play it
+    else if (beatsBlind && (handStrength === 'strong' || handStrength === 'excellent')) {
+      primaryAction = 'play';
+      confidence = 'high';
+      reason = `${HAND_TYPE_LABELS[handType]} beats the blind comfortably`;
+    }
+    // Case 4: Beats blind but weak hand - consider playing to save discards
+    else if (beatsBlind && handStrength === 'weak') {
+      // If we have plenty of hands left, might be worth playing weak hands
+      if (handsRemaining >= 3) {
+        primaryAction = 'play';
+        confidence = 'medium';
+        reason = 'Beats blind - play to save discards for harder blinds';
+      } else {
+        primaryAction = 'play';
+        confidence = 'medium';
+        reason = 'Beats blind - take the safe play';
+      }
+    }
+    // Case 5: Beats blind, medium hand - play
+    else if (beatsBlind) {
+      primaryAction = 'play';
+      confidence = 'high';
+      reason = `${HAND_TYPE_LABELS[handType]} beats the blind`;
+    }
+    // Case 6: Doesn't beat blind - evaluate discard vs play
+    else {
+      // How far off are we?
+      const shortfall = blindGoal - projectedScore;
+      const percentShort = (shortfall / blindGoal) * 100;
+
+      if (handStrength === 'weak' && discardableCards > 0 && discardsRemaining > 0) {
+        primaryAction = 'discard';
+        confidence = improvementPotential > 50 ? 'high' : 'medium';
+        reason = `${HAND_TYPE_LABELS[handType]} only scores ${projectedScore.toLocaleString()} - discard to improve`;
+      } else if (handStrength === 'medium' && percentShort > 50 && discardsRemaining >= 2) {
+        primaryAction = 'discard';
+        confidence = 'medium';
+        reason = `Need ${shortfall.toLocaleString()} more - worth trying to improve`;
+      } else if (handsRemaining > 1) {
+        // Multiple hands left - can play weak hand and try again
+        primaryAction = 'play';
+        confidence = 'medium';
+        reason = `Play now - you have ${handsRemaining - 1} more hands to try`;
+      } else {
+        // Tough spot - low hands, doesn't beat blind
+        if (discardableCards > 0 && discardsRemaining > 0) {
+          primaryAction = 'discard';
+          confidence = 'low';
+          reason = `${projectedScore.toLocaleString()} isn't enough - discard and hope`;
+        } else {
+          primaryAction = 'play';
+          confidence = 'low';
+          reason = 'Best available option';
+        }
+      }
+    }
+
+    return {
+      primaryAction,
+      confidence,
+      reason,
+      handStrength,
+      improvementPotential,
+    };
+  }
+
+  /**
+   * Classify the strength of a hand relative to expectations
+   */
+  private classifyHandStrength(handType: HandType, projectedScore: number, blindGoal: number): HandStrength {
+    // Base hand type ranking
+    const handRank = this.getHandTypeScore(handType);
+
+    // How much we beat/miss the blind by
+    const blindRatio = blindGoal > 0 ? projectedScore / blindGoal : 1;
+
+    // Combine hand type rank with blind performance
+    if (blindRatio >= 2 || handRank >= 8) {
+      return 'excellent';
+    } else if (blindRatio >= 1.2 || handRank >= 5) {
+      return 'strong';
+    } else if (blindRatio >= 0.7 || handRank >= 3) {
+      return 'medium';
+    } else {
+      return 'weak';
+    }
+  }
+
+  /**
+   * Estimate the potential for improvement if we discard
+   * Returns 0-100 indicating likelihood of significant improvement
+   */
+  private calculateImprovementPotential(
+    currentHandType: HandType,
+    discardableCards: number,
+    build: DetectedBuild
+  ): number {
+    if (discardableCards === 0) return 0;
+
+    const currentRank = this.getHandTypeScore(currentHandType);
+
+    // Base potential from hand type - weaker hands have more room to improve
+    let potential = Math.max(0, 80 - (currentRank * 10));
+
+    // More discardable cards = more potential
+    potential += Math.min(20, discardableCards * 5);
+
+    // Build alignment increases potential (we know what we're looking for)
+    if (build.primary && build.primary.confidence > 50) {
+      potential += 10;
+    }
+
+    return Math.min(100, potential);
   }
 
   /**

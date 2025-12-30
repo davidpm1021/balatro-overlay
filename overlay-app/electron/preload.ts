@@ -55,4 +55,9 @@ contextBridge.exposeInMainWorld('electronAPI', {
   getWindowPosition: (): Promise<{ x: number; y: number }> => {
     return ipcRenderer.invoke('get-window-position');
   },
+
+  // Quit app completely
+  quitApp: () => {
+    ipcRenderer.send('app:quit');
+  },
 });

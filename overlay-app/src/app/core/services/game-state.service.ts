@@ -14,6 +14,7 @@ declare global {
       startDrag: (mouseX: number, mouseY: number) => void;
       dragMove: (screenX: number, screenY: number) => void;
       getWindowPosition: () => Promise<{ x: number; y: number }>;
+      quitApp: () => void;
     };
   }
 }
@@ -110,5 +111,17 @@ export class GameStateService {
 
   dragMove(screenX: number, screenY: number): void {
     window.electronAPI?.dragMove(screenX, screenY);
+  }
+
+  // Quit app completely
+  quitApp(): void {
+    console.log('[GameStateService] quitApp called, electronAPI:', !!window.electronAPI);
+    if (window.electronAPI?.quitApp) {
+      window.electronAPI.quitApp();
+    } else {
+      // Fallback for browser-only mode
+      console.warn('[GameStateService] electronAPI.quitApp not available');
+      window.close();
+    }
   }
 }

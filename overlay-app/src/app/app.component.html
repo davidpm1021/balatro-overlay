@@ -65,6 +65,14 @@
           {{ clickThroughEnabled() ? 'ON' : 'OFF' }}
         </button>
       </div>
+      <div class="setting-row quit-row">
+        <button
+          class="quit-btn"
+          (click)="quitApp()"
+          title="Quit overlay completely">
+          Quit Overlay
+        </button>
+      </div>
     </div>
   }
 

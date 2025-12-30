@@ -75,6 +75,13 @@ describe('HandGuidanceComponent', () => {
         buildType: 'flush',
         buildName: 'Flush',
       },
+      strategy: {
+        primaryAction: 'play',
+        confidence: 'high',
+        reason: 'Flush beats the blind comfortably',
+        handStrength: 'strong',
+        improvementPotential: 0,
+      },
       ...overrides,
     };
   }
@@ -242,7 +249,7 @@ describe('HandGuidanceComponent', () => {
   });
 
   describe('discard recommendations', () => {
-    it('should display discard section when cards to discard exist', () => {
+    it('should display discard section when cards to discard exist and strategy is discard', () => {
       const discardCards = [
         createCard('s1', 'spades', '7'),
         createCard('c1', 'clubs', '3'),
@@ -253,6 +260,13 @@ describe('HandGuidanceComponent', () => {
           createAnalyzedCard(discardCards[0], 'discard', 'Off-suit for Hearts flush', false),
           createAnalyzedCard(discardCards[1], 'discard', 'Off-suit for Hearts flush', false),
         ],
+        strategy: {
+          primaryAction: 'discard',
+          confidence: 'high',
+          reason: 'Discarding improves hand',
+          handStrength: 'weak',
+          improvementPotential: 0.5,
+        },
       }));
       fixture.detectChanges();
 
@@ -267,6 +281,13 @@ describe('HandGuidanceComponent', () => {
         cardsToDiscard: [
           createAnalyzedCard(discardCard, 'discard', 'Off-suit for Hearts flush', false),
         ],
+        strategy: {
+          primaryAction: 'discard',
+          confidence: 'high',
+          reason: 'Discarding improves hand',
+          handStrength: 'weak',
+          improvementPotential: 0.5,
+        },
       }));
       fixture.detectChanges();
 
@@ -282,6 +303,13 @@ describe('HandGuidanceComponent', () => {
         cardsToDiscard: [
           createAnalyzedCard(discardCard, 'discard', 'Off-suit', false),
         ],
+        strategy: {
+          primaryAction: 'discard',
+          confidence: 'high',
+          reason: 'Discarding improves hand',
+          handStrength: 'weak',
+          improvementPotential: 0.5,
+        },
       }));
       fixture.detectChanges();
 
@@ -292,37 +320,25 @@ describe('HandGuidanceComponent', () => {
   });
 
   describe('keep recommendations', () => {
-    it('should display keep section when cards to keep exist', () => {
+    it('should display keep section when cards to keep exist and strategy is discard', () => {
       const keepCard = createCard('h6', 'hearts', '7');
 
       analysisSignal.set(createHandAnalysis({
         cardsToKeep: [
           createAnalyzedCard(keepCard, 'keep', 'Matches your Flush build', false),
         ],
+        strategy: {
+          primaryAction: 'discard',
+          confidence: 'high',
+          reason: 'Discarding improves hand',
+          handStrength: 'weak',
+          improvementPotential: 0.5,
+        },
       }));
       fixture.detectChanges();
 
       const keepSection = fixture.debugElement.query(By.css('.keep-section'));
       expect(keepSection).toBeTruthy();
-    });
-
-    it('should display keep reasons grouped', () => {
-      const keepCards = [
-        createCard('h6', 'hearts', '7'),
-        createCard('h7', 'hearts', '4'),
-      ];
-
-      analysisSignal.set(createHandAnalysis({
-        cardsToKeep: [
-          createAnalyzedCard(keepCards[0], 'keep', 'Matches your Flush build', false),
-          createAnalyzedCard(keepCards[1], 'keep', 'Matches your Flush build', false),
-        ],
-      }));
-      fixture.detectChanges();
-
-      const reasons = fixture.debugElement.queryAll(By.css('.keep-reasons .reason'));
-      // Should be deduplicated to one reason
-      expect(reasons.length).toBe(1);
     });
 
     it('should display cards to keep', () => {
@@ -332,6 +348,13 @@ describe('HandGuidanceComponent', () => {
         cardsToKeep: [
           createAnalyzedCard(keepCard, 'keep', 'Matches build', false),
         ],
+        strategy: {
+          primaryAction: 'discard',
+          confidence: 'high',
+          reason: 'Discarding improves hand',
+          handStrength: 'weak',
+          improvementPotential: 0.5,
+        },
       }));
       fixture.detectChanges();
 
@@ -343,17 +366,80 @@ describe('HandGuidanceComponent', () => {
     });
   });
 
-  describe('no recommendations state', () => {
-    it('should show play message when no discards or keeps', () => {
+  describe('primary action display', () => {
+    it('should show PLAY NOW when strategy recommends play', () => {
       analysisSignal.set(createHandAnalysis({
         cardsToDiscard: [],
         cardsToKeep: [],
+        strategy: {
+          primaryAction: 'play',
+          confidence: 'high',
+          reason: 'Your hand beats the blind',
+          handStrength: 'strong',
+          improvementPotential: 0,
+        },
       }));
       fixture.detectChanges();
 
-      const noRecs = fixture.debugElement.query(By.css('.no-recommendations'));
-      expect(noRecs).toBeTruthy();
-      expect(noRecs.nativeElement.textContent.toLowerCase()).toContain('play');
+      const playSection = fixture.debugElement.query(By.css('.primary-action-section.action-play'));
+      expect(playSection).toBeTruthy();
+      expect(playSection.nativeElement.textContent).toContain('PLAY');
+    });
+
+    it('should show DISCARD FIRST when strategy recommends discard', () => {
+      const discardCard = createCard('s1', 'spades', '7');
+
+      analysisSignal.set(createHandAnalysis({
+        cardsToDiscard: [
+          createAnalyzedCard(discardCard, 'discard', 'Off-suit', false),
+        ],
+        strategy: {
+          primaryAction: 'discard',
+          confidence: 'high',
+          reason: 'Discarding improves your hand',
+          handStrength: 'weak',
+          improvementPotential: 0.5,
+        },
+      }));
+      fixture.detectChanges();
+
+      const discardSection = fixture.debugElement.query(By.css('.primary-action-section.action-discard'));
+      expect(discardSection).toBeTruthy();
+      expect(discardSection.nativeElement.textContent).toContain('DISCARD');
+    });
+
+    it('should display confidence badge', () => {
+      analysisSignal.set(createHandAnalysis({
+        strategy: {
+          primaryAction: 'play',
+          confidence: 'high',
+          reason: 'Strong hand',
+          handStrength: 'strong',
+          improvementPotential: 0,
+        },
+      }));
+      fixture.detectChanges();
+
+      const confidenceBadge = fixture.debugElement.query(By.css('.confidence-badge'));
+      expect(confidenceBadge).toBeTruthy();
+      expect(confidenceBadge.nativeElement.textContent.toLowerCase()).toContain('high');
+    });
+
+    it('should display action reason', () => {
+      analysisSignal.set(createHandAnalysis({
+        strategy: {
+          primaryAction: 'play',
+          confidence: 'high',
+          reason: 'Your flush beats the blind comfortably',
+          handStrength: 'strong',
+          improvementPotential: 0,
+        },
+      }));
+      fixture.detectChanges();
+
+      const reason = fixture.debugElement.query(By.css('.action-reason'));
+      expect(reason).toBeTruthy();
+      expect(reason.nativeElement.textContent).toContain('flush beats the blind');
     });
   });
 

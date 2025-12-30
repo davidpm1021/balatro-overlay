@@ -251,6 +251,11 @@ ipcMain.handle('get-window-position', () => {
   return { x, y };
 });
 
+// Quit app
+ipcMain.on('app:quit', () => {
+  app.quit();
+});
+
 // App lifecycle
 app.whenReady().then(createWindow);
 

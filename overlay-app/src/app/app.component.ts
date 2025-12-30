@@ -121,4 +121,8 @@ export class AppComponent {
     document.removeEventListener('mousemove', this.boundDragMove);
     document.removeEventListener('mouseup', this.boundDragEnd);
   }
+
+  quitApp(): void {
+    this.gameState.quitApp();
+  }
 }
